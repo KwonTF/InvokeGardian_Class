@@ -27,6 +27,11 @@ bool HelloWorld::init()
 	Mouse->onMouseScroll = CC_CALLBACK_1(HelloWorld::onMouseScroll, this);
 	Mouse->onMouseMove = CC_CALLBACK_1(HelloWorld::onMouseMove, this);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(Mouse, this);
+	//Set KeyBoard Event
+	auto keyBoard = EventListenerKeyboard::create();
+	keyBoard->onKeyPressed = CC_CALLBACK_2(HelloWorld::onKeyPressed, this);
+	keyBoard->onKeyReleased = CC_CALLBACK_2(HelloWorld::onKeyReleased, this);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(keyBoard, this);
 	//미사일 레이어들 젹용
 	layerMissile = Layer::create();
 	layerMissile->setAnchorPoint(Vec2(1, 1));
@@ -64,7 +69,6 @@ void HelloWorld::onMouseDown(cocos2d::Event * event)
 	auto mousePosition = static_cast<EventMouse*>(event)->getLocation();
 	std::string output = "X: " + std::to_string(static_cast<int>(ceil(mousePosition.x))) + " Y: " + std::to_string(static_cast<int>(ceil(mousePosition.y)));
 	ttf1->setString(output);
-	fireMissile();
 }
 
 void HelloWorld::onMouseUp(cocos2d::Event * event)
@@ -79,6 +83,22 @@ void HelloWorld::onMouseMove(cocos2d::Event * event)
 
 void HelloWorld::onMouseScroll(cocos2d::Event * event)
 {
+}
+
+void HelloWorld::onKeyReleased(EventKeyboard::KeyCode keyCode, Event * event)
+{
+}
+
+void HelloWorld::onKeyPressed(EventKeyboard::KeyCode keyCode, Event * event)
+{
+	switch (keyCode)
+	{
+	case EventKeyboard::KeyCode::KEY_SPACE :
+		fireMissile();
+		break;
+	default:
+		break;
+	}
 }
 
 void HelloWorld::fireMissile()

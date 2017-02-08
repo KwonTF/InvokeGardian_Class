@@ -32,6 +32,9 @@ public:
 	void onMouseUp(cocos2d::Event* event);
 	void onMouseMove(cocos2d::Event* event);
 	void onMouseScroll(cocos2d::Event* event);
+	//키보드 이벤트들
+	void onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event);
+	void onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event);
 	void fireMissile();
 private:
 	Layer* layerMissile;
