@@ -15,7 +15,7 @@ public:
 	Player();
 	~Player();
 	static Player* createAndInit();
-	void gotoPoint(float x, float y);
+	void gotoPoint(float x, float y,float angle);
 	void moveBySpeed(float input);
 private:
 	float movePointX, movePointY;

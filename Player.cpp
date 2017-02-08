@@ -17,9 +17,13 @@ Player * Player::createAndInit()
 	return player;
 }
 
-void Player::gotoPoint(float x, float y)
+void Player::gotoPoint(float x, float y, float angle)
 {
-	this->runAction(MoveTo::create(3.0, Point(x, y)));
+	movePointX = sinf((angle-90)*(-1));
+	movePointY = cosf((angle - 90)*(-1));
+	unscheduleAllSelectors();
+
+	//schedule(schedule_selector(Player::moveBySpeed));
 }
 
 void Player::moveBySpeed(float input)

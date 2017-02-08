@@ -32,12 +32,16 @@ public:
 	void onMouseUp(cocos2d::Event* event);
 	void onMouseMove(cocos2d::Event* event);
 	void onMouseScroll(cocos2d::Event* event);
-
+	void fireMissile();
 private:
+	Layer* layerMissile;
 	Player* player;
 	CCSprite* statusBar;
-
+	CCLabelTTF* ttf1;
+	Point mouse;
 };
 //스프라이트의 앵커포인트를 가운데로 맞춰준다.
 void setSpriteAnchor_Center(CCSprite *input);
+//마우스 좌표와 특정 시점과의 각도를 계산
+float calculateDegree(Point &current, Point &point);
 #endif // __HELLOWORLD_SCENE_H__
