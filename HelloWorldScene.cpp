@@ -1,24 +1,58 @@
-#include "HelloWorldScene.h"
+ï»¿#include "HelloWorldScene.h"
 #include "cocostudio/CocoStudio.h"
 #include "ui/CocosGUI.h"
+#include "MainHeader.h"
+
 USING_NS_CC;
+
 using namespace cocostudio::timeline;
 
 Scene* HelloWorld::createScene()
 {
-    auto scene = Scene::create();
-    auto layer = HelloWorld::create();
-    scene->addChild(layer);
-    return scene;
+	Size visibleSize = Director::getInstance()->getVisibleSize();
+	Size GameSize = Size::Size(540, 960);
+	Vec2 gravity = Vec2(0.0f, 0.0f);
+
+	// make scene with physics
+	auto scene = Scene::createWithPhysics();
+	//scene->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);			// draw 
+	scene->getPhysicsWorld()->setGravity(gravity);
+
+	// make physics body
+	auto body = PhysicsBody::createEdgeBox(GameSize, PHYSICSBODY_MATERIAL_DEFAULT, 3);
+	auto edgeNode = Node::create();
+	edgeNode->setPosition(Point(visibleSize.width / 2, visibleSize.height / 2));
+	edgeNode->setPhysicsBody(body);
+	scene->addChild(edgeNode);
+
+	auto layer = HelloWorld::create();
+	layer->setPhysicsWorld(scene->getPhysicsWorld());
+
+	scene->addChild(layer);
+
+	// return the scene
+	return scene;
 }
 
+// on "init" you need to initialize your instance
 bool HelloWorld::init()
 {
-   
+    //////////////////////////////
+    // 1. super init first
     if ( !Layer::init() )
     {
         return false;
     }
+    
+    auto rootNode = CSLoader::createNode("MainScene.csb");
+
+    addChild(rootNode);
+
+	// set contact listener
+	auto contactListener = EventListenerPhysicsContact::create();
+	contactListener->onContactBegin = CC_CALLBACK_1(HelloWorld::onContactBegin, this);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(contactListener, this);
+
 	// Set MouseEvent
 	auto Mouse = EventListenerMouse::create();
 	mouse = Point(0, 0);
@@ -27,41 +61,61 @@ bool HelloWorld::init()
 	Mouse->onMouseScroll = CC_CALLBACK_1(HelloWorld::onMouseScroll, this);
 	Mouse->onMouseMove = CC_CALLBACK_1(HelloWorld::onMouseMove, this);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(Mouse, this);
+
 	//Set KeyBoard Event
 	auto keyBoard = EventListenerKeyboard::create();
 	keyBoard->onKeyPressed = CC_CALLBACK_2(HelloWorld::onKeyPressed, this);
 	keyBoard->onKeyReleased = CC_CALLBACK_2(HelloWorld::onKeyReleased, this);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(keyBoard, this);
-	//¹Ì»çÀÏ ·¹ÀÌ¾îµé  ¬¿ë
+
+	//ë¯¸ì‚¬ì¼ ë ˆì´ì–´ë“¤?
 	layerMissile = Layer::create();
 	layerMissile->setAnchorPoint(Vec2(1, 1));
 	layerMissile->setPosition(Vec2());
 	this->addChild(layerMissile);
 	createGameScene();
 	this->schedule(schedule_selector(HelloWorld::onTimeUpdate));
+
     return true;
 }
 
-void HelloWorld::createGameScene()//±ÇÅÂÇü Á¦ÀÛ
+// ë¶€ë”ªíž˜ ì¸ì‹
+bool HelloWorld::onContactBegin(PhysicsContact& contact)
+{
+	auto sp1 = (Collisioner*)contact.getShapeA()->getBody()->getNode();
+	auto sp2 = (Collisioner*)contact.getShapeB()->getBody()->getNode();
+	int tag1 = sp1->getTag();
+	int tag2 = sp2->getTag();
+	sp1->getDamage(sp2->getAttack());
+	sp2->getDamage(sp1->getAttack());
+	sp1->getCondition();
+	sp2->getCondition();
+	//log("%d : %d  %d : %d", tag1, sp1->getHP(), tag2, sp2->getHP());
+	
+	return true;
+}
+
+void HelloWorld::createGameScene()//ê¶Œíƒœí˜• ì œìž‘
 {
 	CCSize _winSize = CCDirector::sharedDirector()->getWinSize();
 	player = Player::createAndInit();
 	statusBar = CCSprite::create("UI/MainStatusBar.png");
 	setSpriteAnchor_Center(statusBar);
-	player->setPosition(_winSize.width / 2 -200, _winSize.height / 2 -200);
+	player->setPosition(_winSize.width / 2 - 200, _winSize.height / 2 - 200);
 	statusBar->setPosition(_winSize.width / 2, _winSize.height * 1 / 20);
 	ttf1 = CCLabelTTF::create("Default", "fonts/RoundGothic.ttf", 30);
 	ttf1->setPosition(100, 100);
-	ttf1->setAnchorPoint(CCPoint(0.5, 0.5));
+	ttf1->setAnchorPoint(AnchorCenter);
 	this->addChild(player);
 	this->addChild(ttf1);
 	this->addChild(statusBar);
 }
 
-void HelloWorld::onTimeUpdate(float input)//±ÇÅÂÇü Á¦ÀÛ
+void HelloWorld::onTimeUpdate(float input)//ê¶Œíƒœí˜• ì œìž‘
 {
-	float angle = calculateDegree(Point(player->getPositionX(), player->getPositionY()), mouse);
-	player->setRotation(angle);
+	Vec2 playerPos = player->getPosition();
+	float angle = calculateDegree(playerPos, mouse);
+	player->setRotation(90 - angle);
 }
 
 void HelloWorld::onMouseDown(cocos2d::Event * event)
@@ -71,29 +125,18 @@ void HelloWorld::onMouseDown(cocos2d::Event * event)
 	ttf1->setString(output);
 }
 
-void HelloWorld::onMouseUp(cocos2d::Event * event)
-{
-}
-
 void HelloWorld::onMouseMove(cocos2d::Event * event)
 {
-	auto mousePosition = static_cast<EventMouse*>(event)->getLocation();
-	mouse = Point(mousePosition.x, mousePosition.y);
-}
-
-void HelloWorld::onMouseScroll(cocos2d::Event * event)
-{
-}
-
-void HelloWorld::onKeyReleased(EventKeyboard::KeyCode keyCode, Event * event)
-{
+	EventMouse *e = (EventMouse*)event;
+	//auto mousePosition = static_cast<EventMouse*>(event)->getLocation();
+	mouse = Point(e->getCursorX(), e->getCursorY());
 }
 
 void HelloWorld::onKeyPressed(EventKeyboard::KeyCode keyCode, Event * event)
 {
 	switch (keyCode)
 	{
-	case EventKeyboard::KeyCode::KEY_SPACE :
+	case EventKeyboard::KeyCode::KEY_SPACE:
 		fireMissile();
 		break;
 	default:
@@ -103,18 +146,18 @@ void HelloWorld::onKeyPressed(EventKeyboard::KeyCode keyCode, Event * event)
 
 void HelloWorld::fireMissile()
 {
-	BulletObj * missile = BulletObj::createAndInit(player->getRotation() + 45);
+	BulletObj * missile = BulletObj::createAndInit(player->getRotation());
 	missile->setPosition(player->getPosition());
 	missile->setRotation(player->getRotation());
 	layerMissile->addChild(missile);
 }
 
-void setSpriteAnchor_Center(CCSprite * input)//±ÇÅÂÇü Á¦ÀÛ
+void setSpriteAnchor_Center(CCSprite * input)//ê¶Œíƒœí˜• ì œìž‘
 {
 	input->setAnchorPoint(Vec2(0.5, 0.5));
 }
 
-float calculateDegree(Point & current, Point & point)
+float calculateDegree(Vec2 & current, Vec2 & point)
 {
 	float diffX = point.x - current.x;
 	float diffY = point.y - current.y;
