@@ -19,7 +19,9 @@ public:
 
 	virtual void setCondition();
 	virtual void getCondition();
-	virtual int getAttack();
+	int getAttack();
 	virtual void getDamage(int damage);
+
+	virtual void collisoned(int damage);
 };
 

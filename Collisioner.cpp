@@ -42,3 +42,8 @@ void Collisioner::setCondition()
 {
 
 }
+
+void Collisioner::collisoned(int damage)
+{
+
+}

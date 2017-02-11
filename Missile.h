@@ -15,34 +15,36 @@ protected:
 	std::string *image;
 	int imageNum;
 
-	// 체력
-	float hp_current;
-	float hp_max;
-
 	// 공격력
 	float attack;
 
 	// 이동속도
-	float speed_move;
+	float speed;
+
+	int range;				// 사거리 제한
+	int penetrationCount;	// 관통 가능한 유닛 수
+	int divideCount;		// 분열 수
 
 public:
-	Missile();
-	~Missile();
+	Missile() {};
+	~Missile() {};
 
 	static Missile* create(const std::string &filename);
 
-	void setImageInfo(const std::string *filename, const int fileNum);
-
 	// set ability
-	void setHP(float hp);
-	void setAttack(float atk);
-	void setSpeed(float spd);
-	float getHP();
-	// float getAttack();
+	void setRange(int movelimit);
+	void setPenetCount(int count);
+	void setDivideCount(int count);
+
+	void setMissileTeam(int team);
+
+	int getAttack();
 	float getSpeed();
 
-	virtual void getDamage(int enemyAttack);
+	void getDamage(int enemyAttack);
 	void deathAnimation();
 	void destroy();
+
+	void removeMissile(float f);
 };
 
