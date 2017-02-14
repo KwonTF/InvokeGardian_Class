@@ -23,7 +23,7 @@ void Player::gotoPoint(float x, float y, float angle)
 	movePointY = cosf((angle - 90)*(-1));
 	unscheduleAllSelectors();
 
-	//schedule(schedule_selector(Player::moveBySpeed));
+	schedule(schedule_selector(Player::moveBySpeed));
 }
 
 void Player::moveBySpeed(float input)
