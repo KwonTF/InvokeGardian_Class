@@ -8,6 +8,7 @@ Invoke Gardian Player ÆÄÀÏ(cpp, h)
 #define PLAYER
 #include "cocos2d.h"
 #include "MainHeader.h"
+
 USING_NS_CC;
 class Player : public Sprite
 {
