@@ -235,20 +235,19 @@ Missile* HelloWorld::makeMissile()
 
 void HelloWorld::fireMissile()
 {
-	// BulletObj로 만든거
-	BulletObj * missile = BulletObj::createAndInit(player->getRotation());
-	missile->setPosition(player->getPosition());
-	missile->setRotation(player->getRotation());
+	/* BulletObj로 만든거
+	//BulletObj * bullet = BulletObj::createAndInit(player->getRotation());
+	//bullet->setPosition(player->getPosition());
+	//bullet->setRotation(player->getRotation());
 	//BulletObj * missile = BulletObj::createAndInit(player->getRotation());
-	layerMissile->addChild(missile);
-
+	//layerMissile->addChild(bullet);*/
 	// Missile로 만든거
-	auto bullet = HelloWorld::makeMissile();
-	bullet->getPhysicsBody()->setVelocity(Vec2(400 * cos(cursorAngle * M_PI / 180), 400 * sin(cursorAngle * M_PI / 180)));
+	auto missile = HelloWorld::makeMissile();
+	missile->getPhysicsBody()->setVelocity(Vec2(400 * cos(cursorAngle * M_PI / 180), 400 * sin(cursorAngle * M_PI / 180)));
 	
-	bullet->setMissileTeam(0);
+	missile->setMissileTeam(0);
 
-	layerMissile->addChild(bullet);
+	layerMissile->addChild(missile);
 }
 
 void setSpriteAnchor_Center(CCSprite * input)//권태형 제작
