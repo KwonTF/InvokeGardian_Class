@@ -11,7 +11,7 @@ Missile* Missile::create(const std::string &filename)
 	}
 
 	CC_SAFE_DELETE(missile);
-	return nullptr;
+	return missile;
 }
 
 // if Missile collisioned

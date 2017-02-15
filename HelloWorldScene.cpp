@@ -30,23 +30,19 @@ Scene* HelloWorld::createScene()
 
 	scene->addChild(layer);
 
-	// return the scene
 	return scene;
 }
 
-// on "init" you need to initialize your instance
 bool HelloWorld::init()
 {
-    //////////////////////////////
-    // 1. super init first
     if ( !Layer::init() )
     {
         return false;
     }
     
-    auto rootNode = CSLoader::createNode("MainScene.csb");
+    //auto rootNode = CSLoader::createNode("MainScene.csb");
 
-    addChild(rootNode);
+    //addChild(rootNode);
 
 	// set contact listener
 	auto contactListener = EventListenerPhysicsContact::create();
@@ -243,6 +239,7 @@ void HelloWorld::fireMissile()
 	BulletObj * missile = BulletObj::createAndInit(player->getRotation());
 	missile->setPosition(player->getPosition());
 	missile->setRotation(player->getRotation());
+	//BulletObj * missile = BulletObj::createAndInit(player->getRotation());
 	layerMissile->addChild(missile);
 
 	// Missile로 만든거
