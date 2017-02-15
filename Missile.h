@@ -15,9 +15,6 @@ protected:
 	std::string *image;
 	int imageNum;
 
-	// 공격력
-	float attack;
-
 	// 이동속도
 	float speed;
 
@@ -31,17 +28,20 @@ public:
 
 	static Missile* create(const std::string &filename);
 
+	void collisioned(int damage, Condition c);
+
 	// set ability
+	void setAttack(int atk);
+
+	void setSpeed(int s);
 	void setRange(int movelimit);
 	void setPenetCount(int count);
 	void setDivideCount(int count);
 
 	void setMissileTeam(int team);
 
-	int getAttack();
 	float getSpeed();
 
-	void getDamage(int enemyAttack);
 	void deathAnimation();
 	void destroy();
 

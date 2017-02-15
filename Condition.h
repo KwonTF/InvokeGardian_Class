@@ -6,6 +6,6 @@ class Condition
 protected:
 
 public:
-	Condition();
-	~Condition();
+	Condition() {};
+	~Condition() {};
 };
