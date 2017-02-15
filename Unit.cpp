@@ -1,14 +1,5 @@
 #include "Unit.h"
 
-Unit::Unit()
-{
-}
-
-
-Unit::~Unit()
-{
-}
-
 /*
 set unit image infomation
 filename : file root of unit's image
@@ -38,13 +29,24 @@ Unit* Unit::create(const std::string &filename)
 	return nullptr;
 }
 
+void Unit::collisioned(int damage, Condition c)
+{
+	hp_current -= damage;
+
+	if (hp_current > hp_max)
+		hp_current = hp_max;
+
+	if (hp_current <= 0)
+		destroy();
+}
+
 void Unit::setHP(float hp)
 {
 	hp_max = hp;
 	hp_current = hp;
 }
 
-void Unit::setAttack(float atk)
+void Unit::setAttack(int atk)
 {
 	attack = atk;
 }
@@ -67,21 +69,6 @@ int Unit::getAttack()
 float Unit::getSpeed()
 {
 	return speed_move;
-}
-
-/*
-unit get damaged by enemy
-if enemy's attack point is higher than this unit's HP, than unit destroy
-*/
-void Unit::getDamage(int enemyAttack)
-{
-	hp_current -= enemyAttack;
-
-	if (hp_current > hp_max)
-		hp_current = hp_max;
-
-	if (hp_current <= 0)
-		destroy();
 }
 
 // make Unit's death Animation

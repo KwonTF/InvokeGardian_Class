@@ -1,18 +1,18 @@
 #pragma once
 
-// »óÅÂÀÌ»ó Á¤º¸ Å¬·¡½º
+// ìƒíƒœì´ìƒ ì •ë³´ í´ë˜ìŠ¤
 enum class EffectCode
 {
 	Slow
 };
-static unsigned int additioalLevel = 7; //Ãß°¡È¿°ú°¡ ºÙ±â ½ÃÀÛÇÏ´Â ·¹º§
+static unsigned int additioalLevel = 7; //ì¶”ê°€íš¨ê³¼ê°€ ë¶™ê¸° ì‹œì‘í•˜ëŠ” ë ˆë²¨
 class Condition
 {
 protected:
-	virtual EffectCode getCode() = 0;//¹«½¼ È¿°úÀÎÁö¸¦ ¹İÈ¯ÇÑ´Ù
-	virtual float castEffect(float input) const = 0;//¼öÄ¡ º¯°æÇüÀÇ È¿°ú¸¦ ½ÇÇàÇÑ °á°ú ¹İÈ¯
-	unsigned int conditonLevel;//È¿°úÀÇ ·¹º§À» ¼³Á¤
-	virtual void enchance() = 0; //½ºÅ³ ·¹º§¾÷
+	virtual EffectCode getCode() = 0;//ë¬´ìŠ¨ íš¨ê³¼ì¸ì§€ë¥¼ ë°˜í™˜í•œë‹¤
+	virtual float castEffect(float input) const = 0;//ìˆ˜ì¹˜ ë³€ê²½í˜•ì˜ íš¨ê³¼ë¥¼ ì‹¤í–‰í•œ ê²°ê³¼ ë°˜í™˜
+	unsigned int conditonLevel;//íš¨ê³¼ì˜ ë ˆë²¨ì„ ì„¤ì •
+	virtual void enchance() = 0; //ìŠ¤í‚¬ ë ˆë²¨ì—…
 public:
 	Condition();
 	~Condition();

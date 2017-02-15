@@ -1,8 +1,10 @@
 #pragma once
 #include <vector>
 #include <string>
-#include "Collisioner.h"
+#include "Missile.h"
+#include "Unit.h"
 #include "Player.h"
 #include "BulletObj.h"
-#include "Missile.h"
-#define AnchorCenter Vec2(0.5, 0.5)
+const Vec2 AnchorCenter(0.5, 0.5);
+const unsigned int ROUNDTIME = 90;
+const unsigned int 45;

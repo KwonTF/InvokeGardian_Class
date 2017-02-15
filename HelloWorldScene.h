@@ -6,9 +6,24 @@
 
 class HelloWorld : public cocos2d::Layer
 {
+// for game algorithm
 private:
+	int roundNum;	// Round Number
 
+	// variable for gameTimer
+	int gameTime;	// Round / Set Up Time
+	bool isRound;	// check Round state
 
+	// variable for random mutate
+	int mutateArray[5];		// Array for saving mutate information
+	int mutateBasePer;		// Base Persent of mutate
+	int mutateRoundPer;		// Round Persent of mutate
+	int mutateRoundBonus;	// 
+
+	// variable for monster create
+	int monsterBaseAmount;		// 기본적으로 생성하는 몬스터 수
+	int monsterRoundAmount;		// 라운드에 생성되는 총 몬스터 수
+	int monsterPresentAmount;	// 현재 나온 몬스터 수
 public:
 	// start function
     static cocos2d::Scene* createScene();
@@ -25,8 +40,10 @@ public:
 
 	//게임 씬의 구현
 	void createGameScene();
+	void initGameVariable();			
 	//매 시간마다 스케줄링 되는 함수들
-	void onTimeUpdate(float input);
+	void onTimeUpdate(float input);		// 
+	void gameTimer(float dt);			// 타이머 관련 함수
 	//마우스 이벤트들
 	void onMouseDown(cocos2d::Event* event);
 	void onMouseMove(cocos2d::Event* event);
@@ -35,6 +52,12 @@ public:
 	//키보드 이벤트들
 	void onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event) {};
 	void onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event);
+
+	void roundChange();
+
+	// 객체 생성 함수
+	Unit* makeMonster();
+	Missile *makeMissile();
 	void fireMissile();
 private:
 	Layer* layerMissile;
@@ -42,6 +65,7 @@ private:
 	Sprite* statusBar;
 	LabelTTF* ttf1;
 	Vec2 mouse;
+	float cursorAngle;
 };
 //스프라이트의 앵커포인트를 가운데로 맞춰준다.
 void setSpriteAnchor_Center(Sprite *input);

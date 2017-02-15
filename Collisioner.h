@@ -1,5 +1,6 @@
 #pragma once
 #include "cocos2d.h"
+#include "Condition.h"
 
 USING_NS_CC;
 
@@ -10,18 +11,16 @@ creater : ZeroFe
 class Collisioner : public cocos2d::Sprite
 {
 protected:
-
+	int attack;						// attack damage for other
+	Condition deliveryCondition;	// attack Condition Error for other
 public:
-	Collisioner();
-	~Collisioner();
+	Collisioner() {};
+	~Collisioner() {};
 
 	static Collisioner* create(const std::string &filename);
 
-	virtual void setCondition();
-	virtual void getCondition();
+	Condition getCondition();
 	int getAttack();
-	virtual void getDamage(int damage);
-
-	virtual void collisoned(int damage);
+	virtual void collisioned(int damage, Condition c);
 };
 

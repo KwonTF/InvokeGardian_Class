@@ -14,12 +14,42 @@ Missile* Missile::create(const std::string &filename)
 	return missile;
 }
 
+// if Missile collisioned
+void Missile::collisioned(int damage, Condition c)
+{
+	penetrationCount--;
+
+	if (penetrationCount <= 0)
+		destroy();
+}
+
+void Missile::setSpeed(int s)
+{
+	speed = s;
+}
+
+void Missile::setAttack(int atk)
+{
+	attack = atk;
+}
+
 // set range of Missile
 void Missile::setRange(int movelimit)
 {
 	range = movelimit;
 
 	scheduleOnce(schedule_selector(Missile::removeMissile), (float)range / speed);
+}
+
+// set Penetration count of Missile
+void Missile::setPenetCount(int count)
+{
+	penetrationCount = count;
+}
+
+void Missile::setDivideCount(int count)
+{
+	divideCount = count;
 }
 
 /*
@@ -43,14 +73,10 @@ void Missile::setMissileTeam(int team)
 	}
 }
 
-void Missile::getDamage(int damage)
+float Missile::getSpeed()
 {
-	penetrationCount--;
-
-	if (penetrationCount <= 0)
-		destroy();
+	return speed;
 }
-
 
 /*
 remove Missile without death animation
@@ -64,7 +90,7 @@ void Missile::removeMissile(float f)
 	removeFromParent();
 }
 
-// make Missile's explosion
+// make Missile's death animation
 void Missile::deathAnimation()
 {
 	// Particle

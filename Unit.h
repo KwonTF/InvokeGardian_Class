@@ -19,28 +19,29 @@ protected:
 	float hp_max;
 
 	// 공격력
-	float attack;
+	int attack;
 
 	// 이동속도
 	float speed_move;
 
 public:
-	Unit();
-	~Unit();
+	Unit() {};
+	~Unit() {};
 
 	static Unit* create(const std::string &filename);
+
+	void collisioned(int damage, Condition c);
 
 	void setImageInfo(const std::string *filename, const int fileNum);
 
 	// set ability
 	void setHP(float hp);
-	void setAttack(float atk);
+	void setAttack(int atk);
 	void setSpeed(float spd);
 	float getHP();
 	int getAttack();
 	float getSpeed();
 
-	void getDamage(int enemyAttack);
 	void deathAnimation();
 	void destroy();
 };
