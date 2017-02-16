@@ -64,6 +64,11 @@ private:
 	Player* player;
 	Sprite* statusBar;
 	LabelTTF* ttf1;
+	
+	// 12시 방향 시간 표기
+	LabelTTF* roundViewer;
+	LabelTTF* timeViewer;
+
 	Vec2 mouse;
 	float cursorAngle;
 };

@@ -30,7 +30,7 @@ public:
 
 	static Unit* create(const std::string &filename);
 
-	void collisioned(int damage, Condition c);
+	void collisioned(int damage, Condition *c);
 
 	void setImageInfo(const std::string *filename, const int fileNum);
 

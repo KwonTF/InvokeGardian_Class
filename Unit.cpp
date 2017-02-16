@@ -29,7 +29,7 @@ Unit* Unit::create(const std::string &filename)
 	return nullptr;
 }
 
-void Unit::collisioned(int damage, Condition c)
+void Unit::collisioned(int damage, Condition *c)
 {
 	hp_current -= damage;
 
@@ -38,6 +38,8 @@ void Unit::collisioned(int damage, Condition c)
 
 	if (hp_current <= 0)
 		destroy();
+
+	log("Unit collisioned : hp - %d", hp_current);
 }
 
 void Unit::setHP(float hp)

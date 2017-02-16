@@ -70,7 +70,10 @@ bool HelloWorld::init()
 	layerMissile->setPosition(Vec2());
 	this->addChild(layerMissile);
 	createGameScene();
+	initGameVariable();
+	
 	this->schedule(schedule_selector(HelloWorld::onTimeUpdate));
+	this->schedule(schedule_selector(HelloWorld::gameTimer), 1000);
 
     return true;
 }
@@ -103,6 +106,16 @@ void HelloWorld::createGameScene()//권태형 제작
 	this->addChild(player);
 	this->addChild(ttf1);
 	this->addChild(statusBar);
+
+	roundViewer = LabelTTF::create("Default", "fonts/RoundGothic.ttf", 30);
+	roundViewer->setPosition(480, 600);
+	roundViewer->setAnchorPoint(AnchorCenter);
+	this->addChild(roundViewer);
+
+	timeViewer = LabelTTF::create("Default", "fonts/RoundGothic.ttf", 30);
+	timeViewer->setPosition(480, 550);
+	timeViewer->setAnchorPoint(AnchorCenter);
+	this->addChild(roundViewer);
 }
 /*
 게임 내 변수 초기화 함수
@@ -115,6 +128,8 @@ void HelloWorld::initGameVariable()
 
 	gameTime = ROUNDTIME;
 	isRound = true;
+	roundViewer->setString("Round");
+	timeViewer->setString(std::to_string(gameTime));
 
 	mutateBasePer = 1;
 
@@ -134,6 +149,7 @@ void HelloWorld::gameTimer(float dt)
 {
 	// 라운드/셋업 변환 부분
 	if (gameTime <= 0)
+	{
 		if (isRound != 0)
 		{
 			roundNum++;
@@ -146,13 +162,14 @@ void HelloWorld::gameTimer(float dt)
 			isRound = false;
 			gameTime = SETUPTIME;
 		}
+	}
 
 	// 시간 감소 부분
 	gameTime--;
 
 	// 몬스터 생성 부분(임시)
-
-	//timeWriter->setLabel(tostring(gameTime));
+	cocos2d::log("gameTimer");
+	timeViewer->setString(std::to_string(gameTime));
 }
 
 void HelloWorld::onMouseDown(cocos2d::Event * event)
@@ -160,6 +177,9 @@ void HelloWorld::onMouseDown(cocos2d::Event * event)
 	auto mousePosition = static_cast<EventMouse*>(event)->getLocation();
 	std::string output = "X: " + std::to_string(static_cast<int>(ceil(mousePosition.x))) + " Y: " + std::to_string(static_cast<int>(ceil(mousePosition.y)));
 	ttf1->setString(output);
+
+	auto monster = makeMonster();
+	addChild(monster);
 }
 
 void HelloWorld::onMouseMove(cocos2d::Event * event)
@@ -196,14 +216,19 @@ void HelloWorld::roundChange()
 // create by ZeroFe
 Unit* HelloWorld::makeMonster()
 {
-	Unit* monster = Unit::create("Unit/Player.png");
+	Unit* monster = Unit::create("Unit/Hostile.png");
 
 	auto material = PhysicsMaterial(0.1f, 1.0f, 0.5f);
 
 	auto body = PhysicsBody::createCircle(monster->getContentSize().width / 2, material);
 
 	monster->setPhysicsBody(body);
-	monster->setPosition(Vec2(800, rand()));
+
+	monster->getPhysicsBody()->setCategoryBitmask(0x0C0);
+	monster->getPhysicsBody()->setContactTestBitmask(0x30C);
+	monster->getPhysicsBody()->setCollisionBitmask(0x00C);
+
+	monster->setPosition(Vec2(800, rand() % 600));
 	monster->setTag(10);
 
 	monster->setHP(10);
@@ -226,6 +251,7 @@ Missile* HelloWorld::makeMissile()
 	missile->getPhysicsBody()->setVelocity(Vec2(0, missile->getSpeed()));
 
 	// 내부 값 설정
+	missile->setAttack(3);
 	missile->setSpeed(300.0);
 	missile->setPenetCount(1);
 	missile->setRange(600);
