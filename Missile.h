@@ -28,7 +28,7 @@ public:
 
 	static Missile* create(const std::string &filename);
 
-	void collisioned(int damage, Condition c);
+	void collisioned(int damage, Condition *c);
 
 	// set ability
 	void setAttack(int atk);
