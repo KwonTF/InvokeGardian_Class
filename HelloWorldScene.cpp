@@ -66,14 +66,18 @@ bool HelloWorld::init()
 
 	//미사일 레이어들?
 	layerMissile = Layer::create();
+	layerEnemy = Layer::create();
 	layerMissile->setAnchorPoint(Vec2(1, 1));
 	layerMissile->setPosition(Vec2());
+	layerEnemy->setAnchorPoint(AnchorCenter);
+	layerEnemy->setPosition(Vec2());
 	this->addChild(layerMissile);
+	this->addChild(layerEnemy);
 	createGameScene();
 	initGameVariable();
 	
 	this->schedule(schedule_selector(HelloWorld::onTimeUpdate));
-	this->schedule(schedule_selector(HelloWorld::gameTimer), 1000);
+	this->schedule(schedule_selector(HelloWorld::gameTimer), 1.0f);
 
     return true;
 }
@@ -97,7 +101,10 @@ void HelloWorld::createGameScene()//권태형 제작
 	CCSize _winSize = CCDirector::sharedDirector()->getWinSize();
 	player = Player::createAndInit();
 	statusBar = CCSprite::create("UI/MainStatusBar.png");
+	basement = Basement::createAndInit();
 	setSpriteAnchor_Center(statusBar);
+	basement->setAnchorPoint(AnchorCenter);
+	basement->setPosition(_winSize.width / 2, _winSize.height / 2);
 	player->setPosition(_winSize.width / 2 - 200, _winSize.height / 2 - 200);
 	statusBar->setPosition(_winSize.width / 2, _winSize.height * 1 / 20);
 	ttf1 = CCLabelTTF::create("Default", "fonts/RoundGothic.ttf", 30);
@@ -106,6 +113,7 @@ void HelloWorld::createGameScene()//권태형 제작
 	this->addChild(player);
 	this->addChild(ttf1);
 	this->addChild(statusBar);
+	this->addChild(basement);
 
 	roundViewer = LabelTTF::create("Default", "fonts/RoundGothic.ttf", 30);
 	roundViewer->setPosition(480, 600);
@@ -115,7 +123,7 @@ void HelloWorld::createGameScene()//권태형 제작
 	timeViewer = LabelTTF::create("Default", "fonts/RoundGothic.ttf", 30);
 	timeViewer->setPosition(480, 550);
 	timeViewer->setAnchorPoint(AnchorCenter);
-	this->addChild(roundViewer);
+	this->addChild(timeViewer);
 }
 /*
 게임 내 변수 초기화 함수
@@ -128,13 +136,21 @@ void HelloWorld::initGameVariable()
 
 	gameTime = ROUNDTIME;
 	isRound = true;
-	roundViewer->setString("Round");
+	roundViewer->setString("Round: " + std::to_string(roundNum));
 	timeViewer->setString(std::to_string(gameTime));
 
 	mutateBasePer = 1;
-
 	monsterBaseAmount = 16;
 	monsterRoundAmount = monsterBaseAmount + 4 * roundNum;
+
+	std::list<Vec2> positonTemp;
+	for (int i = 0; i < monsterRoundAmount; i++) {
+		positonTemp.push_back(Vec2(rand() % 2, rand() % 640));
+	}
+	while (positonTemp.size() != 0) {
+		createEnemy(positonTemp.front());
+		positonTemp.pop_front();
+	}
 }
 
 void HelloWorld::onTimeUpdate(float input)//권태형 제작
@@ -143,6 +159,40 @@ void HelloWorld::onTimeUpdate(float input)//권태형 제작
 	cursorAngle = calculateDegree(playerPos, mouse);
 	//cocos2d::log("%f", cursorAngle);
 	player->setRotation(90 - cursorAngle);
+	//BulletObj 충돌판정
+	for (int i = 0; i < missileArray.size(); i++) {
+		//총알이 화면을 벗어날시 삭제
+		/*if(missileArray.at(i)->getPositionX() < 0 || missileArray.at(i)->getPositionX() > 960|| missileArray.at(i)->getPositionY()<0 || missileArray.at(i)->getPositionY()>640){
+			layerMissile->removeChild(missileArray.at(i));
+			missileArray.eraseObject(missileArray.at(i));
+			ttf1->setString("Deleted");
+		}
+		else {*/
+			Rect bulletarea = missileArray.at(i)->getBoundingBox();
+			for (int j = 0; j < enemyArray.size(); j++) {
+				Rect hostilearea = enemyArray.at(j)->getBoundingBox();
+				//충돌시 처리
+				if (hostilearea.intersectsRect(bulletarea)) {
+					enemyArray.at(j)->setHP(enemyArray.at(j)->getHP() - 50);
+					if (enemyArray.at(j)->getHP() <= 0) {
+						ttf1->setString("Kill");
+						layerEnemy->removeChild(enemyArray.at(j));
+						enemyArray.eraseObject(enemyArray.at(j));
+					}
+					layerMissile->removeChild(missileArray.at(i));
+					missileArray.eraseObject(missileArray.at(i));
+					break;
+				}
+			}
+		// }
+	}
+	if (basement->getHP() == 0) {
+		basement->setOpacity(0);
+		roundViewer->setString("GameOver");
+	}
+	if (enemyArray.size() == 0) {
+		roundViewer->setString("Stage Clear!");
+	}
 }
 
 void HelloWorld::gameTimer(float dt)
@@ -177,9 +227,9 @@ void HelloWorld::onMouseDown(cocos2d::Event * event)
 	auto mousePosition = static_cast<EventMouse*>(event)->getLocation();
 	std::string output = "X: " + std::to_string(static_cast<int>(ceil(mousePosition.x))) + " Y: " + std::to_string(static_cast<int>(ceil(mousePosition.y)));
 	ttf1->setString(output);
-
-	auto monster = makeMonster();
-	addChild(monster);
+	player->gotoPoint(mousePosition, calculateDegree(player->getPosition(),mousePosition));
+	//auto monster = makeMonster();
+	//addChild(monster);
 }
 
 void HelloWorld::onMouseMove(cocos2d::Event * event)
@@ -237,7 +287,7 @@ Unit* HelloWorld::makeMonster()
 	return monster;
 }
 
-Missile* HelloWorld::makeMissile()
+/*Missile* HelloWorld::makeMissile()
 {
 	Missile* missile = Missile::create("Others/Bullet.PNG");
 
@@ -258,22 +308,39 @@ Missile* HelloWorld::makeMissile()
 
 	return missile;
 }
-
+*/
 void HelloWorld::fireMissile()
 {
-	/* BulletObj로 만든거
-	//BulletObj * bullet = BulletObj::createAndInit(player->getRotation());
-	//bullet->setPosition(player->getPosition());
-	//bullet->setRotation(player->getRotation());
+	// BulletObj로 만든거.
+	BulletObj * bullet = BulletObj::createAndInit(player->getRotation());
+	bullet->setPosition(player->getPosition());
+	bullet->setRotation(player->getRotation());
+	layerMissile->addChild(bullet);
+	missileArray.pushBack(bullet);
 	//BulletObj * missile = BulletObj::createAndInit(player->getRotation());
-	//layerMissile->addChild(bullet);*/
 	// Missile로 만든거
-	auto missile = HelloWorld::makeMissile();
+	/*auto missile = HelloWorld::makeMissile();
 	missile->getPhysicsBody()->setVelocity(Vec2(400 * cos(cursorAngle * M_PI / 180), 400 * sin(cursorAngle * M_PI / 180)));
 	
 	missile->setMissileTeam(0);
 
-	layerMissile->addChild(missile);
+	layerMissile->addChild(missile);*/
+}
+
+void HelloWorld::createEnemy(Vec2 position)
+{
+	Enemy* enemy = Enemy::createAndInit();
+	if (position.x == 0) {
+		enemy->setPositionX(0);
+	}
+	else {
+		enemy->setPositionX(960);
+	}
+	enemy->setPositionY(position.y);
+	enemy->setAnchorPoint(AnchorCenter);
+	enemy->setTarget(basement);
+	layerEnemy->addChild(enemy);
+	enemyArray.pushBack(enemy);
 }
 
 void setSpriteAnchor_Center(CCSprite * input)//권태형 제작
@@ -281,7 +348,7 @@ void setSpriteAnchor_Center(CCSprite * input)//권태형 제작
 	input->setAnchorPoint(Vec2(0.5, 0.5));
 }
 
-float calculateDegree(Vec2 & current, Vec2 & point)
+float calculateDegree(Vec2 current, Vec2 point)
 {
 	float diffX = point.x - current.x;
 	float diffY = point.y - current.y;

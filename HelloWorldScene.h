@@ -59,22 +59,25 @@ public:
 	Unit* makeMonster();
 	Missile *makeMissile();
 	void fireMissile();
+	void createEnemy(Vec2 position);
 private:
 	Layer* layerMissile;
 	Player* player;
 	Sprite* statusBar;
 	LabelTTF* ttf1;
-	
+	Basement* basement;
 	// 12시 방향 시간 표기
 	LabelTTF* roundViewer;
 	LabelTTF* timeViewer;
-
+	Layer* layerEnemy;
+	Vector<BulletObj*> missileArray;
+	Vector<Enemy*> enemyArray;
 	Vec2 mouse;
 	float cursorAngle;
 };
 //스프라이트의 앵커포인트를 가운데로 맞춰준다.
 void setSpriteAnchor_Center(Sprite *input);
 //마우스 좌표와 특정 시점과의 각도를 계산
-float calculateDegree(Vec2 &current, Vec2 &point);
+float calculateDegree(Vec2 current, Vec2 point);
 
 #endif // __HELLOWORLD_SCENE_H__
