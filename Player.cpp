@@ -22,7 +22,7 @@ void Player::gotoPoint(Vec2 point, float angle)
 	unscheduleAllSelectors();
 	DestPoint = point;
 	movePointX = sinf(CC_DEGREES_TO_RADIANS(90 - angle));
-	movePointY = cosf(CC_DEGREES_TO_RADIANS(angle));
+	movePointY = cosf(CC_DEGREES_TO_RADIANS(90- angle));
 	schedule(schedule_selector(Player::moveBySpeed));
 }
 

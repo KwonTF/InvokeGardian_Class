@@ -227,6 +227,7 @@ void HelloWorld::onMouseDown(cocos2d::Event * event)
 	auto mousePosition = static_cast<EventMouse*>(event)->getLocation();
 	std::string output = "X: " + std::to_string(static_cast<int>(ceil(mousePosition.x))) + " Y: " + std::to_string(static_cast<int>(ceil(mousePosition.y)));
 	ttf1->setString(output);
+	mousePosition.y = 640 - mousePosition.y;
 	player->gotoPoint(mousePosition, calculateDegree(player->getPosition(),mousePosition));
 	//auto monster = makeMonster();
 	//addChild(monster);
