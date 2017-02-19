@@ -6,6 +6,7 @@ USING_NS_CC;
 
 /*
 base class of game unit
+create by ZeroFe
 */
 class Unit : public Collisioner
 {
@@ -15,11 +16,8 @@ protected:
 	int imageNum;
 
 	// 체력
-	float hp_current;
-	float hp_max;
-
-	// 공격력
-	int attack;
+	int hpCurrent;
+	int hpMax;
 
 	// 이동속도
 	float speed_move;
@@ -30,18 +28,20 @@ public:
 
 	static Unit* create(const std::string &filename);
 
-	void collisioned(int damage, Condition *c);
+	virtual void collisioned(int damage, Condition *c);
 
 	void setImageInfo(const std::string *filename, const int fileNum);
 
 	// set ability
-	void setHP(float hp);
+	void setHP(int hp);
 	void setAttack(int atk);
 	void setSpeed(float spd);
-	float getHP();
-	int getAttack();
+
+	// get ability
+	int getHP();
 	float getSpeed();
 
+	// remove object
 	void deathAnimation();
 	void destroy();
 };

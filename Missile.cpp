@@ -11,7 +11,7 @@ Missile* Missile::create(const std::string &filename)
 	}
 
 	CC_SAFE_DELETE(missile);
-	return missile;
+	return nullptr;
 }
 
 // if Missile collisioned
@@ -22,7 +22,7 @@ void Missile::collisioned(int damage, Condition *c)
 	if (penetrationCount <= 0)
 		destroy();
 
-	log("Missile collisioned");
+	log("Missile collisioned : %d", penetrationCount);
 }
 
 void Missile::setSpeed(int s)

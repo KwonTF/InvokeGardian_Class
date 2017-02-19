@@ -17,10 +17,8 @@ public:
 	Collisioner() {};
 	virtual ~Collisioner();
 
-	static Collisioner* create(const std::string &filename);
-
 	Condition *getCondition();
 	int getAttack();
-	virtual void collisioned(int damage, Condition *c);
+	virtual void collisioned(int damage, Condition *c) = 0;
 };
 

@@ -73,7 +73,7 @@ bool HelloWorld::init()
 	initGameVariable();
 	
 	this->schedule(schedule_selector(HelloWorld::onTimeUpdate));
-	this->schedule(schedule_selector(HelloWorld::gameTimer), 1000);
+	this->schedule(schedule_selector(HelloWorld::gameTimer), 1);
 
     return true;
 }
@@ -83,8 +83,6 @@ bool HelloWorld::onContactBegin(PhysicsContact& contact)
 {
 	auto sp1 = (Collisioner*)contact.getShapeA()->getBody()->getNode();
 	auto sp2 = (Collisioner*)contact.getShapeB()->getBody()->getNode();
-	int tag1 = sp1->getTag();
-	int tag2 = sp2->getTag();
 	sp1->collisioned(sp2->getAttack(), sp2->getCondition());
 	sp2->collisioned(sp1->getAttack(), sp1->getCondition());
 	//log("%d : %d  %d : %d", tag1, sp1->getHP(), tag2, sp2->getHP());
@@ -94,13 +92,13 @@ bool HelloWorld::onContactBegin(PhysicsContact& contact)
 
 void HelloWorld::createGameScene()//권태형 제작
 {
-	CCSize _winSize = CCDirector::sharedDirector()->getWinSize();
+	Size _winSize = Director::sharedDirector()->getWinSize();
 	player = Player::createAndInit();
-	statusBar = CCSprite::create("UI/MainStatusBar.png");
+	statusBar = Sprite::create("UI/MainStatusBar.png");
 	setSpriteAnchor_Center(statusBar);
 	player->setPosition(_winSize.width / 2 - 200, _winSize.height / 2 - 200);
 	statusBar->setPosition(_winSize.width / 2, _winSize.height * 1 / 20);
-	ttf1 = CCLabelTTF::create("Default", "fonts/RoundGothic.ttf", 30);
+	ttf1 = LabelTTF::create("Default", "fonts/RoundGothic.ttf", 30);
 	ttf1->setPosition(100, 100);
 	ttf1->setAnchorPoint(AnchorCenter);
 	this->addChild(player);
@@ -115,7 +113,7 @@ void HelloWorld::createGameScene()//권태형 제작
 	timeViewer = LabelTTF::create("Default", "fonts/RoundGothic.ttf", 30);
 	timeViewer->setPosition(480, 550);
 	timeViewer->setAnchorPoint(AnchorCenter);
-	this->addChild(roundViewer);
+	this->addChild(timeViewer);
 }
 /*
 게임 내 변수 초기화 함수
@@ -166,10 +164,9 @@ void HelloWorld::gameTimer(float dt)
 
 	// 시간 감소 부분
 	gameTime--;
+	timeViewer->setString(std::to_string(gameTime));
 
 	// 몬스터 생성 부분(임시)
-	cocos2d::log("gameTimer");
-	timeViewer->setString(std::to_string(gameTime));
 }
 
 void HelloWorld::onMouseDown(cocos2d::Event * event)
@@ -229,10 +226,11 @@ Unit* HelloWorld::makeMonster()
 	monster->getPhysicsBody()->setCollisionBitmask(0x00C);
 
 	monster->setPosition(Vec2(800, rand() % 600));
-	monster->setTag(10);
 
 	monster->setHP(10);
 	monster->setAttack(5);
+
+	cocos2d::log("monster make : %d %d", monster->getHP(), monster->getAttack());
 
 	return monster;
 }
@@ -261,22 +259,23 @@ Missile* HelloWorld::makeMissile()
 
 void HelloWorld::fireMissile()
 {
-	/* BulletObj로 만든거
-	//BulletObj * bullet = BulletObj::createAndInit(player->getRotation());
-	//bullet->setPosition(player->getPosition());
-	//bullet->setRotation(player->getRotation());
+	// BulletObj로 만든거
+	BulletObj * missile = BulletObj::createAndInit(player->getRotation());
+	missile->setPosition(player->getPosition());
+	missile->setRotation(player->getRotation());
 	//BulletObj * missile = BulletObj::createAndInit(player->getRotation());
-	//layerMissile->addChild(bullet);*/
-	// Missile로 만든거
-	auto missile = HelloWorld::makeMissile();
-	missile->getPhysicsBody()->setVelocity(Vec2(400 * cos(cursorAngle * M_PI / 180), 400 * sin(cursorAngle * M_PI / 180)));
-	
-	missile->setMissileTeam(0);
-
 	layerMissile->addChild(missile);
+
+	// Missile로 만든거
+	auto bullet = HelloWorld::makeMissile();
+	bullet->getPhysicsBody()->setVelocity(Vec2(400 * cos(cursorAngle * M_PI / 180), 400 * sin(cursorAngle * M_PI / 180)));
+	
+	bullet->setMissileTeam(0);
+
+	layerMissile->addChild(bullet);
 }
 
-void setSpriteAnchor_Center(CCSprite * input)//권태형 제작
+void setSpriteAnchor_Center(Sprite * input)//권태형 제작
 {
 	input->setAnchorPoint(Vec2(0.5, 0.5));
 }

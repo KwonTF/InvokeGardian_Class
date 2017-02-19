@@ -18,8 +18,8 @@ protected:
 	// 이동속도
 	float speed;
 
+	int penetrationCount;	// 관통 횟수
 	int range;				// 사거리 제한
-	int penetrationCount;	// 관통 가능한 유닛 수
 	int divideCount;		// 분열 수
 
 public:
@@ -28,11 +28,10 @@ public:
 
 	static Missile* create(const std::string &filename);
 
-	void collisioned(int damage, Condition *c);
+	virtual void collisioned(int damage, Condition *c);
 
 	// set ability
 	void setAttack(int atk);
-
 	void setSpeed(int s);
 	void setRange(int movelimit);
 	void setPenetCount(int count);
