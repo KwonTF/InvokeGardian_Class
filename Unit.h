@@ -18,12 +18,13 @@ protected:
 	// 체력
 	int hpCurrent;
 	int hpMax;
+	int hpRegen;
 
 	// 이동속도
-	float speed_move;
+	float moveSpeed;
 
 public:
-	Unit() {};
+	Unit();
 	~Unit() {};
 
 	static Unit* create(const std::string &filename);
@@ -34,6 +35,7 @@ public:
 
 	// set ability
 	void setHP(int hp);
+	void setHPRegen(int regen);
 	void setAttack(int atk);
 	void setSpeed(float spd);
 
@@ -41,8 +43,10 @@ public:
 	int getHP();
 	float getSpeed();
 
+	void regeneration(float dt);
+
 	// remove object
 	void deathAnimation();
-	void destroy();
+	virtual void destroy();
 };
 

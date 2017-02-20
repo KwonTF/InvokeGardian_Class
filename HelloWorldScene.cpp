@@ -71,6 +71,11 @@ bool HelloWorld::init()
 	this->addChild(layerMissile);
 	createGameScene();
 	initGameVariable();
+	makeTower();
+
+#ifdef __DEBUG_GAME_VARIABLE__
+	setMonsterAmountViewer();
+#endif // __DEBUG_GAME_VARIABLE__
 	
 	this->schedule(schedule_selector(HelloWorld::onTimeUpdate));
 	this->schedule(schedule_selector(HelloWorld::gameTimer), 1);
@@ -105,7 +110,7 @@ void HelloWorld::createGameScene()//권태형 제작
 	this->addChild(ttf1);
 	this->addChild(statusBar);
 
-	roundViewer = LabelTTF::create("Default", "fonts/RoundGothic.ttf", 30);
+	roundViewer = LabelTTF::create("Round", "fonts/RoundGothic.ttf", 30);
 	roundViewer->setPosition(480, 600);
 	roundViewer->setAnchorPoint(AnchorCenter);
 	this->addChild(roundViewer);
@@ -133,6 +138,38 @@ void HelloWorld::initGameVariable()
 
 	monsterBaseAmount = 16;
 	monsterRoundAmount = monsterBaseAmount + 4 * roundNum;
+}
+
+#ifdef __DEBUG_GAME_VARIABLE__
+void HelloWorld::setMonsterAmountViewer()
+{
+	monsterAmountViewer = LabelTTF::create("Round", "fonts/RoundGothic.ttf", 30);
+	monsterAmountViewer->setPosition(480, 600);
+	monsterAmountViewer->setAnchorPoint(AnchorCenter);
+	this->addChild(monsterAmountViewer);
+}
+#endif // __DEBUG_GAME_VARIABLE__
+
+void HelloWorld::makeTower()
+{
+	tower = Tower::create("Unit/Hostile.png");
+
+	auto material = PhysicsMaterial(0.1f, 1.0f, 0.5f);
+	auto body = PhysicsBody::createBox(tower->getContentSize(), material);
+	tower->setPhysicsBody(body);
+
+	tower->getPhysicsBody()->setCategoryBitmask(0x0C0);
+	tower->getPhysicsBody()->setContactTestBitmask(0x30C);
+	tower->getPhysicsBody()->setCollisionBitmask(0x00C);
+
+	tower->setAnchorPoint(AnchorCenter);
+	tower->setPosition(Vec2(480, 320));
+
+	tower->setTowerBase();
+
+	// hpBar 넣을 것
+
+	layerMissile->addChild(tower);
 }
 
 void HelloWorld::onTimeUpdate(float input)//권태형 제작
@@ -211,13 +248,13 @@ void HelloWorld::roundChange()
 
 // 실험용 몬스터 생성
 // create by ZeroFe
-Unit* HelloWorld::makeMonster()
+Enemy* HelloWorld::makeMonster()
 {
-	Unit* monster = Unit::create("Unit/Hostile.png");
+	Enemy* monster = Enemy::create("Unit/Hostile.png");
 
 	auto material = PhysicsMaterial(0.1f, 1.0f, 0.5f);
 
-	auto body = PhysicsBody::createCircle(monster->getContentSize().width / 2, material);
+	auto body = PhysicsBody::createBox(monster->getContentSize(), material);
 
 	monster->setPhysicsBody(body);
 
@@ -228,7 +265,9 @@ Unit* HelloWorld::makeMonster()
 	monster->setPosition(Vec2(800, rand() % 600));
 
 	monster->setHP(10);
+	monster->setHPRegen(1);
 	monster->setAttack(5);
+	monster->schedule(schedule_selector(Unit::regeneration), 1.0f);
 
 	cocos2d::log("monster make : %d %d", monster->getHP(), monster->getAttack());
 

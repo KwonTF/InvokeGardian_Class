@@ -1,6 +1,8 @@
 #ifndef __HELLOWORLD_SCENE_H__
 #define __HELLOWORLD_SCENE_H__
 
+#define __DEBUG_GAME_VARIABLE__
+
 #include "cocos2d.h"
 #include "MainHeader.h"
 
@@ -40,7 +42,8 @@ public:
 
 	//게임 씬의 구현
 	void createGameScene();
-	void initGameVariable();			
+	void initGameVariable();
+	void makeTower();
 	//매 시간마다 스케줄링 되는 함수들
 	void onTimeUpdate(float input);		// 
 	void gameTimer(float dt);			// 타이머 관련 함수
@@ -56,7 +59,7 @@ public:
 	void roundChange();
 
 	// 객체 생성 함수
-	Unit* makeMonster();
+	Enemy* makeMonster();
 	Missile *makeMissile();
 	void fireMissile();
 private:
@@ -64,6 +67,8 @@ private:
 	Player* player;
 	Sprite* statusBar;
 	LabelTTF* ttf1;
+
+	Tower* tower;
 	
 	// 12시 방향 시간 표기
 	LabelTTF* roundViewer;
@@ -71,6 +76,14 @@ private:
 
 	Vec2 mouse;
 	float cursorAngle;
+
+#ifdef __DEBUG_GAME_VARIABLE__
+private:
+	LabelTTF* monsterAmountViewer;
+	LabelTTF* currentMonsterViewer;
+public:
+	void setMonsterAmountViewer();
+#endif // __DEBUG_GAME_VARIABLE__
 };
 //스프라이트의 앵커포인트를 가운데로 맞춰준다.
 void setSpriteAnchor_Center(Sprite *input);

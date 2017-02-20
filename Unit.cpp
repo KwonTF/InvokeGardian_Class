@@ -1,5 +1,14 @@
 #include "Unit.h"
 
+Unit::Unit()
+{
+	hpCurrent = 0;
+	hpMax = 0;
+	hpRegen = 0;
+
+	moveSpeed = 0;
+}
+
 /*
 set unit image infomation
 filename : file root of unit's image
@@ -48,6 +57,11 @@ void Unit::setHP(int HP)
 	hpMax = HP;
 }
 
+void Unit::setHPRegen(int regen)
+{
+	hpRegen = regen;
+}
+
 void Unit::setAttack(int atk)
 {
 	attack = atk;
@@ -55,7 +69,7 @@ void Unit::setAttack(int atk)
 
 void Unit::setSpeed(float speed)
 {
-	speed_move = speed;
+	moveSpeed = speed;
 }
 
 int Unit::getHP()
@@ -65,7 +79,19 @@ int Unit::getHP()
 
 float Unit::getSpeed()
 {
-	return speed_move;
+	return moveSpeed;
+}
+
+void Unit::regeneration(float dt)
+{
+	if (hpMax <= hpCurrent + hpRegen)
+	{
+		hpCurrent = hpMax;
+	}
+	else
+	{
+		hpCurrent += hpRegen;
+	}
 }
 
 // make Unit's death Animation

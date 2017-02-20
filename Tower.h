@@ -6,8 +6,7 @@ class Tower : public Unit
 {
 // 변수 목록
 private:
-	// 구조물 기반 부분
-	int hpRegen;
+	// 구조물 기반 추가 부분
 	int maxWeight;
 	int turretArea;
 
@@ -20,6 +19,9 @@ public:
 	~Tower() {};
 
 	static Tower* create(const std::string &filename);
+
+	void setTowerBase();
+	
 };
 
 class Turret
