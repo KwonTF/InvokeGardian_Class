@@ -11,8 +11,9 @@ Enemy * Enemy::createAndInit()
 	enemy->setHP(100);
 	return enemy;
 }
-Enemy::Enemy():attackCoolTime(180), currentCoolTime(0)
+Enemy::Enemy() :attackCoolTime(180), currentCoolTime(0), moveSpeed(50), slowactive(false), slowTime(0), slowRate(1.0)
 {
+	schedule(schedule_selector(Enemy::CalculateEffect), 1.0f);
 }
 void Enemy::setHP(int input)
 {
@@ -21,6 +22,31 @@ void Enemy::setHP(int input)
 int Enemy::getHP()
 {
 	return HP;
+}
+void Enemy::getCondition(Condition * input)
+{
+	conditionArray.push_back(input);
+}
+void Enemy::CalculateEffect(float input)
+{
+	std::vector<Condition*>::iterator iter;
+	for (iter = conditionArray.begin(); iter != conditionArray.end();iter++) {
+		switch ((*iter)->getCode())
+		{
+		case EffectCode::Slow:
+			if ((*iter)->getTime() == 0) {
+				this->speed = 50; 
+				//conditionArray.erase(iter);
+			}
+			else {
+				(*iter)->ReduceTime();
+				this->speed = 10;
+			}
+			break;
+		default:
+			break;
+		}
+	}
 }
 void Enemy::update(float input)
 {
@@ -32,8 +58,8 @@ void Enemy::update(float input)
 		}
 	}
 	else {
-		this->setPositionX(this->getPositionX() + (x * 50 * input));
-		this->setPositionY(this->getPositionY() + (y * 50 * input));
+		this->setPositionX(this->getPositionX() + (x * moveSpeed * input));
+		this->setPositionY(this->getPositionY() + (y * moveSpeed * input));
 	}
 }
 void Enemy::setDest(Vec2 destination)

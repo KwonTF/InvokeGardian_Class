@@ -11,9 +11,13 @@ public:
 	BulletObj();
 	~BulletObj();
 	void update(float input);
+	void pushEffects(Condition* input);
 	static BulletObj* createAndInit(float rotation);
+	int getArraySize();
+	Condition* sendCondition(int i);
 private:
 	float x, y;
+	std::vector<Condition*> EffectArray;
 };
 #endif // BULLET_OBJ_H
 

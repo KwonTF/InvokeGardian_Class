@@ -3,7 +3,7 @@
 // 상태이상 정보 클래스
 enum class EffectCode
 {
-	Slow
+	Slow, Unknown
 };
 static unsigned int additioalLevel = 7; //추가효과가 붙기 시작하는 레벨
 class Condition

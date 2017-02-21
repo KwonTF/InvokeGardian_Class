@@ -63,7 +63,9 @@ bool HelloWorld::init()
 	keyBoard->onKeyPressed = CC_CALLBACK_2(HelloWorld::onKeyPressed, this);
 	keyBoard->onKeyReleased = CC_CALLBACK_2(HelloWorld::onKeyReleased, this);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(keyBoard, this);
-
+	for (int i = 0; i < 6; i++) {
+		skillLevel[i] = 1;
+	}
 	//미사일 레이어들?
 	layerMissile = Layer::create();
 	layerEnemy = Layer::create();
@@ -119,11 +121,17 @@ void HelloWorld::createGameScene()//권태형 제작
 	roundViewer->setPosition(480, 600);
 	roundViewer->setAnchorPoint(AnchorCenter);
 	this->addChild(roundViewer);
-
+	
 	timeViewer = LabelTTF::create("Default", "fonts/RoundGothic.ttf", 30);
 	timeViewer->setPosition(480, 550);
 	timeViewer->setAnchorPoint(AnchorCenter);
 	this->addChild(timeViewer);
+
+	skillLevelViewer = LabelTTF::create("Default", "fonts/RoundGothic.ttf", 30);
+	skillLevelViewer->setPosition(_winSize.width / 2, _winSize.height * 1 / 4);
+	skillLevelViewer->setAnchorPoint(AnchorCenter);
+	skillLevelViewer->setString("Slow: " + std::to_string(skillLevel[1]));
+	this->addChild(skillLevelViewer);
 }
 /*
 게임 내 변수 초기화 함수
@@ -174,6 +182,9 @@ void HelloWorld::onTimeUpdate(float input)//권태형 제작
 				//충돌시 처리
 				if (hostilearea.intersectsRect(bulletarea)) {
 					enemyArray.at(j)->setHP(enemyArray.at(j)->getHP() - 50);
+					for (int k = 0; k < missileArray.at(i)->getArraySize(); k++) {
+						enemyArray.at(j)->getCondition(missileArray.at(i)->sendCondition(k));
+					}
 					if (enemyArray.at(j)->getHP() <= 0) {
 						ttf1->setString("Kill");
 						layerEnemy->removeChild(enemyArray.at(j));
@@ -246,6 +257,10 @@ void HelloWorld::onKeyPressed(EventKeyboard::KeyCode keyCode, Event * event)
 	{
 	case EventKeyboard::KeyCode::KEY_SPACE:
 		fireMissile();
+		tempVector.clear();
+		break;
+	case EventKeyboard::KeyCode::KEY_Q:
+		tempVector.push_back(new Slow());
 		break;
 	default:
 		break;
@@ -318,6 +333,9 @@ void HelloWorld::fireMissile()
 	bullet->setRotation(player->getRotation());
 	layerMissile->addChild(bullet);
 	missileArray.pushBack(bullet);
+	for (int i = 0; i < tempVector.size(); i++) {
+		bullet->pushEffects(tempVector.at(i));
+	}
 	//BulletObj * missile = BulletObj::createAndInit(player->getRotation());
 	// Missile로 만든거
 	/*auto missile = HelloWorld::makeMissile();

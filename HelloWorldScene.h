@@ -74,6 +74,9 @@ private:
 	Vector<Enemy*> enemyArray;
 	Vec2 mouse;
 	float cursorAngle;
+	std::vector<Condition*> tempVector;
+	int skillLevel[6];
+	LabelTTF* skillLevelViewer;
 };
 //스프라이트의 앵커포인트를 가운데로 맞춰준다.
 void setSpriteAnchor_Center(Sprite *input);
