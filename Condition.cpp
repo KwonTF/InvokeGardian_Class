@@ -1,5 +1,20 @@
 #include "Condition.h"
 
+EffectCode Condition::getCode()
+{
+	return EffectCode::Unknown;
+}
+
+float Condition::castEffect(float input) const
+{
+	return input;
+}
+
+void Condition::enchance()
+{
+	conditonLevel++;
+}
+
 Condition::Condition() : conditonLevel(0) {}
 Slow::Slow() : Time(5.0), code(EffectCode::Slow), deffenceReduceRate(0.7), speedReduceRate(0.7){}
 
