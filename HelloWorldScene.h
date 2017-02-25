@@ -75,6 +75,7 @@ private:
 	LabelTTF* timeViewer;
 
 	Vec2 mouse;
+	Vec2 diffUnitVec2;
 	float cursorAngle;
 
 #ifdef __DEBUG_GAME_VARIABLE__
@@ -88,6 +89,7 @@ public:
 //스프라이트의 앵커포인트를 가운데로 맞춰준다.
 void setSpriteAnchor_Center(Sprite *input);
 //마우스 좌표와 특정 시점과의 각도를 계산
+// 삭제 : Vec2 계산으로 더 간단하게 가능해서...
 float calculateDegree(Vec2 &current, Vec2 &point);
 
 #endif // __HELLOWORLD_SCENE_H__
