@@ -56,7 +56,11 @@ public:
 	void onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event) {};
 	void onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event);
 
+	// 라운드 변경시 호출하는 함수
 	void roundChange();
+
+	// Callback Function
+	void monsterDeath();
 
 	// 객체 생성 함수
 	Enemy* makeMonster();

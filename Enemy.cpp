@@ -64,9 +64,9 @@ void Enemy::setEnemyTeam()
 }
 
 // if Enemy dead, callback to HelloWorld
-void Enemy::setDeathCallback(void (*FucCall)())
+void Enemy::setDeathCallback(const monsterCallback &callback)
 {
-	deathCallback = FucCall;
+	deathCallback = callback;
 }
 
 // add type to enemy
@@ -87,6 +87,7 @@ void Enemy::setEnemyAim(const cocos2d::Vec2 &aimPos)
 	// 목표 설정
 	destinat = aimPos;
 
+	/*
 	float diffX = destinat.x - getPositionX();
 	float diffY = destinat.y - getPositionY();
 	float angle = atan2f(diffY, diffX);
@@ -94,8 +95,7 @@ void Enemy::setEnemyAim(const cocos2d::Vec2 &aimPos)
 	angle = 90 - angle;
 	x = sinf(CC_DEGREES_TO_RADIANS(angle));
 	y = cosf(CC_DEGREES_TO_RADIANS(angle));
-
-	cocos2d::log("%f %f", diff.x, diff.y);
+	*/
 
 	// 실행
 	schedule(schedule_selector(Enemy::update));
@@ -160,7 +160,6 @@ void Enemy::update(float input)
 	float dist;
 
 	dist = getPosition().getDistance(destinat);
-	cocos2d::log("%f", x);
 
 	if (dist < attackRange)
 	{
@@ -180,5 +179,5 @@ void Enemy::destroy()
 {
 	Unit::destroy();
 
-
+	deathCallback();
 }
