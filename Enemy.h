@@ -17,6 +17,8 @@ enum class monsterState
 	move, error, attack
 };
 
+typedef std::function<void()> monsterCallback;
+
 class Enemy : public Unit
 {
 private:
@@ -36,7 +38,7 @@ private:
 	int slowTime;
 	boolean slowActive;
 
-	void (*deathCallback)();
+	monsterCallback deathCallback;
 public:
 	Enemy();
 	~Enemy();
@@ -48,7 +50,7 @@ public:
 	int getRange();
 
 	void setEnemyTeam();
-	void setDeathCallback(void (*FucCall)());
+	void setDeathCallback(const monsterCallback &callback);
 	void typeEnhance(monsterType t);
 	void divideEnemy();
 	void setEnemyAim(const cocos2d::Vec2 &aimPos);

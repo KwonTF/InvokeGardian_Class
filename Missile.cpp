@@ -21,8 +21,6 @@ void Missile::collisioned(int damage, std::vector<Condition> &c)
 
 	if (penetrationCount <= 0)
 		destroy();
-
-	log("Missile collisioned : %d", penetrationCount);
 }
 
 void Missile::setSpeed(int s)
