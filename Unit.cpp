@@ -38,10 +38,8 @@ Unit* Unit::create(const std::string &filename)
 	return nullptr;
 }
 
-void Unit::collisioned(int damage, std::vector<Condition> &c)
+void Unit::collisioned(int damage, Condition *c)
 {
-	stateArray = c;
-
 	hpCurrent -= damage;
 
 	if (hpCurrent > hpMax)

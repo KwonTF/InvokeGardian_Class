@@ -23,15 +23,13 @@ protected:
 	// 이동속도
 	float moveSpeed;
 
-	std::vector<Condition> stateArray;
-
 public:
 	Unit();
 	~Unit() {};
 
 	static Unit* create(const std::string &filename);
 
-	virtual void collisioned(int damage, std::vector<Condition> &c);
+	virtual void collisioned(int damage, Condition *c);
 
 	void setImageInfo(const std::string *filename, const int fileNum);
 
