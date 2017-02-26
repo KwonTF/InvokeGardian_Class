@@ -38,8 +38,9 @@ Unit* Unit::create(const std::string &filename)
 	return nullptr;
 }
 
-void Unit::collisioned(int damage, Condition *c)
+void Unit::collisioned(int damage, std::vector<Condition> &c)
 {
+	stateArray = c;
 	hpCurrent -= damage;
 
 	if (hpCurrent > hpMax)
@@ -131,7 +132,7 @@ void Unit::deathAnimation()
 
 // destory unit from game
 void Unit::destroy()
-{
+  {
 	// delete PhysicsBody
 	getPhysicsBody()->removeFromWorld();
 
