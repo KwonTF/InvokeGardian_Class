@@ -74,11 +74,11 @@ private:
 	// 12시 방향 시간 표기
 	LabelTTF* roundViewer;
 	LabelTTF* timeViewer;
-	std::vector<Condition*> tempVector;
+
 	Vec2 mouse;
 	Vec2 diffUnitVec2;
 	float cursorAngle;
-
+	std::vector<Condition*> tempVector;
 #ifdef __DEBUG_GAME_VARIABLE__
 private:
 	LabelTTF* monsterAmountViewer;
