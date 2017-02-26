@@ -10,7 +10,7 @@ using namespace cocostudio::timeline;
 Scene* HelloWorld::createScene()
 {
 	Size visibleSize = Director::getInstance()->getVisibleSize();
-	Size GameSize = Size::Size(1120, 800);
+	Size GameSize = Size::Size(960, 640);
 	Vec2 gravity = Vec2(0.0f, 0.0f);
 
 	// make scene with physics
@@ -101,10 +101,10 @@ void HelloWorld::createGameScene()//권태형 제작
 {
 	Size _winSize = Director::sharedDirector()->getWinSize();
 	player = Player::createAndInit();
-	player->setPosition(_winSize.width / 2 - 200, _winSize.height / 2 - 200);
 	statusBar = Sprite::create("UI/MainStatusBar.png");
 	statusBar->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
 	//setSpriteAnchor_Center(statusBar);
+	player->setPosition(_winSize.width / 2 - 200, _winSize.height / 2 - 200);
 	statusBar->setPosition(_winSize.width / 2, _winSize.height * 1 / 20);
 	ttf1 = LabelTTF::create("Default", "fonts/RoundGothic.ttf", 30);
 	ttf1->setPosition(100, 100);
@@ -142,7 +142,6 @@ void HelloWorld::initGameVariable()
 
 	monsterBaseAmount = 16;
 	monsterRoundAmount = monsterBaseAmount + 4 * roundNum;
-	monsterPresentAmount = 0;
 }
 
 #ifdef __DEBUG_GAME_VARIABLE__
@@ -162,7 +161,6 @@ void HelloWorld::makeTower()
 	auto material = PhysicsMaterial(0.1f, 1.0f, 0.5f);
 	auto body = PhysicsBody::createBox(tower->getContentSize(), material);
 	tower->setPhysicsBody(body);
-	tower->getPhysicsBody()->setDynamic(false);
 
 	tower->getPhysicsBody()->setCategoryBitmask(0x003);
 	tower->getPhysicsBody()->setContactTestBitmask(0xC30);
@@ -170,7 +168,6 @@ void HelloWorld::makeTower()
 
 	tower->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
 	tower->setPosition(Vec2(480, 320));
-
 
 	tower->setTowerBase();
 
@@ -214,22 +211,6 @@ void HelloWorld::gameTimer(float dt)
 	timeViewer->setString(std::to_string(gameTime));
 
 	// 몬스터 생성 부분(임시)
-	if (monsterRoundAmount > 0)
-	{
-		monsterRoundAmount--;
-		auto monster = makeMonster();
-		monster->setBaseAbillity(GameData::roundEnemyHP[roundNum], GameData::roundEnemyAttack[roundNum],
-			GameData::enemyAttackRange, GameData::enemyMoveSpeed, GameData::enemyAttackSpeed);
-		monster->setEnemyAim(tower->getPosition());
-		monster->setDeathCallback(CC_CALLBACK_0(HelloWorld::monsterDeath, this));
-		addChild(monster);
-		monsterPresentAmount++;
-	}
-
-	// 몬스터 확인용
-#ifdef __DEBUG_GAME_VARIABLE__
-	monsterAmountViewer->setString(std::to_string(monsterPresentAmount));
-#endif // __DEBUG_GAME_VARIABLE__
 }
 
 void HelloWorld::onMouseDown(cocos2d::Event * event)
@@ -237,7 +218,6 @@ void HelloWorld::onMouseDown(cocos2d::Event * event)
 	auto mousePosition = static_cast<EventMouse*>(event)->getLocation();
 	std::string output = "X: " + std::to_string(static_cast<int>(ceil(mousePosition.x))) + " Y: " + std::to_string(static_cast<int>(ceil(mousePosition.y)));
 	ttf1->setString(output);
-<<<<<<< HEAD
 	mousePosition.y = 640 - mousePosition.y;
 	player->gotoPoint(mousePosition, calculateDegree(player->getPosition(), mousePosition));
 	auto monster = makeMonster();
@@ -245,15 +225,6 @@ void HelloWorld::onMouseDown(cocos2d::Event * event)
 	monster->setSpeed(10);
 	monster->setEnemyAim(tower->getPosition());
 	addChild(monster);
-=======
-	cocos2d::log("%f %f", player->getPositionX(), player->getPositionY());
-	
-	float dist = mousePosition.distance(player->getPosition());
-	cocos2d::log("%f", dist);
-
-	mousePosition.y = 640 - mousePosition.y;
-	player->gotoPoint(mousePosition);
->>>>>>> origin/master
 }
 
 void HelloWorld::onMouseMove(cocos2d::Event * event)
@@ -286,20 +257,6 @@ void HelloWorld::roundChange()
 	monsterRoundAmount = monsterBaseAmount + 4 * roundNum;
 }
 
-void HelloWorld::monsterDeath()
-{
-	monsterPresentAmount--;
-#ifdef __DEBUG_GAME_VARIABLE__
-	monsterAmountViewer->setString(std::to_string(monsterPresentAmount));
-#endif // __DEBUG_GAME_VARIABLE__
-
-	// 라운드 변경
-	if (monsterRoundAmount <= 0 && monsterPresentAmount <= 0)
-	{
-		// 적용함수 만들 것
-	}
-}
-
 // 실험용 몬스터 생성
 // create by ZeroFe
 Enemy* HelloWorld::makeMonster()
@@ -312,7 +269,14 @@ Enemy* HelloWorld::makeMonster()
 
 	monster->setPhysicsBody(body);
 	monster->setEnemyTeam();
-	monster->setPosition(Vec2(160 + 640 * (rand() % 2), rand() % 600));
+	monster->setPosition(Vec2(800 * (rand() % 2), rand() % 600));
+
+	monster->setHP(10);
+	monster->setHPRegen(1);
+	monster->setAttack(5);
+	// monster->schedule(schedule_selector(Unit::regeneration), 1.0f);
+
+	cocos2d::log("monster make : %d %d", monster->getHP(), monster->getAttack());
 
 	return monster;
 }
@@ -331,7 +295,7 @@ Missile* HelloWorld::makeMissile()
 	missile->getPhysicsBody()->setVelocity(Vec2(0, missile->getSpeed()));
 
 	// 내부 값 설정
-	missile->setAttack(50);
+	missile->setAttack(3);
 	missile->setSpeed(300.0);
 	missile->setPenetCount(1);
 	missile->setRange(600);

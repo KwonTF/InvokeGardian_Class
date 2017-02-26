@@ -48,7 +48,7 @@ void Unit::collisioned(int damage, std::vector<Condition> &c)
 		hpCurrent = hpMax;
 
 	if (hpCurrent <= 0)
-		destroy();
+ 		destroy();
 
 	log("Unit collisioned : hp - %d, damage - %d", hpCurrent, damage);
 }
