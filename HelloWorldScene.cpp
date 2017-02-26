@@ -240,6 +240,10 @@ void HelloWorld::onKeyPressed(EventKeyboard::KeyCode keyCode, Event * event)
 	{
 	case EventKeyboard::KeyCode::KEY_SPACE:
 		fireMissile();
+		tempVector.clear();
+		break;
+	case EventKeyboard::KeyCode::KEY_Q:
+		tempVector.push_back(new Slow());
 		break;
 	default:
 		break;
@@ -320,7 +324,7 @@ void HelloWorld::fireMissile()
 	bullet->getPhysicsBody()->setVelocity(missileSpeed);
 	
 	bullet->setMissileTeam(0);
-
+	bullet->setCondition(tempVector);
 	layerMissile->addChild(bullet);
 }
 

@@ -16,7 +16,7 @@ void Condition::enchance()
 }
 
 Condition::Condition() : conditonLevel(0) {}
-Slow::Slow() : Time(5.0), code(EffectCode::Slow), deffenceReduceRate(0.7), speedReduceRate(0.7){}
+Slow::Slow() : Time(5.0), code(EffectCode::Slow), deffenceReduceRate(0.7), speedReduceRate(0.1){}
 
 float Slow::castEffect(float speed) const
 {return speed*speedReduceRate;}

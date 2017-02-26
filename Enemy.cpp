@@ -129,26 +129,34 @@ void Enemy::shootMissile()
 
 void Enemy::CalculateEffect(float input)
 {
-	/*
 	std::vector<Condition*>::iterator iter;
 	for (iter = conditionArray.begin(); iter != conditionArray.end(); iter++) {
 		switch ((*iter)->getCode())
 		{
 		case EffectCode::Slow:
-			if ((*iter)->getTime() == 0) {
-				this->moveSpeed = 50;
-				//conditionArray.erase(iter);
+			if (slowActive == false) {
+				slowActive = true;
+				slowTime += 5;
+				slowRate = (*iter)->castEffect(1);
+				moveSpeed = (*iter)->castEffect(moveSpeed);
 			}
-			else {
-				(*iter)->ReduceTime();
-				this->speed = 10;
+			else if (slowActive == true) {
+				slowTime += 5;
+				moveSpeed = moveSpeed / slowRate;
+				slowRate = (*iter)->castEffect(1);
+				moveSpeed = (*iter)->castEffect(moveSpeed);
 			}
-			break;
-		default:
 			break;
 		}
 	}
-	*/
+	conditionArray.clear();
+	slowTime--;
+	if (slowTime <= 0) {
+		slowTime = 0;
+		moveSpeed = moveSpeed / slowRate;
+		slowRate = 1;
+		slowActive = false;
+	}
 }
 
 void Enemy::update(float input)

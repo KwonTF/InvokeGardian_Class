@@ -15,7 +15,7 @@ Missile* Missile::create(const std::string &filename)
 }
 
 // if Missile collisioned
-void Missile::collisioned(int damage, std::vector<Condition> &c)
+void Missile::collisioned(int damage, std::vector<Condition*> &c)
 {
 	penetrationCount--;
 
