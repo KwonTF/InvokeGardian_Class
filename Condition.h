@@ -15,7 +15,7 @@ protected:
 	virtual void enchance(); //스킬 레벨업
 public:
 	Condition();
-	~Condition();
+	~Condition() {};
 };
 class Slow : public Condition {
 public:

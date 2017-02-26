@@ -64,9 +64,9 @@ void Enemy::setEnemyTeam()
 }
 
 // if Enemy dead, callback to HelloWorld
-void Enemy::setDeathCallback(const monsterCallback &callback)
+void Enemy::setDeathCallback(void(*FucCall)())
 {
-	deathCallback = callback;
+	deathCallback = FucCall;
 }
 
 // add type to enemy
@@ -178,6 +178,4 @@ void Enemy::update(float input)
 void Enemy::destroy()
 {
 	Unit::destroy();
-
-	deathCallback();
 }

@@ -38,7 +38,7 @@ private:
 	int slowTime;
 	boolean slowActive;
 
-	monsterCallback deathCallback;
+	void(*deathCallback)();
 public:
 	Enemy();
 	~Enemy();
@@ -50,7 +50,7 @@ public:
 	int getRange();
 
 	void setEnemyTeam();
-	void setDeathCallback(const monsterCallback &callback);
+	void setDeathCallback(void(*FucCall)());
 	void typeEnhance(monsterType t);
 	void divideEnemy();
 	void setEnemyAim(const cocos2d::Vec2 &aimPos);

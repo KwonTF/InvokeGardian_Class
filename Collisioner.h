@@ -12,14 +12,13 @@ class Collisioner : public cocos2d::Sprite
 {
 protected:
 	int attack;						// attack damage for other
-	//std::vector<Condition*> conditionArray;
-	Condition *deliveryCondition;	// attack Condition Error for other
+	std::vector<Condition> conditionArray;	// attack Condition Error for other
 public:
 	Collisioner() {};
 	virtual ~Collisioner();
 
-	Condition *getCondition();
+	std::vector<Condition> &getCondition();
 	int getAttack();
-	virtual void collisioned(int damage, Condition *c) = 0;
+	virtual void collisioned(int damage, std::vector<Condition> &c) = 0;
 };
 

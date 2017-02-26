@@ -2,6 +2,7 @@
 
 Collisioner::~Collisioner()
 {
+	conditionArray.clear();
 }
 
 int Collisioner::getAttack()
@@ -9,7 +10,7 @@ int Collisioner::getAttack()
 	return attack;
 }
 
-Condition* Collisioner::getCondition()
+std::vector<Condition> &Collisioner::getCondition()
 {
-	return deliveryCondition;
+	return conditionArray;
 }

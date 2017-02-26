@@ -10,7 +10,6 @@
 #include "Player.h"
 #include "BulletObj.h"
 
-#include "GameData.h"
 
 const unsigned int ROUNDTIME = 90;
 const unsigned int SETUPTIME = 45;
