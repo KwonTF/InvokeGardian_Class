@@ -16,10 +16,9 @@ public:
 	Player();
 	~Player();
 	static Player* createAndInit();
-	void gotoPoint(Vec2 point, float angle);
+	void gotoPoint(float x, float y,float angle);
 	void moveBySpeed(float input);
 private:
 	float movePointX, movePointY;
-	Vec2 DestPoint;
 };
 #endif // BULLET_OBJ_H

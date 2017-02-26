@@ -17,15 +17,14 @@ Player * Player::createAndInit()
 	return player;
 }
 
-void Player::gotoPoint(Vec2 point, float angle)
+void Player::gotoPoint(float x, float y, float angle)
 {
+	movePointX = sinf((angle-90)*(-1));
+	movePointY = cosf((angle - 90)*(-1));
 	unscheduleAllSelectors();
-	DestPoint = point;
-	movePointX = sinf(CC_DEGREES_TO_RADIANS(90 - angle));
-	movePointY = cosf(CC_DEGREES_TO_RADIANS(90 - angle));
+
 	schedule(schedule_selector(Player::moveBySpeed));
 }
-
 
 void Player::moveBySpeed(float input)
 {
