@@ -179,6 +179,7 @@ void HelloWorld::makeTower()
 void HelloWorld::onTimeUpdate(float input)//권태형 제작
 {
 	Vec2 playerPos = player->getPosition();
+	//각도 구하기
 	diffUnitVec2 = mouse - playerPos;
 	diffUnitVec2 = diffUnitVec2.getNormalized();
 
@@ -217,7 +218,8 @@ void HelloWorld::onMouseDown(cocos2d::Event * event)
 	auto mousePosition = static_cast<EventMouse*>(event)->getLocation();
 	std::string output = "X: " + std::to_string(static_cast<int>(ceil(mousePosition.x))) + " Y: " + std::to_string(static_cast<int>(ceil(mousePosition.y)));
 	ttf1->setString(output);
-
+	mousePosition.y = 640 - mousePosition.y;
+	player->gotoPoint(mousePosition, calculateDegree(player->getPosition(), mousePosition));
 	auto monster = makeMonster();
 	monster->setRange(50);
 	monster->setSpeed(10);
@@ -325,4 +327,11 @@ void HelloWorld::fireMissile()
 void setSpriteAnchor_Center(Sprite * input)//권태형 제작
 {
 	input->setAnchorPoint(Vec2(0.5, 0.5));
+}
+
+float calculateDegree(Vec2 current, Vec2 point)
+{
+	Vec2 tempVec = point - current;
+	tempVec = tempVec.getNormalized();
+	return tempVec.getAngle()* 180 / M_PI;
 }

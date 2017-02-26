@@ -94,6 +94,6 @@ public:
 void setSpriteAnchor_Center(Sprite *input);
 //마우스 좌표와 특정 시점과의 각도를 계산
 // 삭제 : Vec2 계산으로 더 간단하게 가능해서...
-float calculateDegree(Vec2 &current, Vec2 &point);
+float calculateDegree(Vec2 current, Vec2 point);
 
 #endif // __HELLOWORLD_SCENE_H__
