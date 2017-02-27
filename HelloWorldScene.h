@@ -59,6 +59,7 @@ public:
 	// 라운드 변경시 호출하는 함수
 	void roundChange();
 
+	void monsterDeath();
 	// 객체 생성 함수
 	Enemy* makeMonster();
 	Missile *makeMissile();
