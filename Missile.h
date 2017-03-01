@@ -40,6 +40,7 @@ public:
 	void setMissileTeam(int team);
 
 	float getSpeed();
+	float getRange();
 
 	void deathAnimation();
 	void destroy();
