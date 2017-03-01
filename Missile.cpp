@@ -36,6 +36,9 @@ void Missile::setAttack(int atk)
 // set range of Missile
 void Missile::setRange(int movelimit)
 {
+	if (range <= 200) {
+		range = 200;
+	}
 	range = movelimit;
 
 	scheduleOnce(schedule_selector(Missile::removeMissile), (float)range / speed);
@@ -76,6 +79,14 @@ void Missile::setMissileTeam(int team)
 float Missile::getSpeed()
 {
 	return speed;
+}
+
+float Missile::getRange()
+{
+	if (range <= 200) {
+		range = 200;
+	}
+	return range;
 }
 
 /*

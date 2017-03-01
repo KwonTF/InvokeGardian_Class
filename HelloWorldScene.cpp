@@ -247,13 +247,26 @@ void HelloWorld::onMouseMove(cocos2d::Event * event)
 
 void HelloWorld::onKeyPressed(EventKeyboard::KeyCode keyCode, Event * event)
 {
+	PowerUp* tempPower;
 	switch (keyCode)
 	{
 	case EventKeyboard::KeyCode::KEY_SPACE:
 		fireMissile();
 		tempVector.clear();
+		enchanceActivated = false;
+		rangeUpRate = 0;
+		penetrationNum = 0;
 		break;
 	case EventKeyboard::KeyCode::KEY_Q:
+		tempVector.push_back(new Knock());
+		break;
+	case EventKeyboard::KeyCode::KEY_W:
+		tempPower = new PowerUp();
+		enchanceActivated = true;
+		rangeUpRate = tempPower->castEffect(0);
+		tempVector.push_back(tempPower);
+		break;
+	case EventKeyboard::KeyCode::KEY_S:
 		tempVector.push_back(new Slow());
 		break;
 	default:
@@ -318,9 +331,15 @@ Missile* HelloWorld::makeMissile()
 	// 내부 값 설정
 	missile->setAttack(10);
 	missile->setSpeed(300.0);
-	missile->setPenetCount(1);
-	missile->setRange(600);
-
+	//강화 효과 적용
+	if (enchanceActivated == true) {
+		missile->setRange(missile->getRange()+rangeUpRate);
+		missile->setPenetCount(penetrationNum);
+	}
+	else {
+		missile->setRange(200);
+		missile->setPenetCount(1);
+	}
 	return missile;
 }
 

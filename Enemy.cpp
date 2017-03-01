@@ -11,7 +11,7 @@ Enemy::Enemy()
 	slowTime = 0;
 	slowRate = 1.0;
 
-	schedule(schedule_selector(Enemy::CalculateEffect), 1.0f);
+	schedule(schedule_selector(Enemy::CalculateEffect));
 }
 
 Enemy::~Enemy()
@@ -127,6 +127,11 @@ void Enemy::shootMissile()
 }
 
 
+void Enemy::slowTimeReduce(float input)
+{
+	slowTime--;
+}
+
 void Enemy::CalculateEffect(float input)
 {
 	std::vector<Condition*>::iterator iter;
@@ -139,6 +144,7 @@ void Enemy::CalculateEffect(float input)
 				slowTime += 5;
 				slowRate = (*iter)->castEffect(1);
 				moveSpeed = (*iter)->castEffect(moveSpeed);
+				schedule(schedule_selector(Enemy::slowTimeReduce), 1.0f);
 			}
 			else if (slowActive == true) {
 				slowTime += 5;
@@ -147,16 +153,31 @@ void Enemy::CalculateEffect(float input)
 				moveSpeed = (*iter)->castEffect(moveSpeed);
 			}
 			break;
+		case EffectCode::Knock:
+			if ((*iter)->castEffect(0) > knockBackSpeed) {
+				knockBackSpeed = (*iter)->castEffect(0);
+			}
+			schedule(schedule_selector(Enemy::KnockBack),0,10,0);
+		default:
+			break;
 		}
 	}
 	conditionArray.clear();
-	slowTime--;
 	if (slowTime <= 0) {
+		unschedule(schedule_selector(Enemy::slowTimeReduce));
 		slowTime = 0;
 		moveSpeed = moveSpeed / slowRate;
 		slowRate = 1;
 		slowActive = false;
 	}
+}
+
+void Enemy::KnockBack(float input)
+{
+	if (getPositionX() > 960 || getPositionX() < 0 || getPositionY() < 0 || getPositionY() > 640) {
+		return;
+	}
+	this->setPosition(this->getPosition() + diff * knockBackSpeed * input);
 }
 
 void Enemy::update(float input)

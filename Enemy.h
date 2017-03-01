@@ -33,10 +33,12 @@ private:
 
 	int attackRange;
 	int attackCoolTime, currentCoolTime;
-
+	//슬로우 변수
 	float slowRate;
 	int slowTime;
 	boolean slowActive;
+	//넉백 변수
+	float knockBackSpeed;
 
 	monsterCallback deathCallback;
 public:
@@ -57,8 +59,12 @@ public:
 	void shootMissile();
 
 	virtual void destroy();
+
 private:
-	void CalculateEffect(float input);
 	void update(float input);
+	//효과 관련 함수
+	void slowTimeReduce(float input);
+	void CalculateEffect(float input);
+	void KnockBack(float input);
 };
 
