@@ -82,7 +82,7 @@ bool HelloWorld::init()
 	
 	this->schedule(schedule_selector(HelloWorld::onTimeUpdate));
 	this->schedule(schedule_selector(HelloWorld::gameTimer), 1.0f);
-
+	divisonNum = 1;
     return true;
 }
 
@@ -182,8 +182,8 @@ void HelloWorld::onTimeUpdate(float input)//권태형 제작
 	Vec2 playerPos = player->getPosition();
 	//각도 구하기
 	diffUnitVec2 = mouse - playerPos;
+	diffUnitVec3 = diffUnitVec2;
 	diffUnitVec2 = diffUnitVec2.getNormalized();
-
 	//cocos2d::log("%f", cursorAngle);
 	player->setRotation(90 - diffUnitVec2.getAngle() * 180 / M_PI);
 }
@@ -247,24 +247,22 @@ void HelloWorld::onMouseMove(cocos2d::Event * event)
 
 void HelloWorld::onKeyPressed(EventKeyboard::KeyCode keyCode, Event * event)
 {
-	PowerUp* tempPower;
 	switch (keyCode)
 	{
 	case EventKeyboard::KeyCode::KEY_SPACE:
 		fireMissile();
 		tempVector.clear();
-		enchanceActivated = false;
-		rangeUpRate = 0;
-		penetrationNum = 0;
+		divisonNum = 1;
 		break;
 	case EventKeyboard::KeyCode::KEY_Q:
 		tempVector.push_back(new Knock());
 		break;
 	case EventKeyboard::KeyCode::KEY_W:
-		tempPower = new PowerUp();
-		enchanceActivated = true;
-		rangeUpRate = tempPower->castEffect(0);
-		tempVector.push_back(tempPower);
+		tempVector.push_back(new PowerUp());
+		break;
+	case EventKeyboard::KeyCode::KEY_A:
+		tempVector.push_back(new Division());
+		//divisonNum+=tempVector.back()->castEffect(divisonNum);
 		break;
 	case EventKeyboard::KeyCode::KEY_S:
 		tempVector.push_back(new Slow());
@@ -303,7 +301,7 @@ void HelloWorld::monsterDeath()
 // create by ZeroFe
 Enemy* HelloWorld::makeMonster()
 {
-	Enemy* monster = Enemy::create("Unit/Hostile.png");
+	Enemy* monster = Enemy::create("Unit/Hostile0.png");
 
 	auto material = PhysicsMaterial(0.1f, 1.0f, 0.5f);
 
@@ -331,15 +329,8 @@ Missile* HelloWorld::makeMissile()
 	// 내부 값 설정
 	missile->setAttack(10);
 	missile->setSpeed(300.0);
-	//강화 효과 적용
-	if (enchanceActivated == true) {
-		missile->setRange(missile->getRange()+rangeUpRate);
-		missile->setPenetCount(penetrationNum);
-	}
-	else {
-		missile->setRange(200);
-		missile->setPenetCount(1);
-	}
+	missile->setRange(200);
+	missile->setPenetCount(1);
 	return missile;
 }
 
@@ -354,14 +345,14 @@ void HelloWorld::fireMissile()
 	*/
 
 	// Missile로 만든거
-	auto bullet = HelloWorld::makeMissile();
-	Vec2 missileSpeed = diffUnitVec2;
-	missileSpeed.scale(400.0);
-	bullet->getPhysicsBody()->setVelocity(missileSpeed);
-	
-	bullet->setMissileTeam(0);
-	bullet->setCondition(tempVector);
-	layerMissile->addChild(bullet);
+		auto bullet = HelloWorld::makeMissile();
+		Vec2 missileSpeed = diffUnitVec3.getNormalized();
+		missileSpeed.scale(400.0);
+		bullet->getPhysicsBody()->setVelocity(missileSpeed);
+		bullet->setMissileTeam(0);
+		bullet->setCondition(tempVector);
+		bullet->castEffect();
+		layerMissile->addChild(bullet);
 }
 
 void setSpriteAnchor_Center(Sprite * input)//권태형 제작

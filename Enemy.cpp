@@ -96,8 +96,8 @@ void Enemy::setEnemyAim(const cocos2d::Vec2 &aimPos)
 	x = sinf(CC_DEGREES_TO_RADIANS(angle));
 	y = cosf(CC_DEGREES_TO_RADIANS(angle));
 	*/
-
 	// ½ÇÇà
+	
 	schedule(schedule_selector(Enemy::update));
 }
 
@@ -184,7 +184,7 @@ void Enemy::update(float input)
 {
 	diff = destinat - getPosition();
 	diff = diff.getNormalized();
-	setRotation(diff.getAngle() * 180 / M_PI);
+	setRotation(diff.getAngle()*180 / M_PI);
 
 	float dist;
 

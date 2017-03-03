@@ -10,6 +10,11 @@ float Condition::castEffect(float input) const
 	return input;
 }
 
+float Condition::castSideEffect(float input) const
+{
+	return input;
+}
+
 void Condition::enchance()
 {
 	conditonLevel++;
@@ -70,7 +75,7 @@ float PowerUp::castEffect(float speed) const
 	return rangeRate;
 }
 
-unsigned int PowerUp::castSideEffect(float defence) const
+float PowerUp::castSideEffect(float defence) const
 {
 	return pierceNum;
 }
@@ -83,4 +88,27 @@ EffectCode PowerUp::getCode()
 void PowerUp::enchance()
 {
 	rangeRate += 200;
+}
+
+Division::Division():divideNum(3){}
+
+float Division::castEffect(float num) const
+{
+	return divideNum;
+}
+
+float Division::castSideEffect(float num) const
+{
+	return 0;
+}
+
+
+void Division::enchance()
+{
+	divideNum++;
+}
+
+EffectCode Division::getCode()
+{
+	return EffectCode::Division;
 }
