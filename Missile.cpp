@@ -41,7 +41,6 @@ void Missile::setRange(int movelimit)
 	}
 	range = movelimit;
 
-	scheduleOnce(schedule_selector(Missile::removeMissile), (float)range / speed);
 }
 
 // set Penetration count of Missile
@@ -99,6 +98,26 @@ void Missile::removeMissile(float f)
 	getPhysicsBody()->removeFromWorld();
 
 	removeFromParent();
+}
+
+//미사일 요소 적용 함수
+void Missile::castEffect()
+{
+	std::vector<Condition*>::iterator iter;
+	for (iter = conditionArray.begin(); iter != conditionArray.end(); iter++) {
+		switch ((*iter)->getCode())
+		{
+		case EffectCode::PowerUp:
+			range += (*iter)->castEffect(range);
+			//penetrationCount += (*iter)->castSideEffect(penetrationCount);
+			break;
+		case EffectCode::Division:
+			break;
+		default:
+			break;
+		}
+	}
+	scheduleOnce(schedule_selector(Missile::removeMissile), (float)range / speed);
 }
 
 // make Missile's death animation

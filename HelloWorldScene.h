@@ -78,13 +78,11 @@ private:
 
 	Vec2 mouse;
 	Vec2 diffUnitVec2;
+	Vec2 diffUnitVec3;
 	float cursorAngle;
 	std::vector<Condition*> tempVector;
-
-	//강화 관련 변수
-	bool enchanceActivated;
-	float rangeUpRate;
-	unsigned int penetrationNum;
+	//분열 관련 변수
+	unsigned int divisonNum;
 #ifdef __DEBUG_GAME_VARIABLE__
 private:
 	LabelTTF* monsterAmountViewer;

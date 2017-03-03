@@ -42,6 +42,8 @@ public:
 	float getSpeed();
 	float getRange();
 
+	//미사일 요소 적용 함수
+	void castEffect();
 	void deathAnimation();
 	void destroy();
 
