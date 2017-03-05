@@ -69,6 +69,7 @@ private:
 	Layer* layerMissile;
 	Player* player;
 	Sprite* statusBar;
+	Sprite* mpBar;
 	LabelTTF* ttf1;
 
 	Tower* tower;

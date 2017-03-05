@@ -127,7 +127,7 @@ void Enemy::shootMissile()
 	missile->setSpeed(300.0);
 	missile->setPenetCount(1);
 	missile->setRange(600);
-
+	missile->setColor(Color3B(250, 0, 0));
 	// ¸öÃ¼ ¼³Á¤
 	auto material = PhysicsMaterial(0.1f, 1.0f, 0.5f);
 

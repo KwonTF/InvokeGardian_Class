@@ -95,15 +95,20 @@ void HelloWorld::createGameScene()//권태형 제작
 	player = Player::createAndInit();
 	statusBar = Sprite::create("UI/MainStatusBar.png");
 	statusBar->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
+	mpBar = Sprite::create("UI/MainStatusBar.png");
+	mpBar->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
 	//setSpriteAnchor_Center(statusBar);
 	player->setPosition(_winSize.width / 2 - 200, _winSize.height / 2 - 200);
 	statusBar->setPosition(_winSize.width / 2, _winSize.height * 1 / 20);
+	mpBar->setPosition(_winSize.width / 2, _winSize.height * 1 / 20);
+	mpBar->setColor(Color3B(50, 50, 200));
 	ttf1 = LabelTTF::create("Default", "fonts/RoundGothic.ttf", 30);
 	ttf1->setPosition(100, 100);
 	ttf1->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
 	this->addChild(player);
 	this->addChild(ttf1);
 	this->addChild(statusBar);
+	this->addChild(mpBar);
 
 	roundViewer = LabelTTF::create("Round", "fonts/RoundGothic.ttf", 30);
 	roundViewer->setColor(Color3B::RED);
