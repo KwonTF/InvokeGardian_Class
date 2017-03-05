@@ -3,22 +3,20 @@
 #include "Unit.h"
 #include "Missile.h"
 
+typedef std::function<void()> monsterCallback;
+
+namespace mutate {
+	extern const int Range[6];
+	extern const float HP[6];
+	extern const float Attack[6];
+	extern const float Speed[6];
+	extern const float AtkSpeed[6];
+};
+
 /*
 class of enemy object
 create by ZeroFe
 */
-enum class monsterType
-{
-	range, mass, divide, golem, faster
-};
-
-enum class monsterState
-{
-	move, error, attack
-};
-
-typedef std::function<void()> monsterCallback;
-
 class Enemy : public Unit
 {
 private:
@@ -53,7 +51,7 @@ public:
 
 	void setEnemyTeam();
 	void setDeathCallback(const monsterCallback &callback);
-	void typeEnhance(monsterType t);
+	void typeEnhance(int monsterType);
 	void divideEnemy();
 	void setEnemyAim(const cocos2d::Vec2 &aimPos);
 	void shootMissile();

@@ -1,5 +1,21 @@
 #include "Enemy.h"
 
+const int mutate::Range[6] = {
+	0, 150, 0, 0, 25, 0
+};
+const float mutate::HP[6] = {
+	1.0, 0.7, 0.5, 0.8, 1.5, 0.7
+};
+const float mutate::Attack[6] = {
+	1.0, 1.0, 0.5, 0.8, 1.5, 1.0
+};
+const float mutate::Speed[6] = {
+	1.0, 1.0, 1.0, 1.0, 0.5, 1.2
+};
+const float mutate::AtkSpeed[6] = {
+	1.0, 1.0, 1.0, 0.8, 0.8, 1.2
+};
+
 Enemy::Enemy()
 {
 	divideAmount = 0;
@@ -70,9 +86,20 @@ void Enemy::setDeathCallback(const monsterCallback &callback)
 }
 
 // add type to enemy
-void Enemy::typeEnhance(monsterType t)
+// 0 : normal, 1 : range, 2 : mass, 3 : divide, 4 : golem, 5 : faster
+void Enemy::typeEnhance(int monsterType)
 {
+	// 능력치 변화
+	hpMax = (int)((float)hpMax * mutate::HP[monsterType]);
+	hpCurrent = (int)((float)hpCurrent * mutate::HP[monsterType]);
+	attackRange += mutate::Range[monsterType];
+	attack = (int)((float)attack * mutate::Attack[monsterType]);
+	moveSpeed = (float)moveSpeed * mutate::Speed[monsterType];
+	attackCoolTime = (int)((float)attackCoolTime * mutate::AtkSpeed[monsterType]);
 
+	// 기능 추가
+
+	// 외형 변화 추가
 }
 
 // for divide type, add monster divide ability
@@ -87,17 +114,7 @@ void Enemy::setEnemyAim(const cocos2d::Vec2 &aimPos)
 	// 목표 설정
 	destinat = aimPos;
 
-	/*
-	float diffX = destinat.x - getPositionX();
-	float diffY = destinat.y - getPositionY();
-	float angle = atan2f(diffY, diffX);
-	angle = CC_RADIANS_TO_DEGREES(angle);
-	angle = 90 - angle;
-	x = sinf(CC_DEGREES_TO_RADIANS(angle));
-	y = cosf(CC_DEGREES_TO_RADIANS(angle));
-	*/
 	// 실행
-	
 	schedule(schedule_selector(Enemy::update));
 }
 
@@ -105,21 +122,24 @@ void Enemy::shootMissile()
 {
 	Missile* missile = Missile::create("Others/Bullet.PNG");
 
-	auto material = PhysicsMaterial(0.1f, 1.0f, 0.5f);
-
-	auto body = PhysicsBody::createCircle(missile->getContentSize().width / 2, material);
-
-	// 몸체 설정
-	missile->setPhysicsBody(body);
-	missile->setPosition(getPosition());
-	missile->getPhysicsBody()->setVelocity(Vec2(0, missile->getSpeed()));
-
 	// 내부 값 설정
 	missile->setAttack(3);
 	missile->setSpeed(300.0);
 	missile->setPenetCount(1);
 	missile->setRange(600);
 
+	// 몸체 설정
+	auto material = PhysicsMaterial(0.1f, 1.0f, 0.5f);
+
+	auto body = PhysicsBody::createCircle(missile->getContentSize().width / 2, material);
+
+	missile->setPhysicsBody(body);
+	missile->setPosition(getPosition());
+	missile->getPhysicsBody()->setVelocity(diff * missile->getSpeed());
+	missile->setMissileTeam(1);
+	
+
+	// 게임에 추가
 	if (getParent() != nullptr)
 	{
 		getParent()->addChild(missile);
@@ -174,9 +194,11 @@ void Enemy::CalculateEffect(float input)
 
 void Enemy::KnockBack(float input)
 {
+	/*
 	if (getPositionX() > 960 || getPositionX() < 0 || getPositionY() < 0 || getPositionY() > 640) {
 		return;
 	}
+	*/
 	this->setPosition(this->getPosition() + diff * knockBackSpeed * input);
 }
 
@@ -184,7 +206,7 @@ void Enemy::update(float input)
 {
 	diff = destinat - getPosition();
 	diff = diff.getNormalized();
-	setRotation(diff.getAngle()*180 / M_PI);
+	setRotation(-diff.getAngle() * 180 / M_PI);
 
 	float dist;
 
@@ -207,5 +229,6 @@ void Enemy::update(float input)
 void Enemy::destroy()
 {
 	Unit::destroy();
+
 	deathCallback();
 }

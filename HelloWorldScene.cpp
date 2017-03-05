@@ -10,20 +10,12 @@ using namespace cocostudio::timeline;
 Scene* HelloWorld::createScene()
 {
 	Size visibleSize = Director::getInstance()->getVisibleSize();
-	Size GameSize = Size::Size(1120, 800);
 	Vec2 gravity = Vec2(0.0f, 0.0f);
 
 	// make scene with physics
 	auto scene = Scene::createWithPhysics();
 	//scene->getPhysicsWorld()->setDebugDrawMask(PhysicsWorld::DEBUGDRAW_ALL);			// draw 
 	scene->getPhysicsWorld()->setGravity(gravity);
-
-	// make physics body
-	auto body = PhysicsBody::createEdgeBox(GameSize, PHYSICSBODY_MATERIAL_DEFAULT, 3);
-	auto edgeNode = Node::create();
-	edgeNode->setPosition(Point(visibleSize.width / 2, visibleSize.height / 2));
-	edgeNode->setPhysicsBody(body);
-	scene->addChild(edgeNode);
 
 	auto layer = HelloWorld::create();
 	layer->setPhysicsWorld(scene->getPhysicsWorld());
@@ -114,12 +106,14 @@ void HelloWorld::createGameScene()//권태형 제작
 	this->addChild(statusBar);
 
 	roundViewer = LabelTTF::create("Round", "fonts/RoundGothic.ttf", 30);
-	roundViewer->setPosition(480, 600);
+	roundViewer->setColor(Color3B::RED);
+	roundViewer->setPosition(480, 620);
 	roundViewer->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
 	this->addChild(roundViewer);
 
 	timeViewer = LabelTTF::create("Default", "fonts/RoundGothic.ttf", 30);
-	timeViewer->setPosition(480, 550);
+	timeViewer->setColor(Color3B::RED);
+	timeViewer->setPosition(480, 590);
 	timeViewer->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
 	this->addChild(timeViewer);
 }
@@ -135,11 +129,16 @@ void HelloWorld::initGameVariable()
 
 	gameTime = ROUNDTIME;
 	isRound = true;
+	canUpgrade = false;
+
 	roundViewer->setString("Round");
 	timeViewer->setString(std::to_string(gameTime));
 
+	// 변형 확률
 	mutateBasePer = 1;
+	mutateRoundBonus = 2;
 
+	// 나오는 몬스터 수
 	monsterBaseAmount = 16;
 	monsterRoundAmount = monsterBaseAmount + 4 * roundNum;
 	monsterPresentAmount = 0;
@@ -188,12 +187,16 @@ void HelloWorld::onTimeUpdate(float input)//권태형 제작
 	player->setRotation(90 - diffUnitVec2.getAngle() * 180 / M_PI);
 }
 
+/*
+매 초마다 계산하는 타이머
+게임 시간 흐름에 사용
+*/
 void HelloWorld::gameTimer(float dt)
 {
 	// 라운드/셋업 변환 부분
 	if (gameTime <= 0)
 	{
-		if (isRound != 0)
+		if (isRound == false)
 		{
 			roundNum++;
 			isRound = true;
@@ -204,6 +207,7 @@ void HelloWorld::gameTimer(float dt)
 		{
 			isRound = false;
 			gameTime = SETUPTIME;
+			roundViewer->setString("Set Up");
 		}
 	}
 
@@ -213,7 +217,7 @@ void HelloWorld::gameTimer(float dt)
 
 	// 몬스터 생성 부분(임시)
 	if (monsterRoundAmount > 0)
-	 {
+	{
 		monsterRoundAmount--;
 		auto monster = makeMonster();
 		monster->setBaseAbillity(GameData::roundEnemyHP[roundNum], GameData::roundEnemyAttack[roundNum],
@@ -222,7 +226,7 @@ void HelloWorld::gameTimer(float dt)
 		monster->setDeathCallback(CC_CALLBACK_0(HelloWorld::monsterDeath, this));
 		addChild(monster);
 		monsterPresentAmount++;
-		}
+	}
 			// 몬스터 확인용
 	#ifdef __DEBUG_GAME_VARIABLE__
 	monsterAmountViewer->setString(std::to_string(monsterPresentAmount));
@@ -278,9 +282,16 @@ create by ZeroFe
 */
 void HelloWorld::roundChange()
 {
+	// 라운드 관련 변수 변경
 	roundNum++;
 
 	monsterRoundAmount = monsterBaseAmount + 4 * roundNum;
+	mutateRoundPer = mutateBasePer + mutateRoundBonus * roundNum;
+
+	// 업그레이드 불가능 상태로 만들기
+	canUpgrade = false;
+	roundViewer->setColor(Color3B::RED);
+	timeViewer->setColor(Color3B::RED);
 }
 
 void HelloWorld::monsterDeath()
@@ -289,12 +300,22 @@ void HelloWorld::monsterDeath()
 	#ifdef __DEBUG_GAME_VARIABLE__
 		monsterAmountViewer->setString(std::to_string(monsterPresentAmount));
 	#endif // __DEBUG_GAME_VARIABLE__
-		
-			// 라운드 변경
-		if (monsterRoundAmount <= 0 && monsterPresentAmount <= 0)
-		 {
-				// 적용함수 만들 것
-			}
+	
+	// 라운드 변경
+	if (monsterRoundAmount <= 0 && monsterPresentAmount <= 0)
+	{
+		// 적용함수 만들 것
+		// 남은 시간 1초 남기고 없애기
+		int extraTime = gameTime - 1;
+		gameTime = gameTime - extraTime;
+		// 남은 시간만큼 마나 / 타워 체력 회복
+		// (체력 회복은 체젠에 기반하여)
+
+		// 업그레이드 가능 상태로 만들기
+		canUpgrade = true;
+		roundViewer->setColor(Color3B::GREEN);
+		timeViewer->setColor(Color3B::GREEN);
+	}
 }
 
 // 실험용 몬스터 생성
@@ -308,8 +329,9 @@ Enemy* HelloWorld::makeMonster()
 	auto body = PhysicsBody::createBox(monster->getContentSize(), material);
 
 	monster->setPhysicsBody(body);
+	monster->getPhysicsBody()->setDynamic(false);
 	monster->setEnemyTeam();
-	monster->setPosition(Vec2(800 * (rand() % 2), rand() % 600));
+	monster->setPosition(Vec2(960 * (rand() % 2), rand() % 600));
 	return monster;
 }
 
@@ -324,11 +346,10 @@ Missile* HelloWorld::makeMissile()
 	// 몸체 설정
 	missile->setPhysicsBody(body);
 	missile->setPosition(player->getPosition());
-	missile->getPhysicsBody()->setVelocity(Vec2(0, missile->getSpeed()));
 
 	// 내부 값 설정
 	missile->setAttack(10);
-	missile->setSpeed(300.0);
+	missile->setSpeed(400.0);
 	missile->setRange(200);
 	missile->setPenetCount(1);
 	return missile;
@@ -345,14 +366,12 @@ void HelloWorld::fireMissile()
 	*/
 
 	// Missile로 만든거
-		auto bullet = HelloWorld::makeMissile();
-		Vec2 missileSpeed = diffUnitVec3.getNormalized();
-		missileSpeed.scale(400.0);
-		bullet->getPhysicsBody()->setVelocity(missileSpeed);
-		bullet->setMissileTeam(0);
-		bullet->setCondition(tempVector);
-		bullet->castEffect();
-		layerMissile->addChild(bullet);
+	auto bullet = HelloWorld::makeMissile();
+	bullet->getPhysicsBody()->setVelocity(diffUnitVec2 * bullet->getSpeed());
+	bullet->setMissileTeam(0);
+	bullet->setCondition(tempVector);
+	bullet->castEffect();
+	layerMissile->addChild(bullet);
 }
 
 void setSpriteAnchor_Center(Sprite * input)//권태형 제작

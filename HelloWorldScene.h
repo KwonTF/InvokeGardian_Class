@@ -15,6 +15,7 @@ private:
 	// variable for gameTimer
 	int gameTime;	// Round / Set Up Time
 	bool isRound;	// check Round state
+	bool canUpgrade;	// check Monster remain
 
 	// variable for random mutate
 	int mutateArray[5];		// Array for saving mutate information
