@@ -13,3 +13,4 @@
 
 const unsigned int ROUNDTIME = 90;
 const unsigned int SETUPTIME = 45;
+const unsigned int _MPSIZERATE = 52;

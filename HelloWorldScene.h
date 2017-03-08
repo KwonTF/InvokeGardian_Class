@@ -48,6 +48,7 @@ public:
 	//매 시간마다 스케줄링 되는 함수들
 	void onTimeUpdate(float input);		// 
 	void gameTimer(float dt);			// 타이머 관련 함수
+	void mpRestore(float input); // MP회복함수
 	//마우스 이벤트들
 	void onMouseDown(cocos2d::Event* event);
 	void onMouseMove(cocos2d::Event* event);
@@ -66,10 +67,15 @@ public:
 	Missile *makeMissile();
 	void fireMissile();
 private:
+	Size _winSize;
 	Layer* layerMissile;
 	Player* player;
 	Sprite* statusBar;
-	Sprite* mpBar;
+
+	Sprite* mpSprite;
+	CCProgressTimer* mpBar;
+	LabelTTF* mpState;
+
 	LabelTTF* ttf1;
 
 	Tower* tower;
@@ -85,6 +91,9 @@ private:
 	std::vector<Condition*> tempVector;
 	//분열 관련 변수
 	unsigned int divisonNum;
+
+	//마력
+	unsigned int MP;
 #ifdef __DEBUG_GAME_VARIABLE__
 private:
 	LabelTTF* monsterAmountViewer;

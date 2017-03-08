@@ -75,6 +75,7 @@ bool HelloWorld::init()
 	this->schedule(schedule_selector(HelloWorld::onTimeUpdate));
 	this->schedule(schedule_selector(HelloWorld::gameTimer), 1.0f);
 	divisonNum = 1;
+	MP = 100;
     return true;
 }
 
@@ -91,17 +92,24 @@ bool HelloWorld::onContactBegin(PhysicsContact& contact)
 
 void HelloWorld::createGameScene()//권태형 제작
 {
-	Size _winSize = Director::sharedDirector()->getWinSize();
+	_winSize = Director::sharedDirector()->getWinSize();
 	player = Player::createAndInit();
 	statusBar = Sprite::create("UI/MainStatusBar.png");
 	statusBar->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
-	mpBar = Sprite::create("UI/MainStatusBar.png");
+	mpSprite = Sprite::create("UI/MpStatusBar.png");
+	mpBar = CCProgressTimer::create(mpSprite);
+	mpBar->setType(kCCProgressTimerTypeBar);
+	mpBar->setPercentage(MP);
+	mpBar->setMidpoint(ccp(0, 0.5f));
 	mpBar->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
-	//setSpriteAnchor_Center(statusBar);
+	mpBar->setBarChangeRate(Vec2(1, 0));
+	setSpriteAnchor_Center(statusBar);
 	player->setPosition(_winSize.width / 2 - 200, _winSize.height / 2 - 200);
 	statusBar->setPosition(_winSize.width / 2, _winSize.height * 1 / 20);
-	mpBar->setPosition(_winSize.width / 2, _winSize.height * 1 / 20);
-	mpBar->setColor(Color3B(50, 50, 200));
+	mpBar->setPosition(_winSize.width / 2 + 267, _winSize.height * 1 / 20 - 25);
+	mpState = LabelTTF::create("100/100", "fonts/RoundGothic.ttf", 30);
+	mpState->setColor(Color3B(0, 100, 250));
+	mpState->setPosition(_winSize.width / 2 + 267, _winSize.height * 1 / 20 - 25);
 	ttf1 = LabelTTF::create("Default", "fonts/RoundGothic.ttf", 30);
 	ttf1->setPosition(100, 100);
 	ttf1->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
@@ -109,18 +117,20 @@ void HelloWorld::createGameScene()//권태형 제작
 	this->addChild(ttf1);
 	this->addChild(statusBar);
 	this->addChild(mpBar);
+	this->addChild(mpState);
 
 	roundViewer = LabelTTF::create("Round", "fonts/RoundGothic.ttf", 30);
 	roundViewer->setColor(Color3B::RED);
-	roundViewer->setPosition(480, 620);
+	roundViewer->setPosition(_winSize.width / 2, _winSize.height - 100);
 	roundViewer->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
 	this->addChild(roundViewer);
 
 	timeViewer = LabelTTF::create("Default", "fonts/RoundGothic.ttf", 30);
 	timeViewer->setColor(Color3B::RED);
-	timeViewer->setPosition(480, 590);
+	timeViewer->setPosition(_winSize.width / 2, _winSize.height - 150);
 	timeViewer->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
 	this->addChild(timeViewer);
+	this->schedule(schedule_selector(HelloWorld::mpRestore), 0.5f);
 }
 
 /*
@@ -153,7 +163,7 @@ void HelloWorld::initGameVariable()
 void HelloWorld::setMonsterAmountViewer()
 {
 	monsterAmountViewer = LabelTTF::create("Num", "fonts/RoundGothic.ttf", 30);
-	monsterAmountViewer->setPosition(900, 600);
+	monsterAmountViewer->setPosition(_winSize.width - 200 , _winSize.height - 150);
 	monsterAmountViewer->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
 	this->addChild(monsterAmountViewer);
 }
@@ -172,7 +182,7 @@ void HelloWorld::makeTower()
 	tower->getPhysicsBody()->setCollisionBitmask(0x030);
 
 	tower->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
-	tower->setPosition(Vec2(480, 320));
+	tower->setPosition(Vec2(_winSize.width / 2, _winSize.height/2));
 
 	tower->setTowerBase();
 
@@ -190,6 +200,9 @@ void HelloWorld::onTimeUpdate(float input)//권태형 제작
 	diffUnitVec2 = diffUnitVec2.getNormalized();
 	//cocos2d::log("%f", cursorAngle);
 	player->setRotation(90 - diffUnitVec2.getAngle() * 180 / M_PI);
+	mpBar->setPercentage(MP);
+	std::string mpText = std::to_string(static_cast<int>(ceil(MP))) + " / 100";
+	mpState->setString(mpText);
 }
 
 /*
@@ -238,6 +251,13 @@ void HelloWorld::gameTimer(float dt)
 	#endif // __DEBUG_GAME_VARIABLE__
 }
 
+void HelloWorld::mpRestore(float input)
+{
+	if (MP < 100) {
+		MP++;
+	}
+}
+
 void HelloWorld::onMouseDown(cocos2d::Event * event)
 {
 	auto mousePosition = static_cast<EventMouse*>(event)->getLocation();
@@ -256,12 +276,44 @@ void HelloWorld::onMouseMove(cocos2d::Event * event)
 
 void HelloWorld::onKeyPressed(EventKeyboard::KeyCode keyCode, Event * event)
 {
+	int temp = tempVector.size();
+	int tempMP = MP;
 	switch (keyCode)
 	{
 	case EventKeyboard::KeyCode::KEY_SPACE:
-		fireMissile();
-		tempVector.clear();
-		divisonNum = 1;
+		switch (temp)
+		{
+		case 1:
+			tempMP -= 10;
+			break;
+		case 2:
+			tempMP -= 15;
+			break;
+		case 3:
+			tempMP -= 23;
+			break;
+		case 4:
+			tempMP -= 35;
+			break;
+		case 5:
+			tempMP -= 55;
+			break;
+		case 6:
+			tempMP -= 80;
+			break;
+		case 0:
+			tempMP -= 2;
+			break;
+		default:
+			tempMP -= 101;
+			break;
+		}
+		if (tempMP >= 0) {
+			fireMissile();
+			tempVector.clear();
+			divisonNum = 1;
+			MP = tempMP;
+		}
 		break;
 	case EventKeyboard::KeyCode::KEY_Q:
 		tempVector.push_back(new Knock());
@@ -336,7 +388,7 @@ Enemy* HelloWorld::makeMonster()
 	monster->setPhysicsBody(body);
 	monster->getPhysicsBody()->setDynamic(false);
 	monster->setEnemyTeam();
-	monster->setPosition(Vec2(960 * (rand() % 2), rand() % 600));
+	monster->setPosition(Vec2(_winSize.width * (rand() % 2), (rand() % 720)));
 	return monster;
 }
 
