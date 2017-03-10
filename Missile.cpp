@@ -109,9 +109,15 @@ void Missile::castEffect()
 		{
 		case EffectCode::PowerUp:
 			range += (*iter)->castEffect(range);
-			//penetrationCount += (*iter)->castSideEffect(penetrationCount);
+			if ((*iter)->conditonLevel > 6) {
+				penetrationCount += (*iter)->castSideEffect(penetrationCount);
+			}
 			break;
 		case EffectCode::Division:
+			break;
+		case EffectCode::Mine:
+			getPhysicsBody()->setVelocity(Vec2(0,0));
+			range += (*iter)->castEffect(range)*speed;
 			break;
 		default:
 			break;

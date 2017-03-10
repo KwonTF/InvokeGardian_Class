@@ -84,7 +84,10 @@ void Enemy::setDeathCallback(const monsterCallback &callback)
 {
 	deathCallback = callback;
 }
-
+void Enemy::setExplodeCallback(const ExplodeCallback & callback)
+{
+	explodeCallback = callback;
+}
 // add type to enemy
 // 0 : normal, 1 : range, 2 : mass, 3 : divide, 4 : golem, 5 : faster
 void Enemy::typeEnhance(int monsterType)
@@ -178,6 +181,9 @@ void Enemy::CalculateEffect(float input)
 				knockBackSpeed = (*iter)->castEffect(0);
 			}
 			schedule(schedule_selector(Enemy::KnockBack),0,10,0);
+		case EffectCode::Explode:
+			explodeCallback(getPosition());
+			break;
 		default:
 			break;
 		}
@@ -231,4 +237,9 @@ void Enemy::destroy()
 	Unit::destroy();
 
 	deathCallback();
+}
+
+bool Enemy::isInRange(Vec2 point, float distance)
+{
+	return distance >= getPosition().getDistance(point);
 }

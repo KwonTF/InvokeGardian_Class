@@ -41,7 +41,7 @@ Unit* Unit::create(const std::string &filename)
 void Unit::collisioned(int damage, std::vector<Condition*> &c)
 {
 	conditionArray = c;
-	hpCurrent -= damage;
+	takenDamage(damage);
 
 	if (hpCurrent > hpMax)
 		hpCurrent = hpMax;
@@ -142,4 +142,11 @@ void Unit::destroy()
 	auto sequence = Sequence::create(callback1, DelayTime::create(1.0f), callback2, nullptr);
 
 	runAction(sequence);
+}
+
+void Unit::takenDamage(int taken)
+{
+	hpCurrent -= taken;
+	if(hpCurrent <=0)
+		destroy();
 }

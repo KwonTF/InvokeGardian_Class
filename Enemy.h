@@ -2,8 +2,8 @@
 #include "cocos2d.h"
 #include "Unit.h"
 #include "Missile.h"
-
 typedef std::function<void()> monsterCallback;
+typedef std::function<void(Vec2)> ExplodeCallback;
 
 namespace mutate {
 	extern const int Range[6];
@@ -39,10 +39,10 @@ private:
 	float knockBackSpeed;
 
 	monsterCallback deathCallback;
+	ExplodeCallback explodeCallback;
 public:
 	Enemy();
 	~Enemy();
-
 	static Enemy* create(const std::string &filename);
 
 	void setBaseAbillity(int hp, int attack, int range, int speed, int as);
@@ -51,13 +51,14 @@ public:
 
 	void setEnemyTeam();
 	void setDeathCallback(const monsterCallback &callback);
+	void setExplodeCallback(const ExplodeCallback &callback);
 	void typeEnhance(int monsterType);
 	void divideEnemy();
 	void setEnemyAim(const cocos2d::Vec2 &aimPos);
 	void shootMissile();
 
 	virtual void destroy();
-
+	bool isInRange(Vec2 point, float distance);
 private:
 	void update(float input);
 	//효과 관련 함수
@@ -65,4 +66,3 @@ private:
 	void CalculateEffect(float input);
 	void KnockBack(float input);
 };
-

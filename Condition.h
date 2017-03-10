@@ -3,7 +3,7 @@
 // 상태이상 정보 클래스
 enum class EffectCode
 {
-	Slow, Unknown, Knock, PowerUp, Division
+	Slow, Unknown, Knock, PowerUp, Division, Mine, Explode
 };
 static unsigned int additioalLevel = 7; //추가효과가 붙기 시작하는 레벨
 class Condition
@@ -63,5 +63,28 @@ public:
 	void enchance();
 private:
 	unsigned int divideNum;
+	EffectCode code;
+};
+
+class Mine : public Condition {
+public:
+	Mine();
+	float castEffect(float num)const;
+	float castSideEffect(float num)const;
+	EffectCode getCode();
+	void enchance();
+private:
+	unsigned int holdTime;
+	EffectCode code;
+};
+class Explode : public Condition {
+public:
+	Explode();
+	float castEffect(float num)const;
+	float castSideEffect(float num)const;
+	EffectCode getCode();
+	void enchance();
+private:
+	unsigned int damage;
 	EffectCode code;
 };

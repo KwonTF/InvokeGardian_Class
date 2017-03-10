@@ -62,6 +62,7 @@ public:
 	void roundChange();
 
 	void monsterDeath();
+	void explodeEffect(Vec2 point);
 	// 객체 생성 함수
 	Enemy* makeMonster();
 	Missile *makeMissile();
@@ -89,6 +90,7 @@ private:
 	Vec2 diffUnitVec3;
 	float cursorAngle;
 	std::vector<Condition*> tempVector;
+	Vector<Enemy*> enemyVector;
 	//분열 관련 변수
 	unsigned int divisonNum;
 

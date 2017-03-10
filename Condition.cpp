@@ -112,3 +112,47 @@ EffectCode Division::getCode()
 {
 	return EffectCode::Division;
 }
+
+Mine::Mine():holdTime(3){}
+
+float Mine::castEffect(float num) const
+{
+	return holdTime;
+}
+
+float Mine::castSideEffect(float num) const
+{
+	return 0.0f;
+}
+
+EffectCode Mine::getCode()
+{
+	return EffectCode::Mine;
+}
+
+void Mine::enchance()
+{
+	holdTime += 2;
+}
+
+Explode::Explode():damage(100){}
+
+float Explode::castEffect(float num) const
+{
+	return damage;
+}
+
+float Explode::castSideEffect(float num) const
+{
+	return 0.0f;
+}
+
+EffectCode Explode::getCode()
+{
+	return EffectCode::Explode;
+}
+
+void Explode::enchance()
+{
+	damage += 25;
+}

@@ -242,6 +242,8 @@ void HelloWorld::gameTimer(float dt)
 			GameData::enemyAttackRange, GameData::enemyMoveSpeed, GameData::enemyAttackSpeed);
 		monster->setEnemyAim(tower->getPosition());
 		monster->setDeathCallback(CC_CALLBACK_0(HelloWorld::monsterDeath, this));
+		monster->setExplodeCallback(CC_CALLBACK_0(HelloWorld::explodeEffect, this, monster->getPosition()));
+		enemyVector.pushBack(monster);
 		addChild(monster);
 		monsterPresentAmount++;
 	}
@@ -321,12 +323,18 @@ void HelloWorld::onKeyPressed(EventKeyboard::KeyCode keyCode, Event * event)
 	case EventKeyboard::KeyCode::KEY_W:
 		tempVector.push_back(new PowerUp());
 		break;
+	case EventKeyboard::KeyCode::KEY_E:
+		tempVector.push_back(new Explode());
+		break;
 	case EventKeyboard::KeyCode::KEY_A:
 		tempVector.push_back(new Division());
-		//divisonNum+=tempVector.back()->castEffect(divisonNum);
+		divisonNum+=tempVector.back()->castEffect(divisonNum);
 		break;
 	case EventKeyboard::KeyCode::KEY_S:
 		tempVector.push_back(new Slow());
+		break;
+	case EventKeyboard::KeyCode::KEY_D:
+		tempVector.push_back(new Mine());
 		break;
 	default:
 		break;
@@ -357,9 +365,8 @@ void HelloWorld::monsterDeath()
 	#ifdef __DEBUG_GAME_VARIABLE__
 		monsterAmountViewer->setString(std::to_string(monsterPresentAmount));
 	#endif // __DEBUG_GAME_VARIABLE__
-	
 	// 라운드 변경
-	if (monsterRoundAmount <= 0 && monsterPresentAmount <= 0)
+  	if (monsterRoundAmount <= 0 && monsterPresentAmount <= 0)
 	{
 		// 적용함수 만들 것
 		// 남은 시간 1초 남기고 없애기
@@ -370,8 +377,18 @@ void HelloWorld::monsterDeath()
 
 		// 업그레이드 가능 상태로 만들기
 		canUpgrade = true;
-		roundViewer->setColor(Color3B::GREEN);
+  		roundViewer->setColor(Color3B::GREEN);
 		timeViewer->setColor(Color3B::GREEN);
+		enemyVector.clear();
+	}
+}
+
+void HelloWorld::explodeEffect(Vec2 point)
+{
+	for (int i = 0; i < enemyVector.size(); i++) {
+		if (enemyVector.at(i)->isInRange(point, 200)) {
+			enemyVector.at(i)->takenDamage(100);
+		}
 	}
 }
 
@@ -423,12 +440,20 @@ void HelloWorld::fireMissile()
 	*/
 
 	// Missile로 만든거
-	auto bullet = HelloWorld::makeMissile();
-	bullet->getPhysicsBody()->setVelocity(diffUnitVec2 * bullet->getSpeed());
-	bullet->setMissileTeam(0);
-	bullet->setCondition(tempVector);
-	bullet->castEffect();
-	layerMissile->addChild(bullet);
+	for (int i = 0; i < divisonNum; i++) {
+		auto missile = HelloWorld::makeMissile();
+		Vec2 tempVec = diffUnitVec3;
+		if (divisonNum > 1) {
+			tempVec.x += random() % 100 - 50;
+			tempVec.y += random() % 100 - 50;
+		}
+		tempVec = tempVec.getNormalized();
+		missile->getPhysicsBody()->setVelocity(tempVec * missile->getSpeed());
+		missile->setMissileTeam(0);
+		missile->setCondition(tempVector);
+		missile->castEffect();
+		layerMissile->addChild(missile);
+	}
 }
 
 void setSpriteAnchor_Center(Sprite * input)//권태형 제작

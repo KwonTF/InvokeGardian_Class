@@ -48,5 +48,8 @@ public:
 	// remove object
 	void deathAnimation();
 	virtual void destroy();
+
+	//도트뎀 관련 함수
+	void takenDamage(int taken);
 };
 
