@@ -1,5 +1,10 @@
 #include "Missile.h"
 
+Missile::Missile()
+{
+	removeTime = 0.1f;
+}
+
 Missile* Missile::create(const std::string &filename)
 {
 	Missile *missile = new (std::nothrow) Missile();
@@ -75,6 +80,11 @@ void Missile::setMissileTeam(int team)
 	}
 }
 
+void Missile::setRemoveTime(float time)
+{
+	removeTime = time;
+}
+
 float Missile::getSpeed()
 {
 	return speed;
@@ -124,6 +134,27 @@ void Missile::castEffect()
 		}
 	}
 	scheduleOnce(schedule_selector(Missile::removeMissile), (float)range / speed);
+}
+
+void Missile::makeExplosion()
+{
+	Explosion* explosion = Explosion::create("Others/Bullet.PNG");
+
+	auto material = PhysicsMaterial(0.1f, 1.0f, 0.5f);
+
+	auto body = PhysicsBody::createCircle(explosion->getContentSize().width / 2, material);
+
+	// 몸체 설정
+	explosion->setPhysicsBody(body);
+	explosion->setPosition(explosion->getPosition());
+
+	// 내부 값 설정
+	explosion->setAttack(10);
+
+	if (getParent() != nullptr)
+	{
+		getParent()->addChild(explosion);
+	}
 }
 
 // make Missile's death animation

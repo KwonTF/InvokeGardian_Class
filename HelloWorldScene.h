@@ -92,7 +92,7 @@ private:
 	std::vector<Condition*> tempVector;
 	Vector<Enemy*> enemyVector;
 	//분열 관련 변수
-	unsigned int divisonNum;
+	int divisonNum;
 
 	//마력
 	unsigned int MP;

@@ -184,8 +184,6 @@ void HelloWorld::makeTower()
 	tower->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
 	tower->setPosition(Vec2(_winSize.width / 2, _winSize.height/2));
 
-	tower->setTowerBase();
-
 	// hpBar 넣을 것
 
 	layerMissile->addChild(tower);
@@ -431,14 +429,6 @@ Missile* HelloWorld::makeMissile()
 
 void HelloWorld::fireMissile()
 {
-	// BulletObj로 만든거
-	/*
-	BulletObj * missile = BulletObj::createAndInit(player->getRotation());
-	missile->setPosition(player->getPosition());
-	missile->setRotation(player->getRotation());
-	layerMissile->addChild(missile);
-	*/
-
 	// Missile로 만든거
 	for (int i = 0; i < divisonNum; i++) {
 		auto missile = HelloWorld::makeMissile();

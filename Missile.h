@@ -1,6 +1,7 @@
 #pragma once
 #include "cocos2d.h"
 #include "Collisioner.h"
+#include "Explosion.h"
 
 USING_NS_CC;
 
@@ -22,8 +23,9 @@ protected:
 	int range;				// 사거리 제한
 	int divideCount;		// 분열 수
 
+	float removeTime;		// 총알 남아있는 시간
 public:
-	Missile() {};
+	Missile();
 	~Missile() {};
 
 	static Missile* create(const std::string &filename);
@@ -38,12 +40,14 @@ public:
 	void setDivideCount(int count);
 
 	void setMissileTeam(int team);
+	void setRemoveTime(float time);
 
 	float getSpeed();
 	float getRange();
 
 	//미사일 요소 적용 함수
 	void castEffect();
+	void makeExplosion();
 	void deathAnimation();
 	void destroy();
 

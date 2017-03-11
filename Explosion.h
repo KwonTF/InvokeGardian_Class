@@ -20,7 +20,10 @@ public:
 
 	virtual void collisioned(int damage, std::vector<Condition*> &c);
 
+	void setAttack(int atk);
 	void setRemoveTime(float time);
+	void setCollisionBitmask();
+
 	void removeExplosion(float f);
 
 	void deathAnimation();
