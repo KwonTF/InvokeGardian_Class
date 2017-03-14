@@ -76,6 +76,7 @@ bool HelloWorld::init()
 	this->schedule(schedule_selector(HelloWorld::gameTimer), 1.0f);
 	divisonNum = 1;
 	MP = 100;
+	SlotLevel = 2;
     return true;
 }
 
@@ -96,20 +97,37 @@ void HelloWorld::createGameScene()//권태형 제작
 	player = Player::createAndInit();
 	statusBar = Sprite::create("UI/MainStatusBar.png");
 	statusBar->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
-	mpSprite = Sprite::create("UI/MpStatusBar.png");
+
+	mpSprite = Sprite::create("UI/MPStatusBar.png");
 	mpBar = CCProgressTimer::create(mpSprite);
 	mpBar->setType(kCCProgressTimerTypeBar);
 	mpBar->setPercentage(MP);
 	mpBar->setMidpoint(ccp(0, 0.5f));
 	mpBar->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
 	mpBar->setBarChangeRate(Vec2(1, 0));
+
+	hpSprite = Sprite::create("UI/HPStatusBar.png");
+	hpBar = CCProgressTimer::create(hpSprite);
+	hpBar->setType(kCCProgressTimerTypeBar);
+	hpBar->setPercentage(500/5);
+	hpBar->setMidpoint(ccp(1, 0.5f));
+	hpBar->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
+	hpBar->setBarChangeRate(Vec2(1, 0));
+
 	setSpriteAnchor_Center(statusBar);
 	player->setPosition(_winSize.width / 2 - 200, _winSize.height / 2 - 200);
 	statusBar->setPosition(_winSize.width / 2, _winSize.height * 1 / 20);
+
 	mpBar->setPosition(_winSize.width / 2 + 267, _winSize.height * 1 / 20 - 25);
 	mpState = LabelTTF::create("100/100", "fonts/RoundGothic.ttf", 30);
 	mpState->setColor(Color3B(0, 100, 250));
 	mpState->setPosition(_winSize.width / 2 + 267, _winSize.height * 1 / 20 - 25);
+
+	hpBar->setPosition(_winSize.width / 2  - 284 , _winSize.height * 1 / 20 - 25);
+	hpState = LabelTTF::create("500/500", "fonts/RoundGothic.ttf", 30);
+	hpState->setColor(Color3B(100, 0, 0));
+	hpState->setPosition(_winSize.width / 2 - 267, _winSize.height * 1 / 20 - 25);
+
 	ttf1 = LabelTTF::create("Default", "fonts/RoundGothic.ttf", 30);
 	ttf1->setPosition(100, 100);
 	ttf1->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
@@ -117,8 +135,10 @@ void HelloWorld::createGameScene()//권태형 제작
 	this->addChild(ttf1);
 	this->addChild(statusBar);
 	this->addChild(mpBar);
+	this->addChild(hpBar);
 	this->addChild(mpState);
-
+	this->addChild(hpState);
+	
 	roundViewer = LabelTTF::create("Round", "fonts/RoundGothic.ttf", 30);
 	roundViewer->setColor(Color3B::RED);
 	roundViewer->setPosition(_winSize.width / 2, _winSize.height - 100);
@@ -131,6 +151,14 @@ void HelloWorld::createGameScene()//권태형 제작
 	timeViewer->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
 	this->addChild(timeViewer);
 	this->schedule(schedule_selector(HelloWorld::mpRestore), 0.5f);
+
+	for (int i = 0; i < 6; i++) {
+		Sprite* temp = Sprite::create("UI/SkillBox.png");
+		temp->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
+		temp->setPosition(_winSize.width / 12 * (i+3.5) , _winSize.height * 1 / 20 * 2);
+		Skillboxes.pushBack(temp);
+		this->addChild(temp);
+	}
 }
 
 /*
@@ -201,6 +229,10 @@ void HelloWorld::onTimeUpdate(float input)//권태형 제작
 	mpBar->setPercentage(MP);
 	std::string mpText = std::to_string(static_cast<int>(ceil(MP))) + " / 100";
 	mpState->setString(mpText);
+
+	hpBar->setPercentage(tower->getHP() / 5);
+	std::string hpText = std::to_string(static_cast<int>(ceil(tower->getHP()))) + " / 500";
+	hpState->setString(hpText);
 }
 
 /*
@@ -322,7 +354,7 @@ void HelloWorld::onKeyPressed(EventKeyboard::KeyCode keyCode, Event * event)
 		tempVector.push_back(new PowerUp());
 		break;
 	case EventKeyboard::KeyCode::KEY_E:
-		tempVector.push_back(new Explode());
+		//tempVector.push_back(new Explode()); on Debug
 		break;
 	case EventKeyboard::KeyCode::KEY_A:
 		tempVector.push_back(new Division());

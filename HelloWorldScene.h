@@ -77,6 +77,10 @@ private:
 	CCProgressTimer* mpBar;
 	LabelTTF* mpState;
 
+	Sprite* hpSprite;
+	CCProgressTimer* hpBar;
+	LabelTTF* hpState;
+
 	LabelTTF* ttf1;
 
 	Tower* tower;
@@ -93,6 +97,13 @@ private:
 	Vector<Enemy*> enemyVector;
 	//분열 관련 변수
 	int divisonNum;
+
+	//Skill UI
+	Vector<Sprite*> Skillboxes;
+	Vector<LabelTTF*> SkillLevels;
+
+	//스킬 슬롯 레벨
+	unsigned int SlotLevel;
 
 	//마력
 	unsigned int MP;
