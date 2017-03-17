@@ -69,6 +69,7 @@ public:
 	void fireMissile();
 private:
 	Size _winSize;
+	Sprite* Background;
 	Layer* layerMissile;
 	Player* player;
 	Sprite* statusBar;

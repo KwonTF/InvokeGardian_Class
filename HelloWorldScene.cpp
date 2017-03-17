@@ -38,6 +38,7 @@ bool HelloWorld::init()
 
     //addChild(rootNode);
 
+	_winSize = Director::sharedDirector()->getWinSize();
 	// set contact listener
 	auto contactListener = EventListenerPhysicsContact::create();
 	contactListener->onContactBegin = CC_CALLBACK_1(HelloWorld::onContactBegin, this);
@@ -58,12 +59,17 @@ bool HelloWorld::init()
 	keyBoard->onKeyReleased = CC_CALLBACK_2(HelloWorld::onKeyReleased, this);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(keyBoard, this);
 
+	//배경 지정
+	Background = Sprite::create("Background/Background.png");
+	Background->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
+	Background->setPosition(_winSize.width / 2, _winSize.height / 2);
+	this->addChild(Background);
+
 	//미사일 레이어들?
 	layerMissile = Layer::create();
 	layerMissile->setAnchorPoint(Vec2::ANCHOR_TOP_RIGHT);
 	layerMissile->setPosition(Vec2());
 	this->addChild(layerMissile);
-
 	createGameScene();
 	initGameVariable();
 	makeTower();
@@ -93,7 +99,6 @@ bool HelloWorld::onContactBegin(PhysicsContact& contact)
 
 void HelloWorld::createGameScene()//권태형 제작
 {
-	_winSize = Director::sharedDirector()->getWinSize();
 	player = Player::createAndInit();
 	statusBar = Sprite::create("UI/MainStatusBar.png");
 	statusBar->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
