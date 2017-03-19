@@ -43,6 +43,11 @@ bool HelloWorld::init()
 	auto contactListener = EventListenerPhysicsContact::create();
 	contactListener->onContactBegin = CC_CALLBACK_1(HelloWorld::onContactBegin, this);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(contactListener, this);
+	
+	// set TouchesEvent
+	auto touchListener = EventListenerTouchAllAtOnce::create();
+	touchListener->onTouchesEnded = CC_CALLBACK_2(HelloWorld::onTouchesEnded, this);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(touchListener, this);
 
 	// Set MouseEvent
 	auto Mouse = EventListenerMouse::create();
@@ -95,6 +100,14 @@ bool HelloWorld::onContactBegin(PhysicsContact& contact)
 	sp2->collisioned(sp1->getAttack(), sp1->getCondition());
 	
 	return true;
+}
+
+void HelloWorld::onTouchesEnded(const std::vector<Touch*> &touches, Event* event)
+{
+	for (auto &touch : touches)
+	{
+
+	}
 }
 
 void HelloWorld::createGameScene()//권태형 제작
@@ -278,6 +291,8 @@ void HelloWorld::gameTimer(float dt)
 		monster->setEnemyAim(tower->getPosition());
 		monster->setDeathCallback(CC_CALLBACK_0(HelloWorld::monsterDeath, this));
 		monster->setExplodeCallback(CC_CALLBACK_0(HelloWorld::explodeEffect, this, monster->getPosition()));
+		//monster->projectImage("Unit/Hostile0.png");
+		monster->setHpGage("Others/hpGage.png");
 		enemyVector.pushBack(monster);
 		addChild(monster);
 		monsterPresentAmount++;
@@ -427,6 +442,38 @@ void HelloWorld::explodeEffect(Vec2 point)
 	}
 }
 
+bool HelloWorld::anyRay(PhysicsWorld &world, const PhysicsRayCastInfo &info, void *data)
+{
+	*((Vec2*)data) = info.contact;
+
+	PhysicsBody* body = info.shape->getBody();
+
+	return false;
+}
+
+void HelloWorld::myTick(float dt)
+{
+	Vec2 point1 = Vec2(240, 160);
+	Vec2 point2 = Vec2(390, 160);
+
+	removeChild(_node);
+	_node = DrawNode::create();
+
+	Vec2 point3 = point2;
+
+	auto func = CC_CALLBACK_3(HelloWorld::anyRay, this);
+
+	this->getScene()->getPhysicsWorld()->rayCast(func, point1, point2, &point3);
+	_node->drawSegment(point1, point2, 1, Color4F::RED);
+
+	if (point2 != point3)
+	{
+		_node->drawDot(point3, 2, Color4F::BLUE);
+	}
+
+	addChild(_node);
+}
+
 // 실험용 몬스터 생성
 // create by ZeroFe
 Enemy* HelloWorld::makeMonster()
@@ -440,6 +487,7 @@ Enemy* HelloWorld::makeMonster()
 	monster->setPhysicsBody(body);
 	monster->getPhysicsBody()->setDynamic(false);
 	monster->setEnemyTeam();
+	monster->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
 	monster->setPosition(Vec2(_winSize.width * (rand() % 2), (rand() % 720)));
 	return monster;
 }

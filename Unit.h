@@ -23,9 +23,15 @@ protected:
 	// 이동속도
 	float moveSpeed;
 	//std::vector<Condition*> stateArray;
+
+	Vec2 previousPosition;
+
+	// sub Sprite
+	Sprite *hpGage;
+	Sprite *shadow[4];
 public:
 	Unit();
-	~Unit() {};
+	~Unit();
 
 	static Unit* create(const std::string &filename);
 
@@ -43,7 +49,9 @@ public:
 	int getHP();
 	float getSpeed();
 
-	void regeneration(float dt);
+	// add sub sprite
+	void setHpGage(const std::string &filename);
+	void projectImage(const std::string &filename);
 
 	// remove object
 	void deathAnimation();
@@ -51,5 +59,9 @@ public:
 
 	//도트뎀 관련 함수
 	void takenDamage(int taken);
+
+	// schedule function
+	void regeneration(float dt);
+	void shadowEffect(float dt);
 };
 

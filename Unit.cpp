@@ -9,6 +9,24 @@ Unit::Unit()
 	moveSpeed = 0;
 }
 
+Unit::~Unit()
+{
+	/*
+	if (hpGage != nullptr)
+	{
+		hpGage->removeFromParent();
+	}
+
+	for (int i = 0; i < 4; i++)
+	{
+		if (shadow[i] != nullptr)
+		{
+			shadow[i]->removeFromParent();
+		}
+	}
+	*/
+}
+
 /*
 set unit image infomation
 filename : file root of unit's image
@@ -49,6 +67,9 @@ void Unit::collisioned(int damage, std::vector<Condition*> &c)
 	if (hpCurrent <= 0)
  		destroy();
 
+	if (hpGage != nullptr)
+		hpGage->setScaleX((float)hpCurrent / hpMax);
+
 	log("Unit collisioned : hp - %d, damage - %d", hpCurrent, damage);
 }
 
@@ -83,16 +104,30 @@ float Unit::getSpeed()
 	return moveSpeed;
 }
 
-void Unit::regeneration(float dt)
+void Unit::setHpGage(const std::string &filename)
 {
-	if (hpMax <= hpCurrent + hpRegen)
+	hpGage = Sprite::create(filename);
+	hpGage->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
+	hpGage->setPosition(getContentSize().width / 2, 0);
+	addChild(hpGage);
+}
+
+void Unit::projectImage(const std::string &filename)
+{
+	// shadow들 선언
+	for (int i = 0; i < 4; i++)
 	{
-		hpCurrent = hpMax;
+		shadow[i] = Sprite::create(filename);
+		shadow[i]->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
+		shadow[i]->setPosition(getPosition());
+		addChild(shadow[i]);
+		shadow[i]->setOpacity(204 - (51 * i));
 	}
-	else
-	{
-		hpCurrent += hpRegen;
-	}
+
+	// 이전 위치 찾기
+	previousPosition = getPosition();
+
+	schedule(schedule_selector(Unit::shadowEffect), 0.25f);
 }
 
 // make Unit's death Animation
@@ -149,4 +184,25 @@ void Unit::takenDamage(int taken)
 	hpCurrent -= taken;
 	if(hpCurrent <=0)
 		destroy();
+}
+
+void Unit::regeneration(float dt)
+{
+	if (hpMax <= hpCurrent + hpRegen)
+	{
+		hpCurrent = hpMax;
+	}
+	else
+	{
+		hpCurrent += hpRegen;
+	}
+}
+
+void Unit::shadowEffect(float dt)
+{
+	shadow[3]->setPosition(shadow[2]->getPosition());
+	shadow[2]->setPosition(shadow[1]->getPosition());
+	shadow[1]->setPosition(shadow[0]->getPosition());
+	shadow[0]->setPosition(previousPosition);
+	previousPosition = getPosition();
 }
