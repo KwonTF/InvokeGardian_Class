@@ -4,6 +4,7 @@
 
 #include "cocos2d.h"
 #include "HelloWorldScene.h"
+#include "SimpleAudioEngine.h"  
 
 using namespace cocos2d;
 
@@ -11,7 +12,8 @@ class Intro : public cocos2d::CCLayer
 {
 private:
 	CCSize _screenSize;
-
+	CCSprite* Play;
+	bool playVisible;
 public:
 	virtual bool init();
 
@@ -19,6 +21,8 @@ public:
 
 	void changeScene(void);
 	void menuCallback1(cocos2d::Ref * pSender);
+	void menuCallback2(cocos2d::Ref * pSender);
+	void menuCallback3(cocos2d::Ref * pSender);
 	CREATE_FUNC(Intro);
 
 	void createGameScene(void);

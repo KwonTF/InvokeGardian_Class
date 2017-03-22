@@ -39,14 +39,25 @@ void Intro::createGameScene(void)
 	openingImage->setPosition(ccp(_screenSize.width * 0.5f,_screenSize.height * 0.5f));
 	this->addChild(openingImage);
 	auto item_1 = MenuItemImage::create("UI/Menu_Start.png", "UI/Menu_Start.png", "UI/Menu_Start.png", CC_CALLBACK_1(Intro::menuCallback1, this));
+	auto item_2= MenuItemImage::create("UI/Menu_Play.png", "UI/Menu_Play.png", "UI/Menu_Play.png", CC_CALLBACK_1(Intro::menuCallback2, this));
+	auto item_3 = MenuItemImage::create("UI/Menu_Exit.png", "UI/Menu_Exit.png", "UI/Menu_Exit.png", CC_CALLBACK_1(Intro::menuCallback3, this));
 
 
-	auto menu = Menu::create(item_1, NULL);
+	auto menu = Menu::create(item_1, item_2, item_3, NULL);
 
 	menu->alignItemsVertically();
-	menu->setPosition(Vec2(950,375));
+	menu->setPosition(Vec2(1000,270));
 	menu->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
 	this->addChild(menu);
+
+	Play = CCSprite::create("UI/HowtoPlay.png");
+	Play->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
+	Play->setPosition(Vec2(430, 270));
+	playVisible = false;
+	Play->setVisible(playVisible);
+	this->addChild(Play);
+
+	CocosDenshion::SimpleAudioEngine::sharedEngine()->playBackgroundMusic("BGM/enchanted.wav", true);
 }
 
 void Intro::changeScene(void)
@@ -62,4 +73,16 @@ void Intro::changeScene(void)
 void Intro::menuCallback1(cocos2d::Ref* pSender)
 {
 	changeScene();
+}
+void Intro::menuCallback2(cocos2d::Ref* pSender)
+{
+	if (playVisible)
+		playVisible = false;
+	else
+		playVisible = true;
+	Play->setVisible(playVisible);
+}
+void Intro::menuCallback3(cocos2d::Ref* pSender)
+{
+	CCDirector::sharedDirector()->end();
 }
