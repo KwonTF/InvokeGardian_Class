@@ -182,8 +182,29 @@ void Unit::destroy()
 void Unit::takenDamage(int taken)
 {
 	hpCurrent -= taken;
-	if(hpCurrent <=0)
-		destroy();
+	//if(hpCurrent <=0)
+		//destroy();
+}
+
+void Unit::regeneration(float dt)
+{
+	if (hpMax <= hpCurrent + hpRegen)
+	{
+		hpCurrent = hpMax;
+	}
+	else
+	{
+		hpCurrent += hpRegen;
+	}
+}
+
+void Unit::shadowEffect(float dt)
+{
+	shadow[3]->setPosition(shadow[2]->getPosition());
+	shadow[2]->setPosition(shadow[1]->getPosition());
+	shadow[1]->setPosition(shadow[0]->getPosition());
+	shadow[0]->setPosition(previousPosition);
+	previousPosition = getPosition();
 }
 
 void Unit::regeneration(float dt)

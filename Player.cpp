@@ -11,7 +11,7 @@ Player::~Player()
 Player * Player::createAndInit()
 {
 	Player* player = new Player();
-	player->initWithFile("Unit/Player.png");
+	player->initWithFile("Unit/Player_Tank.png");
 	player->autorelease();
 	player->setAnchorPoint(Vec2(0.5, 0.5));
 	return player;

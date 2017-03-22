@@ -5,6 +5,7 @@
 
 #include "cocos2d.h"
 #include "MainHeader.h"
+#include "SimpleAudioEngine.h"  
 
 class HelloWorld : public cocos2d::Layer
 {
@@ -114,7 +115,7 @@ private:
 	//스킬 슬롯 레벨
 	unsigned int SlotLevel;
 
-	//마력
+	//기본 능력치
 	unsigned int MP;
 #ifdef __DEBUG_GAME_VARIABLE__
 private:
