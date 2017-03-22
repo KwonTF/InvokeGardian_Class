@@ -200,7 +200,8 @@ void HelloWorld::initGameVariable()
 
 	// 변형 확률
 	mutateBasePer = 1;
-	mutateRoundBonus = 2;
+	mutateRoundPer = 2;
+	mutateTotalPer = 1;
 
 	// 나오는 몬스터 수
 	monsterBaseAmount = 16;
@@ -294,7 +295,7 @@ void HelloWorld::gameTimer(float dt)
 		monster->setEnemyAim(tower->getPosition());
 		monster->setDeathCallback(CC_CALLBACK_0(HelloWorld::monsterDeath, this));
 		//monster->setExplodeCallback(CC_CALLBACK_0(HelloWorld::explodeEffect, this, monster->getPosition()));
-		//monster->projectImage("Unit/Hostile0.png");
+		monster->projectImage("Unit/Hostile0.png");
 		monster->setHpGage("Others/hpGage.png");
 		enemyVector.pushBack(monster);
 		addChild(monster);
@@ -418,7 +419,8 @@ void HelloWorld::roundChange()
 	roundNum++;
 
 	monsterRoundAmount = monsterBaseAmount + 4 * roundNum;
-	mutateRoundPer = mutateBasePer + mutateRoundBonus * roundNum;
+	mutateTotalPer = mutateBasePer + mutateRoundPer * roundNum;
+	mutateLevelUpPer = roundNum * 2;
 
 	// 업그레이드 불가능 상태로 만들기
 	canUpgrade = false;

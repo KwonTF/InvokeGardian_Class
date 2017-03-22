@@ -7,24 +7,17 @@ Unit::Unit()
 	hpRegen = 0;
 
 	moveSpeed = 0;
+
+	hpGage = nullptr;
+	for (int i = 0; i < 4; i++)
+	{
+		shadow[i] = nullptr;
+	}
 }
 
 Unit::~Unit()
 {
-	/*
-	if (hpGage != nullptr)
-	{
-		hpGage->removeFromParent();
-	}
 
-	for (int i = 0; i < 4; i++)
-	{
-		if (shadow[i] != nullptr)
-		{
-			shadow[i]->removeFromParent();
-		}
-	}
-	*/
 }
 
 /*
@@ -68,7 +61,12 @@ void Unit::collisioned(int damage, std::vector<Condition*> &c)
  		destroy();
 
 	if (hpGage != nullptr)
-		hpGage->setScaleX((float)hpCurrent / hpMax);
+	{
+		if (hpCurrent > 0)
+ 			hpGage->setScaleX((float)hpCurrent / hpMax);
+		else
+			hpGage->setOpacity(0);
+	}
 
 	log("Unit collisioned : hp - %d, damage - %d", hpCurrent, damage);
 }
@@ -114,18 +112,18 @@ void Unit::setHpGage(const std::string &filename)
 
 void Unit::projectImage(const std::string &filename)
 {
-	// shadow들 선언
 	for (int i = 0; i < 4; i++)
 	{
+		// shadow들 선언
 		shadow[i] = Sprite::create(filename);
 		shadow[i]->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
-		shadow[i]->setPosition(getPosition());
-		addChild(shadow[i]);
+		shadow[i]->setPosition(Vec2::ZERO);
+		addChild(shadow[i], -1);
 		shadow[i]->setOpacity(204 - (51 * i));
-	}
 
-	// 이전 위치 찾기
-	previousPosition = getPosition();
+		// 이전 위치 찾기
+		previousPosition[i] = getPosition();
+	}
 
 	schedule(schedule_selector(Unit::shadowEffect), 0.25f);
 }
@@ -200,9 +198,12 @@ void Unit::regeneration(float dt)
 
 void Unit::shadowEffect(float dt)
 {
-	shadow[3]->setPosition(shadow[2]->getPosition());
-	shadow[2]->setPosition(shadow[1]->getPosition());
-	shadow[1]->setPosition(shadow[0]->getPosition());
-	shadow[0]->setPosition(previousPosition);
-	previousPosition = getPosition();
+	shadow[3]->setPosition(Vec2(getContentSize().width / 2, getContentSize().height / 2) + previousPosition[3] - getPosition());
+	previousPosition[3] = previousPosition[2];
+	shadow[2]->setPosition(Vec2(getContentSize().width / 2, getContentSize().height / 2) + previousPosition[2] - getPosition());
+	previousPosition[2] = previousPosition[1];
+	shadow[1]->setPosition(Vec2(getContentSize().width / 2, getContentSize().height / 2) + previousPosition[1] - getPosition());
+	previousPosition[1] = previousPosition[0];
+	shadow[0]->setPosition(Vec2(getContentSize().width / 2, getContentSize().height / 2) + previousPosition[0] - getPosition());
+	previousPosition[0] = getPosition();
 }

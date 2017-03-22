@@ -24,7 +24,8 @@ protected:
 	float moveSpeed;
 	//std::vector<Condition*> stateArray;
 
-	Vec2 previousPosition;
+	// shadow effect
+	Vec2 previousPosition[4];
 
 	// sub Sprite
 	Sprite *hpGage;

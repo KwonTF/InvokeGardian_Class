@@ -19,10 +19,11 @@ private:
 	bool canUpgrade;	// check Monster remain
 
 	// variable for random mutate
-	int mutateArray[5];		// Array for saving mutate information
-	int mutateBasePer;		// Base Persent of mutate
-	int mutateRoundPer;		// Round Persent of mutate
-	int mutateRoundBonus;	// 
+	int mutateBasePer;		// Base Persent of mutate create
+	int mutateRoundPer;		// Round Persent of mutate create
+	int mutateTotalPer;		// Total Persent of mutate create
+	
+	int mutateLevelUpPer;	// 
 
 	// variable for monster create
 	int monsterBaseAmount;		// 기본적으로 생성하는 몬스터 수

@@ -18,6 +18,9 @@ const float mutate::AtkSpeed[6] = {
 
 Enemy::Enemy()
 {
+	type = 0;
+	level = 1;
+
 	divideAmount = 0;
 	isDivide = false;
 	attackCoolTime = 180;
@@ -88,10 +91,36 @@ void Enemy::setExplodeCallback(const ExplodeCallback & callback)
 {
 	explodeCallback = callback;
 }
+
 // add type to enemy
 // 0 : normal, 1 : range, 2 : mass, 3 : divide, 4 : golem, 5 : faster
-void Enemy::typeEnhance(int monsterType)
+void Enemy::typeEnhance(int monsterType, int mutateLevel)
 {
+	type = monsterType;
+	level = mutateLevel;
+
+	switch (type) {
+	case 0:
+		break;
+	case 1:
+		setRangeType();
+		break;
+	case 2:
+		setMassType();
+		break;
+	case 3:
+		setDivideType();
+		break;
+	case 4:
+		setGolemType();
+		break;
+	case 5:
+		setFasterType();
+		break;
+	default:
+		break;
+	}
+
 	// 능력치 변화
 	hpMax = (int)((float)hpMax * mutate::HP[monsterType]);
 	hpCurrent = (int)((float)hpCurrent * mutate::HP[monsterType]);
@@ -103,6 +132,31 @@ void Enemy::typeEnhance(int monsterType)
 	// 기능 추가
 
 	// 외형 변화 추가
+}
+
+void Enemy::setRangeType()
+{
+
+}
+
+void Enemy::setMassType()
+{
+
+}
+
+void Enemy::setDivideType()
+{
+
+}
+
+void Enemy::setGolemType()
+{
+
+}
+
+void Enemy::setFasterType()
+{
+
 }
 
 // for divide type, add monster divide ability

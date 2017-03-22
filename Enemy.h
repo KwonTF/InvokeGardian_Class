@@ -20,6 +20,10 @@ create by ZeroFe
 class Enemy : public Unit
 {
 private:
+	// 积己 包访
+	int type;
+	int level;
+
 	// 盒凯 包访
 	int divideAmount;
 	bool isDivide;
@@ -52,7 +56,10 @@ public:
 	void setEnemyTeam();
 	void setDeathCallback(const monsterCallback &callback);
 	void setExplodeCallback(const ExplodeCallback &callback);
-	void typeEnhance(int monsterType);
+
+	// type 积己 包访 窃荐
+	void typeEnhance(int monsterType, int mutateLevel);
+
 	void divideEnemy();
 	void setEnemyAim(const cocos2d::Vec2 &aimPos);
 	void shootMissile();
@@ -65,4 +72,11 @@ private:
 	void slowTimeReduce(float input);
 	void CalculateEffect(float input);
 	void KnockBack(float input);
+	
+	// type 积己 包访 窃荐
+	void setRangeType();
+	void setMassType();
+	void setDivideType();
+	void setGolemType();
+	void setFasterType();
 };
