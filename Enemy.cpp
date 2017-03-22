@@ -181,8 +181,9 @@ void Enemy::CalculateEffect(float input)
 				knockBackSpeed = (*iter)->castEffect(0);
 			}
 			schedule(schedule_selector(Enemy::KnockBack),0,10,0);
+			break;
 		case EffectCode::Explode:
-			explodeCallback(getPosition());
+	//		explodeCallback(getPosition());
 			break;
 		default:
 			break;

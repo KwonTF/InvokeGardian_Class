@@ -147,6 +147,6 @@ void Unit::destroy()
 void Unit::takenDamage(int taken)
 {
 	hpCurrent -= taken;
-	if(hpCurrent <=0)
-		destroy();
+	//if(hpCurrent <=0)
+		//destroy();
 }

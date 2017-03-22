@@ -65,6 +65,9 @@ bool HelloWorld::init()
 	Background->setPosition(_winSize.width / 2, _winSize.height / 2);
 	this->addChild(Background);
 
+	//배경음 적용
+	CocosDenshion::SimpleAudioEngine::sharedEngine()->playBackgroundMusic("BGM/NomalPlay_Full_MixDown.wav", true);
+
 	//미사일 레이어들?
 	layerMissile = Layer::create();
 	layerMissile->setAnchorPoint(Vec2::ANCHOR_TOP_RIGHT);
@@ -230,7 +233,7 @@ void HelloWorld::onTimeUpdate(float input)//권태형 제작
 	diffUnitVec3 = diffUnitVec2;
 	diffUnitVec2 = diffUnitVec2.getNormalized();
 	//cocos2d::log("%f", cursorAngle);
-	player->setRotation(90 - diffUnitVec2.getAngle() * 180 / M_PI);
+	player->setRotation(90 - diffUnitVec2.getAngle() * 180 / M_PI - 90);
 	mpBar->setPercentage(MP);
 	std::string mpText = std::to_string(static_cast<int>(ceil(MP))) + " / 100";
 	mpState->setString(mpText);
@@ -277,7 +280,7 @@ void HelloWorld::gameTimer(float dt)
 			GameData::enemyAttackRange, GameData::enemyMoveSpeed, GameData::enemyAttackSpeed);
 		monster->setEnemyAim(tower->getPosition());
 		monster->setDeathCallback(CC_CALLBACK_0(HelloWorld::monsterDeath, this));
-		monster->setExplodeCallback(CC_CALLBACK_0(HelloWorld::explodeEffect, this, monster->getPosition()));
+		//monster->setExplodeCallback(CC_CALLBACK_0(HelloWorld::explodeEffect, this, monster->getPosition()));
 		enemyVector.pushBack(monster);
 		addChild(monster);
 		monsterPresentAmount++;
@@ -315,9 +318,7 @@ void HelloWorld::onKeyPressed(EventKeyboard::KeyCode keyCode, Event * event)
 {
 	int temp = tempVector.size();
 	int tempMP = MP;
-	switch (keyCode)
-	{
-	case EventKeyboard::KeyCode::KEY_SPACE:
+	if (keyCode == EventKeyboard::KeyCode::KEY_SPACE) {
 		switch (temp)
 		{
 		case 1:
@@ -348,27 +349,43 @@ void HelloWorld::onKeyPressed(EventKeyboard::KeyCode keyCode, Event * event)
 		if (tempMP >= 0) {
 			fireMissile();
 			tempVector.clear();
+			for (auto && tempspr : Skillboxes) {
+				tempspr->setTexture("UI/SkillBox.png");
+			}
 			divisonNum = 1;
 			MP = tempMP;
+			temp = tempVector.size();
 		}
-		break;
+	}
+	if (temp >= SlotLevel) {
+		ttf1->setString("You need to enchance your slot level.");
+		return;
+	}
+	switch (keyCode)
+	{
 	case EventKeyboard::KeyCode::KEY_Q:
 		tempVector.push_back(new Knock());
+		Skillboxes.at(temp)->setTexture("Elements/Knock.png");
 		break;
 	case EventKeyboard::KeyCode::KEY_W:
 		tempVector.push_back(new PowerUp());
+		Skillboxes.at(temp)->setTexture("Elements/PowerUp.png");
 		break;
 	case EventKeyboard::KeyCode::KEY_E:
+		Skillboxes.at(temp)->setTexture("Elements/Explode.png");
 		//tempVector.push_back(new Explode()); on Debug
 		break;
 	case EventKeyboard::KeyCode::KEY_A:
 		tempVector.push_back(new Division());
+		Skillboxes.at(temp)->setTexture("Elements/Division.png");
 		divisonNum+=tempVector.back()->castEffect(divisonNum);
 		break;
 	case EventKeyboard::KeyCode::KEY_S:
+		Skillboxes.at(temp)->setTexture("Elements/Slow.png");
 		tempVector.push_back(new Slow());
 		break;
 	case EventKeyboard::KeyCode::KEY_D:
+		Skillboxes.at(temp)->setTexture("Elements/Mine.png");
 		tempVector.push_back(new Mine());
 		break;
 	default:
@@ -431,7 +448,7 @@ void HelloWorld::explodeEffect(Vec2 point)
 // create by ZeroFe
 Enemy* HelloWorld::makeMonster()
 {
-	Enemy* monster = Enemy::create("Unit/Hostile0.png");
+	Enemy* monster = Enemy::create("Unit/Hostile_Tank.png");
 
 	auto material = PhysicsMaterial(0.1f, 1.0f, 0.5f);
 
