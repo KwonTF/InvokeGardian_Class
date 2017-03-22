@@ -42,6 +42,9 @@ public:
 	// 충돌시 처리
 	bool onContactBegin(cocos2d::PhysicsContact& Contact);
 
+	// 터치 이벤트
+	void onTouchesEnded(const std::vector<Touch*> &touches, Event* event);
+
 	//게임 씬의 구현
 	void createGameScene();
 	void initGameVariable();
@@ -64,6 +67,8 @@ public:
 
 	void monsterDeath();
 	void explodeEffect(Vec2 point);
+	bool anyRay(PhysicsWorld &world, const PhysicsRayCastInfo &info, void *data);
+	void myTick(float dt);
 	// 객체 생성 함수
 	Enemy* makeMonster();
 	Missile *makeMissile();
@@ -97,6 +102,9 @@ private:
 	float cursorAngle;
 	std::vector<Condition*> tempVector;
 	Vector<Enemy*> enemyVector;
+
+	DrawNode *_node;
+
 	//분열 관련 변수
 	int divisonNum;
 
