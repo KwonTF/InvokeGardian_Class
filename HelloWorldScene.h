@@ -6,7 +6,7 @@
 #include "cocos2d.h"
 #include "MainHeader.h"
 #include "SimpleAudioEngine.h"  
-
+#include "GameOver.h"
 class HelloWorld : public cocos2d::Layer
 {
 // for game algorithm

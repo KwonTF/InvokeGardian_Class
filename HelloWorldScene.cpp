@@ -255,6 +255,13 @@ void HelloWorld::onTimeUpdate(float input)//권태형 제작
 	hpBar->setPercentage(tower->getHP() / 5);
 	std::string hpText = std::to_string(static_cast<int>(ceil(tower->getHP()))) + " / 500";
 	hpState->setString(hpText);
+	if (tower->getHP() <= 0) {
+		CCScene* pScene = GameOver::scene();
+
+		CCTransitionScene* pTran = CCTransitionFade::create(0.5f, pScene);
+
+		CCDirector::sharedDirector()->replaceScene(pTran);
+	}
 }
 
 /*
@@ -295,7 +302,7 @@ void HelloWorld::gameTimer(float dt)
 		monster->setEnemyAim(tower->getPosition());
 		monster->setDeathCallback(CC_CALLBACK_0(HelloWorld::monsterDeath, this));
 		//monster->setExplodeCallback(CC_CALLBACK_0(HelloWorld::explodeEffect, this, monster->getPosition()));
-		monster->projectImage("Unit/Hostile0.png");
+		monster->projectImage("Unit/Hostile_Tank.png");
 		monster->setHpGage("Others/hpGage.png");
 		enemyVector.pushBack(monster);
 		addChild(monster);
