@@ -29,6 +29,8 @@ private:
 	int monsterBaseAmount;		// 기본적으로 생성하는 몬스터 수
 	int monsterRoundAmount;		// 라운드에 생성되는 총 몬스터 수
 	int monsterPresentAmount;	// 현재 나온 몬스터 수
+
+	int createCount;			// 몬스터 생성 주기
 public:
 	// start function
     static cocos2d::Scene* createScene();
@@ -50,15 +52,19 @@ public:
 	void createGameScene();
 	void initGameVariable();
 	void makeTower();
+
 	//매 시간마다 스케줄링 되는 함수들
 	void onTimeUpdate(float input);		// 
 	void gameTimer(float dt);			// 타이머 관련 함수
-	void mpRestore(float input); // MP회복함수
+	void mpRestore(float input);		// MP회복함수
+	void monsterCreateTimer(float dt);	// 몬스터 생성 주기 함수
+
 	//마우스 이벤트들
 	void onMouseDown(cocos2d::Event* event);
 	void onMouseMove(cocos2d::Event* event);
 	void onMouseUp(cocos2d::Event* event) {};
 	void onMouseScroll(cocos2d::Event* event) {};
+
 	//키보드 이벤트들
 	void onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event) {};
 	void onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event);
@@ -70,6 +76,7 @@ public:
 	void explodeEffect(Vec2 point);
 	bool anyRay(PhysicsWorld &world, const PhysicsRayCastInfo &info, void *data);
 	void myTick(float dt);
+
 	// 객체 생성 함수
 	Enemy* makeMonster();
 	Missile *makeMissile();

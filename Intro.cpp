@@ -16,10 +16,10 @@ bool Intro::init()
 	return true;
 }
 
-cocos2d::CCScene * Intro::scene()
+cocos2d::Scene * Intro::scene()
 {
 	// 'scene' is an autorelease object
-	CCScene *scene = CCScene::create();
+	Scene *scene = Scene::create();
 
 	// 'layer' is an autorelease object
 	Intro *layer = Intro::create();
@@ -33,9 +33,9 @@ cocos2d::CCScene * Intro::scene()
 
 void Intro::createGameScene(void)
 {
-	_screenSize = CCDirector::sharedDirector()->getWinSize();
+	_screenSize = Director::sharedDirector()->getWinSize();
 
-	CCSprite* openingImage = CCSprite::create("Background/Start_Background.png");
+	Sprite* openingImage = Sprite::create("Background/Start_Background.png");
 	openingImage->setPosition(ccp(_screenSize.width * 0.5f,_screenSize.height * 0.5f));
 	this->addChild(openingImage);
 	auto item_1 = MenuItemImage::create("UI/Menu_Start.png", "UI/Menu_Start.png", "UI/Menu_Start.png", CC_CALLBACK_1(Intro::menuCallback1, this));
@@ -50,7 +50,7 @@ void Intro::createGameScene(void)
 	menu->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
 	this->addChild(menu);
 
-	Play = CCSprite::create("UI/HowtoPlay.png");
+	Play = Sprite::create("UI/HowtoPlay.png");
 	Play->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
 	Play->setPosition(Vec2(430, 270));
 	playVisible = false;
@@ -62,11 +62,11 @@ void Intro::createGameScene(void)
 
 void Intro::changeScene(void)
 {
-	CCScene* pScene = HelloWorld::createScene();
+	Scene* pScene = HelloWorld::createScene();
 
-	CCTransitionScene* pTran = CCTransitionFade::create(0.2f, pScene);
+	TransitionScene* pTran = TransitionFade::create(0.2f, pScene);
 
-	CCDirector::sharedDirector()->replaceScene(pTran);
+	Director::sharedDirector()->replaceScene(pTran);
 
 }
 
@@ -74,6 +74,7 @@ void Intro::menuCallback1(cocos2d::Ref* pSender)
 {
 	changeScene();
 }
+
 void Intro::menuCallback2(cocos2d::Ref* pSender)
 {
 	if (playVisible)
@@ -82,7 +83,8 @@ void Intro::menuCallback2(cocos2d::Ref* pSender)
 		playVisible = true;
 	Play->setVisible(playVisible);
 }
+
 void Intro::menuCallback3(cocos2d::Ref* pSender)
 {
-	CCDirector::sharedDirector()->end();
+	Director::sharedDirector()->end();
 }

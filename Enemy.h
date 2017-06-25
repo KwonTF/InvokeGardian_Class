@@ -2,16 +2,10 @@
 #include "cocos2d.h"
 #include "Unit.h"
 #include "Missile.h"
+#include "Mutate.h"
+
 typedef std::function<void()> monsterCallback;
 typedef std::function<void(Vec2)> ExplodeCallback;
-
-namespace mutate {
-	extern const int Range[6];
-	extern const float HP[6];
-	extern const float Attack[6];
-	extern const float Speed[6];
-	extern const float AtkSpeed[6];
-};
 
 /*
 class of enemy object
@@ -20,13 +14,8 @@ create by ZeroFe
 class Enemy : public Unit
 {
 private:
-	// 생성 관련
-	int type;
-	int level;
-
-	// 분열 관련
-	int divideAmount;
-	bool isDivide;
+	// 변이 관련
+	Mutate mutate;
 
 	// 타워 공격
 	Vec2 destinat;
@@ -35,10 +24,12 @@ private:
 
 	int attackRange;
 	int attackCoolTime, currentCoolTime;
+
 	//슬로우 변수
 	float slowRate;
 	int slowTime;
-	boolean slowActive;
+	bool slowActive;
+
 	//넉백 변수
 	float knockBackSpeed;
 
@@ -47,6 +38,7 @@ private:
 public:
 	Enemy();
 	~Enemy();
+
 	static Enemy* create(const std::string &filename);
 
 	void setBaseAbillity(int hp, int attack, int range, int speed, int as);
@@ -57,13 +49,16 @@ public:
 	void setDeathCallback(const monsterCallback &callback);
 	void setExplodeCallback(const ExplodeCallback &callback);
 
-	// type 생성 관련 함수
-	void typeEnhance(int monsterType, int mutateLevel);
+	// 변이 관련 함수
+	void typeEnhance(Mutate mutateInfo);
 
 	void divideEnemy();
+
+	// 공격 관련 함수
 	void setEnemyAim(const cocos2d::Vec2 &aimPos);
 	void shootMissile();
 
+	// 삭제 관련 함수
 	virtual void destroy();
 	bool isInRange(Vec2 point, float distance);
 private:
@@ -74,9 +69,7 @@ private:
 	void KnockBack(float input);
 	
 	// type 생성 관련 함수
-	void setRangeType();
 	void setMassType();
 	void setDivideType();
-	void setGolemType();
 	void setFasterType();
 };

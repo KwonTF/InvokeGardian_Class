@@ -1,28 +1,7 @@
 #include "Enemy.h"
 
-const int mutate::Range[6] = {
-	0, 150, 0, 0, 25, 0
-};
-const float mutate::HP[6] = {
-	1.0, 0.7, 0.5, 0.8, 1.5, 0.7
-};
-const float mutate::Attack[6] = {
-	1.0, 1.0, 0.5, 0.8, 1.5, 1.0
-};
-const float mutate::Speed[6] = {
-	1.0, 1.0, 1.0, 1.0, 0.5, 1.2
-};
-const float mutate::AtkSpeed[6] = {
-	1.0, 1.0, 1.0, 0.8, 0.8, 1.2
-};
-
 Enemy::Enemy()
 {
-	type = 0;
-	level = 1;
-
-	divideAmount = 0;
-	isDivide = false;
 	attackCoolTime = 180;
 	currentCoolTime = 0;
 
@@ -87,6 +66,7 @@ void Enemy::setDeathCallback(const monsterCallback &callback)
 {
 	deathCallback = callback;
 }
+
 void Enemy::setExplodeCallback(const ExplodeCallback & callback)
 {
 	explodeCallback = callback;
@@ -94,49 +74,22 @@ void Enemy::setExplodeCallback(const ExplodeCallback & callback)
 
 // add type to enemy
 // 0 : normal, 1 : range, 2 : mass, 3 : divide, 4 : golem, 5 : faster
-void Enemy::typeEnhance(int monsterType, int mutateLevel)
+void Enemy::typeEnhance(Mutate mutateInfo)
 {
-	type = monsterType;
-	level = mutateLevel;
-
-	switch (type) {
-	case 0:
-		break;
-	case 1:
-		setRangeType();
-		break;
-	case 2:
-		setMassType();
-		break;
-	case 3:
-		setDivideType();
-		break;
-	case 4:
-		setGolemType();
-		break;
-	case 5:
-		setFasterType();
-		break;
-	default:
-		break;
-	}
-
 	// 능력치 변화
-	hpMax = (int)((float)hpMax * mutate::HP[monsterType]);
-	hpCurrent = (int)((float)hpCurrent * mutate::HP[monsterType]);
-	attackRange += mutate::Range[monsterType];
-	attack = (int)((float)attack * mutate::Attack[monsterType]);
-	moveSpeed = (float)moveSpeed * mutate::Speed[monsterType];
-	attackCoolTime = (int)((float)attackCoolTime * mutate::AtkSpeed[monsterType]);
+	hpMax = (int)(hpMax * mutate.getHpPer());
+	hpCurrent = (int)(hpCurrent * mutate.getHpPer());
+	//attackRange += mutate::Range[monsterType];
+	attack = (int)(attack * mutate.getAtkPer());
+	moveSpeed = moveSpeed * mutate.getSpdPer();
+	attackCoolTime = (int)(attackCoolTime * mutate.getAsPer());
 
 	// 기능 추가
-
-	// 외형 변화 추가
-}
-
-void Enemy::setRangeType()
-{
-
+	// 1. range type : 사거리 추가 - 능력치 변화에서 해결
+	// 2. mass type : 여러 마리 생성 - 유닛 포지션 받아서 재귀함수로 주변 위치에 생성하게 함
+	// 3. divide type : 죽으면 몬스터를 새로 생성하는 함수 추가
+	// 4. golem type : 능력치 변화에서 해결
+	// 5. faster type : 잔상효과만 적용해주기
 }
 
 void Enemy::setMassType()
@@ -145,11 +98,6 @@ void Enemy::setMassType()
 }
 
 void Enemy::setDivideType()
-{
-
-}
-
-void Enemy::setGolemType()
 {
 
 }
@@ -180,11 +128,12 @@ void Enemy::shootMissile()
 	Missile* missile = Missile::create("Others/Bullet.PNG");
 
 	// 내부 값 설정
-	missile->setAttack(3);
+	missile->setAttack(attack);
 	missile->setSpeed(300.0);
 	missile->setPenetCount(1);
 	missile->setRange(600);
 	missile->setColor(Color3B(250, 0, 0));
+
 	// 몸체 설정
 	auto material = PhysicsMaterial(0.1f, 1.0f, 0.5f);
 

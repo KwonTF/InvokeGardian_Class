@@ -207,6 +207,9 @@ void HelloWorld::initGameVariable()
 	monsterBaseAmount = 16;
 	monsterRoundAmount = monsterBaseAmount + 4 * roundNum;
 	monsterPresentAmount = 0;
+
+	// 몬스터 생성 주기
+	createCount = 120;
 }
 
 #ifdef __DEBUG_GAME_VARIABLE__
@@ -256,11 +259,11 @@ void HelloWorld::onTimeUpdate(float input)//권태형 제작
 	std::string hpText = std::to_string(static_cast<int>(ceil(tower->getHP()))) + " / 500";
 	hpState->setString(hpText);
 	if (tower->getHP() <= 0) {
-		CCScene* pScene = GameOver::scene();
+		Scene* pScene = GameOver::scene();
 
-		CCTransitionScene* pTran = CCTransitionFade::create(0.5f, pScene);
+		TransitionScene* pTran = TransitionFade::create(0.5f, pScene);
 
-		CCDirector::sharedDirector()->replaceScene(pTran);
+		Director::sharedDirector()->replaceScene(pTran);
 	}
 }
 
@@ -319,6 +322,25 @@ void HelloWorld::mpRestore(float input)
 	if (MP < 100) {
 		MP++;
 	}
+}
+
+void HelloWorld::monsterCreateTimer(float dt)
+{
+	/*
+	for (int j = 1; j <= roundEnemy; j++)
+	{
+		if (j % 4 == 0)
+			if (count >= 60)
+			{
+				count -= 8;
+			}
+			else
+			{
+				count -= 3;
+			}
+		sum += count;
+	}
+	*/
 }
 
 void HelloWorld::onMouseDown(cocos2d::Event * event)
@@ -428,6 +450,8 @@ void HelloWorld::roundChange()
 	monsterRoundAmount = monsterBaseAmount + 4 * roundNum;
 	mutateTotalPer = mutateBasePer + mutateRoundPer * roundNum;
 	mutateLevelUpPer = roundNum * 2;
+
+	createCount = 120;
 
 	// 업그레이드 불가능 상태로 만들기
 	canUpgrade = false;
