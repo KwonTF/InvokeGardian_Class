@@ -204,12 +204,13 @@ void HelloWorld::initGameVariable()
 	mutateTotalPer = 1;
 
 	// 나오는 몬스터 수
-	monsterBaseAmount = 16;
-	monsterRoundAmount = monsterBaseAmount + 4 * roundNum;
+	monsterRoundAmount = monsterBaseAmount + monsterBaseBonus * roundNum;
 	monsterPresentAmount = 0;
+	monsterExistAmount = 0;
 
 	// 몬스터 생성 주기
-	createCount = 120;
+	roundCount = 120;
+	createCount = 0;
 }
 
 #ifdef __DEBUG_GAME_VARIABLE__
@@ -295,10 +296,12 @@ void HelloWorld::gameTimer(float dt)
 	gameTime--;
 	timeViewer->setString(std::to_string(gameTime));
 
-	// 몬스터 생성 부분(임시)
-	if (monsterRoundAmount > 0)
+	// 몬스터 생성 부분(임시) -> monsterCreateTimer로 대체 예정
+	if (monsterPresentAmount < monsterRoundAmount)
 	{
-		monsterRoundAmount--;
+		monsterPresentAmount++;
+		monsterExistAmount++;
+
 		auto monster = makeMonster();
 		monster->setBaseAbillity(GameData::roundEnemyHP[roundNum], GameData::roundEnemyAttack[roundNum],
 			GameData::enemyAttackRange, GameData::enemyMoveSpeed, GameData::enemyAttackSpeed);
@@ -309,7 +312,6 @@ void HelloWorld::gameTimer(float dt)
 		monster->setHpGage("Others/hpGage.png");
 		enemyVector.pushBack(monster);
 		addChild(monster);
-		monsterPresentAmount++;
 	}
 			// 몬스터 확인용
 	#ifdef __DEBUG_GAME_VARIABLE__
@@ -326,21 +328,40 @@ void HelloWorld::mpRestore(float input)
 
 void HelloWorld::monsterCreateTimer(float dt)
 {
-	/*
-	for (int j = 1; j <= roundEnemy; j++)
+	createCount++;
+
+	if (createCount >= roundCount)
 	{
-		if (j % 4 == 0)
-			if (count >= 60)
+		// 몬스터 생성
+		if (monsterPresentAmount < monsterRoundAmount)
+		{
+			monsterPresentAmount++;
+			monsterExistAmount++;
+
+			auto monster = makeMonster();
+			monster->setBaseAbillity(GameData::roundEnemyHP[roundNum], GameData::roundEnemyAttack[roundNum],
+				GameData::enemyAttackRange, GameData::enemyMoveSpeed, GameData::enemyAttackSpeed);
+			monster->setEnemyAim(tower->getPosition());
+			monster->setDeathCallback(CC_CALLBACK_0(HelloWorld::monsterDeath, this));
+			//monster->setExplodeCallback(CC_CALLBACK_0(HelloWorld::explodeEffect, this, monster->getPosition()));
+			monster->projectImage("Unit/Hostile_Tank.png");
+			monster->setHpGage("Others/hpGage.png");
+			enemyVector.pushBack(monster);
+			addChild(monster);
+		}
+
+		createCount -= roundCount;
+
+		if (monsterPresentAmount % 4 == 0)
+			if (roundCount >= 60)
 			{
-				count -= 8;
+				createCount -= 8;
 			}
 			else
 			{
-				count -= 3;
+				createCount -= 3;
 			}
-		sum += count;
 	}
-	*/
 }
 
 void HelloWorld::onMouseDown(cocos2d::Event * event)
@@ -448,10 +469,12 @@ void HelloWorld::roundChange()
 	roundNum++;
 
 	monsterRoundAmount = monsterBaseAmount + 4 * roundNum;
+	monsterPresentAmount = 0;
 	mutateTotalPer = mutateBasePer + mutateRoundPer * roundNum;
 	mutateLevelUpPer = roundNum * 2;
 
-	createCount = 120;
+	roundCount = 120;
+	createCount = 0;
 
 	// 업그레이드 불가능 상태로 만들기
 	canUpgrade = false;
@@ -461,12 +484,12 @@ void HelloWorld::roundChange()
 
 void HelloWorld::monsterDeath()
 {
-	monsterPresentAmount--;
+	monsterExistAmount--;
 	#ifdef __DEBUG_GAME_VARIABLE__
 		monsterAmountViewer->setString(std::to_string(monsterPresentAmount));
 	#endif // __DEBUG_GAME_VARIABLE__
 	// 라운드 변경
-  	if (monsterRoundAmount <= 0 && monsterPresentAmount <= 0)
+  	if (monsterPresentAmount == monsterRoundAmount && monsterExistAmount <= 0)
 	{
 		// 적용함수 만들 것
 		// 남은 시간 1초 남기고 없애기

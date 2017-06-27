@@ -25,12 +25,13 @@ private:
 	
 	int mutateLevelUpPer;	// 
 
-	// variable for monster create
-	int monsterBaseAmount;		// 기본적으로 생성하는 몬스터 수
-	int monsterRoundAmount;		// 라운드에 생성되는 총 몬스터 수
-	int monsterPresentAmount;	// 현재 나온 몬스터 수
+	// 적군 생성관련 변수
+	int monsterRoundAmount;		// 라운드에 생성되는 총 적군 수
+	int monsterPresentAmount;	// 지금까지 라운드에 생성된 총 적군 수
+	int monsterExistAmount;		// 현재 존재하는 적군 수
 
-	int createCount;			// 몬스터 생성 주기
+	int roundCount;				// 라운드 별 적군 생성 주기
+	int createCount;			// 적군 생성 카운트
 public:
 	// start function
     static cocos2d::Scene* createScene();
