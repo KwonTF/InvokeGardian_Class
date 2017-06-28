@@ -86,8 +86,12 @@ bool HelloWorld::init()
 	setMonsterAmountViewer();
 #endif // __DEBUG_GAME_VARIABLE__
 	
+	// 스케쥴 설정
 	this->schedule(schedule_selector(HelloWorld::onTimeUpdate));
 	this->schedule(schedule_selector(HelloWorld::gameTimer), 1.0f);
+	this->schedule(schedule_selector(HelloWorld::mpRestore), 0.5f);
+	this->schedule(schedule_selector(HelloWorld::monsterCreateTimer));
+
 	divisonNum = 1;
 	MP = 100;
 	SlotLevel = 2;
@@ -171,7 +175,6 @@ void HelloWorld::createGameScene()//권태형 제작
 	timeViewer->setPosition(_winSize.width / 2, _winSize.height - 150);
 	timeViewer->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
 	this->addChild(timeViewer);
-	this->schedule(schedule_selector(HelloWorld::mpRestore), 0.5f);
 
 	for (int i = 0; i < 6; i++) {
 		Sprite* temp = Sprite::create("UI/SkillBox.png");
@@ -246,6 +249,7 @@ void HelloWorld::makeTower()
 void HelloWorld::onTimeUpdate(float input)//권태형 제작
 {
 	Vec2 playerPos = player->getPosition();
+
 	//각도 구하기
 	diffUnitVec2 = mouse - playerPos;
 	diffUnitVec3 = diffUnitVec2;
@@ -296,26 +300,9 @@ void HelloWorld::gameTimer(float dt)
 	gameTime--;
 	timeViewer->setString(std::to_string(gameTime));
 
-	// 몬스터 생성 부분(임시) -> monsterCreateTimer로 대체 예정
-	if (monsterPresentAmount < monsterRoundAmount)
-	{
-		monsterPresentAmount++;
-		monsterExistAmount++;
-
-		auto monster = makeMonster();
-		monster->setBaseAbillity(GameData::roundEnemyHP[roundNum], GameData::roundEnemyAttack[roundNum],
-			GameData::enemyAttackRange, GameData::enemyMoveSpeed, GameData::enemyAttackSpeed);
-		monster->setEnemyAim(tower->getPosition());
-		monster->setDeathCallback(CC_CALLBACK_0(HelloWorld::monsterDeath, this));
-		//monster->setExplodeCallback(CC_CALLBACK_0(HelloWorld::explodeEffect, this, monster->getPosition()));
-		monster->projectImage("Unit/Hostile_Tank.png");
-		monster->setHpGage("Others/hpGage.png");
-		enemyVector.pushBack(monster);
-		addChild(monster);
-	}
-			// 몬스터 확인용
+	// 몬스터 확인용
 	#ifdef __DEBUG_GAME_VARIABLE__
-	monsterAmountViewer->setString(std::to_string(monsterPresentAmount));
+	monsterAmountViewer->setString(std::to_string(monsterExistAmount));
 	#endif // __DEBUG_GAME_VARIABLE__
 }
 
@@ -355,11 +342,11 @@ void HelloWorld::monsterCreateTimer(float dt)
 		if (monsterPresentAmount % 4 == 0)
 			if (roundCount >= 60)
 			{
-				createCount -= 8;
+				roundCount -= 8;
 			}
 			else
 			{
-				createCount -= 3;
+				roundCount -= 3;
 			}
 	}
 }
@@ -513,6 +500,11 @@ void HelloWorld::explodeEffect(Vec2 point)
 			enemyVector.at(i)->takenDamage(100);
 		}
 	}
+}
+
+void HelloWorld::goGameOver()
+{
+
 }
 
 bool HelloWorld::anyRay(PhysicsWorld &world, const PhysicsRayCastInfo &info, void *data)

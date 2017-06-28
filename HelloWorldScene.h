@@ -73,8 +73,11 @@ public:
 	// 라운드 변경시 호출하는 함수
 	void roundChange();
 
+	// 콜백 함수
 	void monsterDeath();
 	void explodeEffect(Vec2 point);
+	void goGameOver();
+
 	bool anyRay(PhysicsWorld &world, const PhysicsRayCastInfo &info, void *data);
 	void myTick(float dt);
 
