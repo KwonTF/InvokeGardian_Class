@@ -372,33 +372,7 @@ void HelloWorld::onKeyPressed(EventKeyboard::KeyCode keyCode, Event * event)
 	int temp = tempVector.size();
 	int tempMP = MP;
 	if (keyCode == EventKeyboard::KeyCode::KEY_SPACE) {
-		switch (temp)
-		{
-		case 1:
-			tempMP -= 10;
-			break;
-		case 2:
-			tempMP -= 15;
-			break;
-		case 3:
-			tempMP -= 23;
-			break;
-		case 4:
-			tempMP -= 35;
-			break;
-		case 5:
-			tempMP -= 55;
-			break;
-		case 6:
-			tempMP -= 80;
-			break;
-		case 0:
-			tempMP -= 2;
-			break;
-		default:
-			tempMP -= 101;
-			break;
-		}
+		tempMP -= GameData::mpReduce[temp];
 		if (tempMP >= 0) {
 			fireMissile();
 			tempVector.clear();
@@ -409,6 +383,13 @@ void HelloWorld::onKeyPressed(EventKeyboard::KeyCode keyCode, Event * event)
 			MP = tempMP;
 			temp = tempVector.size();
 		}
+	}
+	if (keyCode == EventKeyboard::KeyCode::KEY_R) {
+		if (temp > 0) {
+			Skillboxes.at(temp - 1)->setTexture("UI/SkillBox.png");
+			tempVector.pop_back();
+		}
+		return;
 	}
 	if (temp >= SlotLevel) {
 		ttf1->setString("You need to enchance your slot level.");
