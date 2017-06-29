@@ -4,7 +4,7 @@ Explosion::Explosion()
 {
 	attack = 0;
 	removeTime = 0.5;
-	getPhysicsBody()->setCollisionBitmask(0x0000000);
+	//getPhysicsBody()->setCollisionBitmask(0x0000000);
 
 	scheduleOnce(schedule_selector(Explosion::removeExplosion), removeTime);
 }

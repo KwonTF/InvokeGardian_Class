@@ -149,7 +149,7 @@ void Missile::castEffect()
 
 void Missile::makeExplosion()
 {
-	Explosion* explosion = Explosion::create("Others/Bullet.PNG");
+	Explosion* explosion = Explosion::create("UI/SkillBox.PNG");
 
 	auto material = PhysicsMaterial(0.1f, 1.0f, 0.5f);
 
