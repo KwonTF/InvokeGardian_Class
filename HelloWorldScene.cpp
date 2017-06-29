@@ -82,9 +82,7 @@ bool HelloWorld::init()
 	initGameVariable();
 	makeTower();
 
-#ifdef __DEBUG_GAME_VARIABLE__
 	setMonsterAmountViewer();
-#endif // __DEBUG_GAME_VARIABLE__
 	
 	// 스케쥴 설정
 	this->schedule(schedule_selector(HelloWorld::onTimeUpdate));
@@ -137,9 +135,9 @@ void HelloWorld::createGameScene()//권태형 제작
 	hpBar->setPercentage(500/5);
 	hpBar->setMidpoint(ccp(1, 0.5f));
 	hpBar->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
-	hpBar->setBarChangeRate(Vec2(1, 0));
+	hpBar->setBarChangeRate(Vec2::ANCHOR_BOTTOM_RIGHT);
 
-	setSpriteAnchor_Center(statusBar);
+	statusBar->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
 	player->setPosition(_winSize.width / 2 - 200, _winSize.height / 2 - 200);
 	statusBar->setPosition(_winSize.width / 2, _winSize.height * 1 / 20);
 
@@ -201,22 +199,14 @@ void HelloWorld::initGameVariable()
 	roundViewer->setString("Round");
 	timeViewer->setString(std::to_string(gameTime));
 
-	// 변형 확률
+	// 변형 확률 - 이 부분도 수정 예정
 	mutateBasePer = 1;
 	mutateRoundPer = 2;
 	mutateTotalPer = 1;
 
-	// 나오는 몬스터 수
-	monsterRoundAmount = monsterBaseAmount + monsterBaseBonus * roundNum;
-	monsterPresentAmount = 0;
-	monsterExistAmount = 0;
-
-	// 몬스터 생성 주기
-	roundCount = 120;
-	createCount = 0;
+	setRoundVariable();
 }
 
-#ifdef __DEBUG_GAME_VARIABLE__
 void HelloWorld::setMonsterAmountViewer()
 {
 	monsterAmountViewer = LabelTTF::create("Num", "fonts/RoundGothic.ttf", 30);
@@ -224,7 +214,6 @@ void HelloWorld::setMonsterAmountViewer()
 	monsterAmountViewer->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
 	this->addChild(monsterAmountViewer);
 }
-#endif // __DEBUG_GAME_VARIABLE__
 
 void HelloWorld::makeTower()
 {
@@ -301,9 +290,7 @@ void HelloWorld::gameTimer(float dt)
 	timeViewer->setString(std::to_string(gameTime));
 
 	// 몬스터 확인용
-	#ifdef __DEBUG_GAME_VARIABLE__
 	monsterAmountViewer->setString(std::to_string(monsterExistAmount));
-	#endif // __DEBUG_GAME_VARIABLE__
 }
 
 void HelloWorld::mpRestore(float input)
@@ -436,13 +423,7 @@ void HelloWorld::roundChange()
 	// 라운드 관련 변수 변경
 	roundNum++;
 
-	monsterRoundAmount = monsterBaseAmount + 4 * roundNum;
-	monsterPresentAmount = 0;
-	mutateTotalPer = mutateBasePer + mutateRoundPer * roundNum;
-	mutateLevelUpPer = roundNum * 2;
-
-	roundCount = 120;
-	createCount = 0;
+	setRoundVariable();
 
 	// 업그레이드 불가능 상태로 만들기
 	canUpgrade = false;
@@ -450,12 +431,25 @@ void HelloWorld::roundChange()
 	timeViewer->setColor(Color3B::RED);
 }
 
+void HelloWorld::setRoundVariable()
+{
+	// 몬스터 생성 수
+	monsterRoundAmount = monsterBaseAmount + 4 * roundNum;
+	monsterPresentAmount = 0;
+	monsterExistAmount = 0;
+
+	// 이 부분은 수정
+	mutateTotalPer = mutateBasePer + mutateRoundPer * roundNum;
+	mutateLevelUpPer = roundNum * 2;
+
+	roundCount = 120;
+	createCount = 0;
+}
+
 void HelloWorld::monsterDeath()
 {
 	monsterExistAmount--;
-	#ifdef __DEBUG_GAME_VARIABLE__
-		monsterAmountViewer->setString(std::to_string(monsterPresentAmount));
-	#endif // __DEBUG_GAME_VARIABLE__
+	monsterAmountViewer->setString(std::to_string(monsterPresentAmount));
 	// 라운드 변경
   	if (monsterPresentAmount == monsterRoundAmount && monsterExistAmount <= 0)
 	{
@@ -575,11 +569,6 @@ void HelloWorld::fireMissile()
 		missile->castEffect();
 		layerMissile->addChild(missile);
 	}
-}
-
-void setSpriteAnchor_Center(Sprite * input)//권태형 제작
-{
-	input->setAnchorPoint(Vec2(0.5, 0.5));
 }
 
 float calculateDegree(Vec2 current, Vec2 point)

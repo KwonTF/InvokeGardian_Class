@@ -23,6 +23,9 @@ protected:
 	int range;				// 사거리 제한
 	int divideCount;		// 분열 수
 
+	bool isExplode;			// 폭발 여부
+	int explodeDamage;		// 폭발 데미지 설정
+
 	float removeTime;		// 총알 남아있는 시간
 public:
 	Missile();

@@ -17,6 +17,10 @@ const unsigned int SETUPTIME = 45;
 const unsigned int _MPSIZERATE = 52;
 
 // 전역 변수(옵션, 디버깅용)
+
+// 디버그 체크 변수
+const bool DEBUGMODE = true;
+
 // 몬스터 생성 관련
 // 옵션으로 조절 가능하게 만들어 볼 생각임(나중에 const 없애고 constexpr로 바꾸자)
 const int monsterBaseAmount = 16;		// 기본 생성량

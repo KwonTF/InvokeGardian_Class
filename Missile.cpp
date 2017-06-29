@@ -2,6 +2,13 @@
 
 Missile::Missile()
 {
+	penetrationCount = 1;
+	range = 200;
+	divideCount = 0;
+
+	isExplode = false;
+	explodeDamage = 0;
+
 	removeTime = 0.1f;
 }
 
@@ -24,6 +31,9 @@ void Missile::collisioned(int damage, std::vector<Condition*> &c)
 {
 	penetrationCount--;
 
+	if (isExplode)
+		makeExplosion();
+
 	if (penetrationCount <= 0)
 		destroy();
 }
@@ -41,11 +51,7 @@ void Missile::setAttack(int atk)
 // set range of Missile
 void Missile::setRange(int movelimit)
 {
-	if (range <= 200) {
-		range = 200;
-	}
 	range = movelimit;
-
 }
 
 // set Penetration count of Missile
@@ -124,6 +130,8 @@ void Missile::castEffect()
 			}
 			break;
 		case EffectCode::Division:
+			break;
+		case EffectCode::Explode:
 			break;
 		case EffectCode::Mine:
 			getPhysicsBody()->setVelocity(Vec2(0,0));

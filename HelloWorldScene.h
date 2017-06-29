@@ -1,12 +1,11 @@
 #ifndef __HELLOWORLD_SCENE_H__
 #define __HELLOWORLD_SCENE_H__
 
-#define __DEBUG_GAME_VARIABLE__
-
 #include "cocos2d.h"
 #include "MainHeader.h"
 #include "SimpleAudioEngine.h"  
 #include "GameOver.h"
+
 class HelloWorld : public cocos2d::Layer
 {
 // for game algorithm
@@ -72,6 +71,7 @@ public:
 
 	// 라운드 변경시 호출하는 함수
 	void roundChange();
+	void setRoundVariable();
 
 	// 콜백 함수
 	void monsterDeath();
@@ -85,6 +85,8 @@ public:
 	Enemy* makeMonster();
 	Missile *makeMissile();
 	void fireMissile();
+
+	void setMonsterAmountViewer();
 private:
 	Size _winSize;
 	Sprite* Background;
@@ -107,6 +109,8 @@ private:
 	// 12시 방향 시간 표기
 	LabelTTF* roundViewer;
 	LabelTTF* timeViewer;
+	LabelTTF* monsterAmountViewer;
+	LabelTTF* currentMonsterViewer;
 
 	Vec2 mouse;
 	Vec2 diffUnitVec2;
@@ -129,16 +133,7 @@ private:
 
 	//기본 능력치
 	unsigned int MP;
-#ifdef __DEBUG_GAME_VARIABLE__
-private:
-	LabelTTF* monsterAmountViewer;
-	LabelTTF* currentMonsterViewer;
-public:
-	void setMonsterAmountViewer();
-#endif // __DEBUG_GAME_VARIABLE__
 };
-//스프라이트의 앵커포인트를 가운데로 맞춰준다.
-void setSpriteAnchor_Center(Sprite *input);
 //마우스 좌표와 특정 시점과의 각도를 계산
 // 삭제 : Vec2 계산으로 더 간단하게 가능해서...
 float calculateDegree(Vec2 current, Vec2 point);
