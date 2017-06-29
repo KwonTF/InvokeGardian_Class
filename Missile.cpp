@@ -31,9 +31,12 @@ void Missile::collisioned(int damage, std::vector<Condition*> &c)
 {
 	penetrationCount--;
 
-	if (isExplode)
-		makeExplosion();
-
+	std::vector<Condition*>::iterator iter;
+	for (iter = conditionArray.begin(); iter != conditionArray.end(); iter++) {
+		if((*iter)->getCode() == EffectCode::Explode){
+			makeExplosion();
+		}
+	}
 	if (penetrationCount <= 0)
 		destroy();
 }

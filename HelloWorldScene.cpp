@@ -394,7 +394,7 @@ void HelloWorld::onKeyPressed(EventKeyboard::KeyCode keyCode, Event * event)
 		break;
 	case EventKeyboard::KeyCode::KEY_E:
 		Skillboxes.at(temp)->setTexture("Elements/Explode.png");
-		//tempVector.push_back(new Explode()); on Debug
+		tempVector.push_back(new Explode());
 		break;
 	case EventKeyboard::KeyCode::KEY_A:
 		tempVector.push_back(new Division());
