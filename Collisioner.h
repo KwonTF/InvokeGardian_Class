@@ -20,5 +20,10 @@ public:
 	std::vector<Condition*> &getCondition();
 	int getAttack();
 	virtual void collisioned(int damage, std::vector<Condition*> &c) = 0;
+
+	// 충돌 비트마스크 설정
+	static const int bitmaskZero;
+	static const int bitmaskPlayerAll;
+	static const int bitmaskEnemyAll;
 };
 

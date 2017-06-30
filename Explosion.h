@@ -22,7 +22,6 @@ public:
 
 	void setAttack(int atk);
 	void setRemoveTime(float time);
-	void setCollisionBitmask();
 
 	void removeExplosion(float f);
 

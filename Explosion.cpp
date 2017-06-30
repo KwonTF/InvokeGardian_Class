@@ -4,7 +4,6 @@ Explosion::Explosion()
 {
 	attack = 0;
 	removeTime = 0.5;
-	//getPhysicsBody()->setCollisionBitmask(0x0000000);
 
 	scheduleOnce(schedule_selector(Explosion::removeExplosion), removeTime);
 }
@@ -41,17 +40,11 @@ void Explosion::setRemoveTime(float time)
 	removeTime = time;
 }
 
-/*
-
-*/
-void Explosion::setCollisionBitmask()
-{
-
-}
-
 // remove explosion after remove time
 void Explosion::removeExplosion(float f)
 {
+	cocos2d::log("%.0f %.0f", getPositionX(), getPositionY());
+
 	// delete PhysicsBody
 	getPhysicsBody()->removeFromWorld();
 

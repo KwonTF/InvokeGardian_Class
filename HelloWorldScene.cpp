@@ -118,6 +118,9 @@ void HelloWorld::onTouchesEnded(const std::vector<Touch*> &touches, Event* event
 void HelloWorld::createGameScene()//권태형 제작
 {
 	player = Player::createAndInit();
+	player->setPosition(_winSize.width / 2 - 200, _winSize.height / 2 - 200);
+	player->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
+
 	statusBar = Sprite::create("UI/MainStatusBar.png");
 	statusBar->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
 
@@ -138,7 +141,6 @@ void HelloWorld::createGameScene()//권태형 제작
 	hpBar->setBarChangeRate(Vec2::ANCHOR_BOTTOM_RIGHT);
 
 	statusBar->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
-	player->setPosition(_winSize.width / 2 - 200, _winSize.height / 2 - 200);
 	statusBar->setPosition(_winSize.width / 2, _winSize.height * 1 / 20);
 
 	mpBar->setPosition(_winSize.width / 2 + 267, _winSize.height * 1 / 20 - 25);
@@ -154,6 +156,7 @@ void HelloWorld::createGameScene()//권태형 제작
 	ttf1 = LabelTTF::create("Default", "fonts/RoundGothic.ttf", 30);
 	ttf1->setPosition(100, 100);
 	ttf1->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
+
 	this->addChild(player);
 	this->addChild(ttf1);
 	this->addChild(statusBar);
@@ -343,7 +346,7 @@ void HelloWorld::onMouseDown(cocos2d::Event * event)
 	auto mousePosition = static_cast<EventMouse*>(event)->getLocation();
 	std::string output = "X: " + std::to_string(static_cast<int>(ceil(mousePosition.x))) + " Y: " + std::to_string(static_cast<int>(ceil(mousePosition.y)));
 	ttf1->setString(output);
-	mousePosition.y = 640 - mousePosition.y;
+	mousePosition.y = _winSize.height - mousePosition.y;
 	player->gotoPoint(mousePosition, calculateDegree(player->getPosition(), mousePosition));
 }
 

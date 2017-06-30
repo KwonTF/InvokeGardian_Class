@@ -7,7 +7,7 @@ Missile::Missile()
 	divideCount = 0;
 
 	isExplode = false;
-	explodeDamage = 0;
+	explodeDamage = 30;
 
 	removeTime = 0.1f;
 }
@@ -31,12 +31,9 @@ void Missile::collisioned(int damage, std::vector<Condition*> &c)
 {
 	penetrationCount--;
 
-	std::vector<Condition*>::iterator iter;
-	for (iter = conditionArray.begin(); iter != conditionArray.end(); iter++) {
-		if((*iter)->getCode() == EffectCode::Explode){
-			makeExplosion();
-		}
-	}
+	if(isExplode)
+		makeExplosion();
+
 	if (penetrationCount <= 0)
 		destroy();
 }
@@ -101,9 +98,6 @@ float Missile::getSpeed()
 
 float Missile::getRange()
 {
-	if (range <= 200) {
-		range = 200;
-	}
 	return range;
 }
 
@@ -135,6 +129,10 @@ void Missile::castEffect()
 		case EffectCode::Division:
 			break;
 		case EffectCode::Explode:
+			if ((*iter)->getCode() == EffectCode::Explode) {
+				isExplode = true;
+				explodeDamage = 30;
+			}
 			break;
 		case EffectCode::Mine:
 			getPhysicsBody()->setVelocity(Vec2(0,0));
@@ -157,10 +155,15 @@ void Missile::makeExplosion()
 
 	// 몸체 설정
 	explosion->setPhysicsBody(body);
-	explosion->setPosition(explosion->getPosition());
+	explosion->getPhysicsBody()->setCollisionBitmask(Collisioner::bitmaskZero);
+	explosion->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
+	explosion->setPosition(this->getPosition());
+
+	if (this != nullptr)
+		cocos2d::log("pos : %.1f %.1f", explosion->getPositionX(), explosion->getPositionY());
 
 	// 내부 값 설정
-	explosion->setAttack(10);
+	explosion->setAttack(explodeDamage);
 
 	if (getParent() != nullptr)
 	{
