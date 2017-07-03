@@ -59,7 +59,7 @@ public:
 	void shootMissile();
 
 	// 삭제 관련 함수
-	virtual void destroy();
+	virtual void destroy() override;
 	bool isInRange(Vec2 point, float distance);
 private:
 	void update(float input);

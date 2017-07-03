@@ -22,7 +22,6 @@ protected:
 
 	// 이동속도
 	float moveSpeed;
-	//std::vector<Condition*> stateArray;
 
 	// shadow effect
 	Vec2 previousPosition[4];
@@ -36,7 +35,7 @@ public:
 
 	static Unit* create(const std::string &filename);
 
-	virtual void collisioned(int damage, std::vector<Condition*> &c);
+	virtual void collisioned(int damage, std::vector<Condition*> &c) override;
 
 	void setImageInfo(const std::string *filename, const int fileNum);
 

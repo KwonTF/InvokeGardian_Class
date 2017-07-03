@@ -19,11 +19,8 @@ private:
 	bool canUpgrade;	// check Monster remain
 
 	// variable for random mutate
-	int mutateBasePer;		// Base Persent of mutate create
-	int mutateRoundPer;		// Round Persent of mutate create
-	int mutateTotalPer;		// Total Persent of mutate create
-	
-	int mutateLevelUpPer;	// 
+	int mutateCreatePer;		// 
+	int mutateLevelUpPer;		// 
 
 	// 적군 생성관련 변수
 	int monsterRoundAmount;		// 라운드에 생성되는 총 적군 수

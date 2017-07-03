@@ -202,11 +202,6 @@ void HelloWorld::initGameVariable()
 	roundViewer->setString("Round");
 	timeViewer->setString(std::to_string(gameTime));
 
-	// 변형 확률 - 이 부분도 수정 예정
-	mutateBasePer = 1;
-	mutateRoundPer = 2;
-	mutateTotalPer = 1;
-
 	setRoundVariable();
 }
 
@@ -442,8 +437,8 @@ void HelloWorld::setRoundVariable()
 	monsterExistAmount = 0;
 
 	// 이 부분은 수정
-	mutateTotalPer = mutateBasePer + mutateRoundPer * roundNum;
-	mutateLevelUpPer = roundNum * 2;
+	mutateCreatePer = GameData::enemyMutateRate[roundNum];
+	mutateLevelUpPer = GameData::enemyLevelUpRate[roundNum];
 
 	roundCount = 120;
 	createCount = 0;
