@@ -142,18 +142,18 @@ void HelloWorld::createGameScene()//권태형 제작
 	statusBar->setPosition(_winSize.width / 2, -50);
 
 	mpBar->setPosition(_winSize.width / 2, 0);
-	mpState = LabelTTF::create("100/100", "fonts/RoundGothic.ttf", 30);
+	mpState = Label::createWithTTF("100/100", fontPath, 30);
 	mpState->setColor(Color3B(0, 100, 250));
 	mpState->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
 	mpState->setPosition(_winSize.width / 2, 0);
 
 	hpBar->setPosition(_winSize.width / 2, 0);
-	hpState = LabelTTF::create("500/500", "fonts/RoundGothic.ttf", 30);
+	hpState = Label::create("500/500", fontPath, 30);
 	hpState->setColor(Color3B(100, 0, 0));
 	hpState->setAnchorPoint(Vec2::ANCHOR_BOTTOM_RIGHT);
 	hpState->setPosition(_winSize.width / 2, 0);
 
-	ttf1 = LabelTTF::create("Default", "fonts/RoundGothic.ttf", 30);
+	ttf1 = Label::create("Default", fontPath, 30);
 	ttf1->setPosition(100, 100);
 	ttf1->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
 
@@ -165,13 +165,13 @@ void HelloWorld::createGameScene()//권태형 제작
 	this->addChild(mpState);
 	this->addChild(hpState);
 	
-	roundViewer = LabelTTF::create("Round", "fonts/RoundGothic.ttf", 30);
+	roundViewer = Label::create("Round", fontPath, 30);
 	roundViewer->setColor(Color3B::RED);
 	roundViewer->setPosition(_winSize.width / 2, _winSize.height - 20);
 	roundViewer->setAnchorPoint(Vec2::ANCHOR_MIDDLE_TOP);
 	this->addChild(roundViewer);
 
-	timeViewer = LabelTTF::create("Default", "fonts/RoundGothic.ttf", 30);
+	timeViewer = Label::create("Default", fontPath, 30);
 	timeViewer->setColor(Color3B::RED);
 	timeViewer->setPosition(_winSize.width / 2, _winSize.height - 60);
 	timeViewer->setAnchorPoint(Vec2::ANCHOR_MIDDLE_TOP);
@@ -212,7 +212,7 @@ void HelloWorld::initGameVariable()
 
 void HelloWorld::setMonsterAmountViewer()
 {
-	monsterAmountViewer = LabelTTF::create("Num", "fonts/RoundGothic.ttf", 30);
+	monsterAmountViewer = Label::create("Num", fontPath, 30);
 	monsterAmountViewer->setPosition(_winSize.width - 30 , _winSize.height - 20);
 	monsterAmountViewer->setAnchorPoint(Vec2::ANCHOR_TOP_RIGHT);
 	this->addChild(monsterAmountViewer);

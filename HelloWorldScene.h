@@ -6,6 +6,7 @@
 #include "SimpleAudioEngine.h"  
 #include "GameOver.h"
 
+const std::string fontPath = "fonts/nasalization-rg.ttf";
 class HelloWorld : public cocos2d::Layer
 {
 // for game algorithm
@@ -88,29 +89,29 @@ public:
 
 	void setMonsterAmountViewer();
 private:
+	Player* player;
 	Size _winSize;
 	Sprite* Background;
 	Layer* layerMissile;
-	Player* player;
 	Sprite* statusBar;
 
 	Sprite* mpSprite;
 	CCProgressTimer* mpBar;
-	LabelTTF* mpState;
+	Label* mpState;
 
 	Sprite* hpSprite;
 	CCProgressTimer* hpBar;
-	LabelTTF* hpState;
+	Label* hpState;
 
-	LabelTTF* ttf1;
+	Label* ttf1;
 
 	Tower* tower;
 	
 	// 12시 방향 시간 표기
-	LabelTTF* roundViewer;
-	LabelTTF* timeViewer;
-	LabelTTF* monsterAmountViewer;
-	LabelTTF* monsterExistViewer;
+	Label* roundViewer;
+	Label* timeViewer;
+	Label* monsterAmountViewer;
+	Label* monsterExistViewer;
 
 	Vec2 mouse;
 	Vec2 diffUnitVec2;
@@ -126,7 +127,7 @@ private:
 
 	//Skill UI
 	Vector<Sprite*> Skillboxes;
-	Vector<LabelTTF*> SkillLevels;
+	Vector<Label*> SkillLevels;
 
 	//스킬 슬롯 레벨
 	unsigned int SlotLevel;
