@@ -21,3 +21,11 @@ const int GameData::enemyAttackRange = 50;
 const float GameData::enemyAttackSpeed = 1.0;
 
 const float GameData::enemyMoveSpeed = 10.0;
+
+const int GameData::enemyMutateRate[21] = {
+	0, 5, 10, 15, 20, 26, 32, 39, 47, 56, 67, 80, 81, 82, 83, 84, 85, 86, 87, 88
+};
+
+const int GameData::enemyLevelUpRate[21] = {
+	0, 0, 0, 0, 0
+};

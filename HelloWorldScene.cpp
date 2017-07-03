@@ -121,15 +121,12 @@ void HelloWorld::createGameScene()//권태형 제작
 	player->setPosition(_winSize.width / 2 - 200, _winSize.height / 2 - 200);
 	player->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
 
-	statusBar = Sprite::create("UI/MainStatusBar.png");
-	statusBar->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
-
 	mpSprite = Sprite::create("UI/MPStatusBar.png");
 	mpBar = CCProgressTimer::create(mpSprite);
 	mpBar->setType(kCCProgressTimerTypeBar);
 	mpBar->setPercentage(MP);
 	mpBar->setMidpoint(ccp(0, 0.5f));
-	mpBar->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
+	mpBar->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
 	mpBar->setBarChangeRate(Vec2(1, 0));
 
 	hpSprite = Sprite::create("UI/HPStatusBar.png");
@@ -137,21 +134,24 @@ void HelloWorld::createGameScene()//권태형 제작
 	hpBar->setType(kCCProgressTimerTypeBar);
 	hpBar->setPercentage(500/5);
 	hpBar->setMidpoint(ccp(1, 0.5f));
-	hpBar->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
+	hpBar->setAnchorPoint(Vec2::ANCHOR_BOTTOM_RIGHT);
 	hpBar->setBarChangeRate(Vec2::ANCHOR_BOTTOM_RIGHT);
 
-	statusBar->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
-	statusBar->setPosition(_winSize.width / 2, _winSize.height * 1 / 20);
+	statusBar = Sprite::create("UI/MainStatusBar.png");
+	statusBar->setAnchorPoint(Vec2::ANCHOR_MIDDLE_BOTTOM);
+	statusBar->setPosition(_winSize.width / 2, -50);
 
-	mpBar->setPosition(_winSize.width / 2 + 267, _winSize.height * 1 / 20 - 25);
+	mpBar->setPosition(_winSize.width / 2, 0);
 	mpState = LabelTTF::create("100/100", "fonts/RoundGothic.ttf", 30);
 	mpState->setColor(Color3B(0, 100, 250));
-	mpState->setPosition(_winSize.width / 2 + 267, _winSize.height * 1 / 20 - 25);
+	mpState->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
+	mpState->setPosition(_winSize.width / 2, 0);
 
-	hpBar->setPosition(_winSize.width / 2  - 284 , _winSize.height * 1 / 20 - 25);
+	hpBar->setPosition(_winSize.width / 2, 0);
 	hpState = LabelTTF::create("500/500", "fonts/RoundGothic.ttf", 30);
 	hpState->setColor(Color3B(100, 0, 0));
-	hpState->setPosition(_winSize.width / 2 - 267, _winSize.height * 1 / 20 - 25);
+	hpState->setAnchorPoint(Vec2::ANCHOR_BOTTOM_RIGHT);
+	hpState->setPosition(_winSize.width / 2, 0);
 
 	ttf1 = LabelTTF::create("Default", "fonts/RoundGothic.ttf", 30);
 	ttf1->setPosition(100, 100);
@@ -167,14 +167,14 @@ void HelloWorld::createGameScene()//권태형 제작
 	
 	roundViewer = LabelTTF::create("Round", "fonts/RoundGothic.ttf", 30);
 	roundViewer->setColor(Color3B::RED);
-	roundViewer->setPosition(_winSize.width / 2, _winSize.height - 100);
-	roundViewer->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
+	roundViewer->setPosition(_winSize.width / 2, _winSize.height - 20);
+	roundViewer->setAnchorPoint(Vec2::ANCHOR_MIDDLE_TOP);
 	this->addChild(roundViewer);
 
 	timeViewer = LabelTTF::create("Default", "fonts/RoundGothic.ttf", 30);
 	timeViewer->setColor(Color3B::RED);
-	timeViewer->setPosition(_winSize.width / 2, _winSize.height - 150);
-	timeViewer->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
+	timeViewer->setPosition(_winSize.width / 2, _winSize.height - 60);
+	timeViewer->setAnchorPoint(Vec2::ANCHOR_MIDDLE_TOP);
 	this->addChild(timeViewer);
 
 	for (int i = 0; i < 6; i++) {
@@ -213,8 +213,8 @@ void HelloWorld::initGameVariable()
 void HelloWorld::setMonsterAmountViewer()
 {
 	monsterAmountViewer = LabelTTF::create("Num", "fonts/RoundGothic.ttf", 30);
-	monsterAmountViewer->setPosition(_winSize.width - 200 , _winSize.height - 150);
-	monsterAmountViewer->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
+	monsterAmountViewer->setPosition(_winSize.width - 30 , _winSize.height - 20);
+	monsterAmountViewer->setAnchorPoint(Vec2::ANCHOR_TOP_RIGHT);
 	this->addChild(monsterAmountViewer);
 }
 
@@ -452,7 +452,7 @@ void HelloWorld::setRoundVariable()
 void HelloWorld::monsterDeath()
 {
 	monsterExistAmount--;
-	monsterAmountViewer->setString(std::to_string(monsterPresentAmount));
+	monsterAmountViewer->setString(std::to_string(monsterExistAmount));
 	// 라운드 변경
   	if (monsterPresentAmount == monsterRoundAmount && monsterExistAmount <= 0)
 	{

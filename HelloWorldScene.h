@@ -110,7 +110,7 @@ private:
 	LabelTTF* roundViewer;
 	LabelTTF* timeViewer;
 	LabelTTF* monsterAmountViewer;
-	LabelTTF* currentMonsterViewer;
+	LabelTTF* monsterExistViewer;
 
 	Vec2 mouse;
 	Vec2 diffUnitVec2;
