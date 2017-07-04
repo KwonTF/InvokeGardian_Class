@@ -20,6 +20,7 @@ Tower* Tower::create(const std::string &filename)
 	return nullptr;
 }
 
+
 void Tower::destroy()
 {
 	Unit::destroy();
