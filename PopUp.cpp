@@ -5,11 +5,15 @@ const int PopUp::zOrder = 100;
 PopUp::PopUp()
 {
 	parentLayer = nullptr;
+
+	pCallback = nullptr;
 }
 
 PopUp::~PopUp()
 {
 	parentLayer = nullptr;
+
+	pCallback = nullptr;
 }
 
 PopUp *PopUp::create(Sprite  *BgBoard, Sprite  *BgImg)
@@ -17,8 +21,8 @@ PopUp *PopUp::create(Sprite  *BgBoard, Sprite  *BgImg)
 	PopUp *pRet = new PopUp();
 	if (pRet && pRet->init())
 	{
-		pRet->setBgBoard(BgBoard);
-		pRet->setBgImg(BgImg);
+		//pRet->setBgBoard(BgBoard);
+		//pRet->setBgImg(BgImg);
 		//pRet->setTextInit(); //출력할 문자 UI초기화
 
 		pRet->autorelease();
@@ -28,16 +32,6 @@ PopUp *PopUp::create(Sprite  *BgBoard, Sprite  *BgImg)
 		CC_SAFE_DELETE(pRet);
 	}
 	return pRet;
-}
-
-void PopUp::setBgBoard(Sprite *BgBoard)
-{
-
-}
-
-void PopUp::setBgImg(Sprite *BgImg)
-{
-
 }
 
 // 클래스에서 부를 함수 설정
@@ -53,24 +47,28 @@ int PopUp::getBtnTag()
 }
 
 // 팝업레이어를 불러오고 부모레이어 정지
-void PopUp::call()
+void PopUp::call(Layer *pLayer)
 {
-	/*
-	popupLayer->setAnchorPoint(Vec2(0.5, 0.5));
-	popupLayer->setPosition(Global::screenSizeX / 2, Global::screenSizeY / 2);
+	setAnchorPoint(Vec2::ANCHOR_MIDDLE);
+	//popupLayer->setPosition(Global::screenSizeX / 2, Global::screenSizeY / 2);
 	// Need define popupLayer Zorder variable
-	parentLayer->addChild(popupLayer, POPUP_ZORDER);
+	parentLayer->addChild(this, PopUp::zOrder);
 	Director::getInstance()->getEventDispatcher()->pauseEventListenersForTarget(parentLayer, true);
-	*/
 }
 
 // 팝업 닫기
 void PopUp::close()
 {
-	/*
-	parentLayer->removeChild(popupLayer, true);
-	Director::getInstance()->getEventDispatcher()->resumeEventListenersForTarget(parentLayer, true);
-	*/
+	//setTouchEnabled(false);
+
+	if (parentLayer) 
+	{
+		//parentLayer->setTouchEnabled(true);
+		Director::getInstance()->getEventDispatcher()->resumeEventListenersForTarget(parentLayer, true);
+	}
+
+	removeAllChildren();
+	removeFromParent();
 }
 
 // 팝업 버튼 콜백함수 설정

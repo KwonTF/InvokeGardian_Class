@@ -14,7 +14,7 @@ protected:
 	int attack;						// attack damage for other
 	std::vector<Condition*> conditionArray;	// attack Condition Error for other
 public:
-	Collisioner() {};
+	Collisioner();
 	virtual ~Collisioner();
 	void setCondition(std::vector<Condition*> input);
 	std::vector<Condition*> &getCondition();

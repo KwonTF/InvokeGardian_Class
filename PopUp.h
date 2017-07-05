@@ -12,37 +12,29 @@ creater : ZeroFe
 */
 class PopUp : public cocos2d::Layer
 {
-private:
+protected:
 	static const int zOrder;
-private:
-	Layer *parentLayer;
 
-	Sprite *bgBoard;
-	Sprite *bgImg;
+	Layer *parentLayer;
 
 	int btnTag;
 
 	popupCallback pCallback;
 public:
 	PopUp();
-	~PopUp();
+	virtual ~PopUp();
 
 	static PopUp* create(Sprite  *BgBoard, Sprite  *BgImg);
 
-	void setBgBoard(Sprite *BgBoard);
-	void setBgImg(Sprite *BgImg);
-	void addButton(const char* normalTexture, const char* selectedTexture, 
-		const char* disabledTexture, ui::Widget::TextureResType texType, 
-		const Point &pos, const std::string& text, const int nTag);
-	void setButton(const std::string &name, const int tag);
 	void setCallbackFunc(const popupCallback &callback);
+	void setPauseParentLayer(const bool);
 
 	int getBtnTag();
 
 	void onBtnCallbackFunc(Ref *pSender, cocos2d::ui::Widget::TouchEventType touchType);
 
-	void call();
+	void call(Layer *pLayer);
 	void close();
-private:
+protected:
 	virtual void onCallbackFunc();
 };
