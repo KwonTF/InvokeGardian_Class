@@ -41,10 +41,14 @@ void Intro::createGameScene(void)
 	auto item_1 = MenuItemImage::create("UI/Menu_Start.png", "UI/Menu_Start.png", "UI/Menu_Start.png", CC_CALLBACK_1(Intro::menuCallback1, this));
 	auto item_2= MenuItemImage::create("UI/Menu_Play.png", "UI/Menu_Play.png", "UI/Menu_Play.png", CC_CALLBACK_1(Intro::menuCallback2, this));
 	auto item_3 = MenuItemImage::create("UI/Menu_Exit.png", "UI/Menu_Exit.png", "UI/Menu_Exit.png", CC_CALLBACK_1(Intro::menuCallback3, this));
-
+	
+	auto item_4 = MenuItemImage::create("UI/Menu_Debug.png", "UI/Menu_Debug.png", "UI/Menu_Debug.png", CC_CALLBACK_1(Intro::menuCallback1, this));
+	auto DebugMenu = Menu::create(item_4, NULL);
+	DebugMenu ->setPosition(_screenSize.width * 0.9f, _screenSize.height*0.9f);
+	this->addChild(DebugMenu);
 
 	auto menu = Menu::create(item_1, item_2, item_3, NULL);
-
+	
 	menu->alignItemsVertically();
 	menu->setPosition(Vec2(1000,270));
 	menu->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
@@ -60,19 +64,17 @@ void Intro::createGameScene(void)
 	CocosDenshion::SimpleAudioEngine::sharedEngine()->playBackgroundMusic("BGM/enchanted.wav", true);
 }
 
-void Intro::changeScene(void)
+void Intro::changeScene(Ref* item)
 {
-	Scene* pScene = HelloWorld::createScene();
-
+	Scene* pScene = HelloWorld::createScene(item->_ID);
 	TransitionScene* pTran = TransitionFade::create(0.2f, pScene);
-
 	Director::sharedDirector()->replaceScene(pTran);
 
 }
 
 void Intro::menuCallback1(cocos2d::Ref* pSender)
 {
-	changeScene();
+	changeScene(pSender);
 }
 
 void Intro::menuCallback2(cocos2d::Ref* pSender)

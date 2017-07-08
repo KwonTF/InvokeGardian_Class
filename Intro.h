@@ -19,7 +19,7 @@ public:
 
 	static cocos2d::CCScene* scene();
 
-	void changeScene(void);
+	void changeScene(Ref* item);
 	void menuCallback1(cocos2d::Ref * pSender);
 	void menuCallback2(cocos2d::Ref * pSender);
 	void menuCallback3(cocos2d::Ref * pSender);

@@ -31,7 +31,7 @@ private:
 	int createCount;			// 적군 생성 카운트
 public:
 	// start function
-    static cocos2d::Scene* createScene();
+    static cocos2d::Scene* createScene(int input);
     virtual bool init();
     CREATE_FUNC(HelloWorld);
 
@@ -85,6 +85,9 @@ public:
 	void fireMissile();
 
 	void setMonsterAmountViewer();
+
+	void setDebugMode();
+	void setDebugID(int input);
 private:
 	Player* player;
 	Size _winSize;
@@ -131,6 +134,10 @@ private:
 
 	//기본 능력치
 	unsigned int MP;
+
+	//Activate Debug
+	bool debug;
+	int debugID;
 };
 //마우스 좌표와 특정 시점과의 각도를 계산
 // 삭제 : Vec2 계산으로 더 간단하게 가능해서...

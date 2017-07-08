@@ -7,7 +7,7 @@ USING_NS_CC;
 
 using namespace cocostudio::timeline;
 
-Scene* HelloWorld::createScene()
+Scene* HelloWorld::createScene(int input)
 {
 	Size visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 gravity = Vec2(0.0f, 0.0f);
@@ -18,10 +18,9 @@ Scene* HelloWorld::createScene()
 	scene->getPhysicsWorld()->setGravity(gravity);
 
 	auto layer = HelloWorld::create();
+	layer->setDebugID(input);
 	layer->setPhysicsWorld(scene->getPhysicsWorld());
-
 	scene->addChild(layer);
-
 	return scene;
 }
 
@@ -81,9 +80,8 @@ bool HelloWorld::init()
 	createGameScene();
 	initGameVariable();
 	makeTower();
-
 	setMonsterAmountViewer();
-	
+	setDebugMode();
 	// 스케쥴 설정
 	this->schedule(schedule_selector(HelloWorld::onTimeUpdate));
 	this->schedule(schedule_selector(HelloWorld::gameTimer), 1.0f);
@@ -203,6 +201,7 @@ void HelloWorld::initGameVariable()
 	timeViewer->setString(std::to_string(gameTime));
 
 	setRoundVariable();
+
 }
 
 void HelloWorld::setMonsterAmountViewer()
@@ -211,6 +210,26 @@ void HelloWorld::setMonsterAmountViewer()
 	monsterAmountViewer->setPosition(_winSize.width - 30 , _winSize.height - 20);
 	monsterAmountViewer->setAnchorPoint(Vec2::ANCHOR_TOP_RIGHT);
 	this->addChild(monsterAmountViewer);
+}
+
+void HelloWorld::setDebugMode()
+{
+	if(!debug){
+		ttf1->setOpacity(0);
+	}
+	else {
+		ttf1->setOpacity(200);
+	}
+}
+
+void HelloWorld::setDebugID(int input)
+{
+	debugID = input;
+	if (debugID == 79)
+		debug = true;
+	else
+		debug = false;
+	setDebugMode();
 }
 
 void HelloWorld::makeTower()
