@@ -19,8 +19,8 @@ private:
 	bool canUpgrade;	// check Monster remain
 
 	// variable for random mutate
-	int mutateCreatePer;		// 
-	int mutateLevelUpPer;		// 
+	int mutateCreatePer;		// 변이 생성률
+	int mutateLevelUpPer;		// 변이 진화 확률
 
 	// 적군 생성관련 변수
 	int monsterRoundAmount;		// 라운드에 생성되는 총 적군 수
@@ -48,6 +48,7 @@ public:
 
 	//게임 씬의 구현
 	void createGameScene();
+	void setMonsterAmountViewer();
 	void initGameVariable();
 	void makeTower();
 
@@ -84,12 +85,13 @@ public:
 	Missile *makeMissile();
 	void fireMissile();
 
-	void setMonsterAmountViewer();
-
 	void setDebugMode();
 	void setDebugID(int input);
 private:
 	Player* player;
+
+	Tower* tower;
+
 	Size _winSize;
 	Sprite* Background;
 	Layer* layerMissile;
@@ -105,12 +107,13 @@ private:
 
 	Label* ttf1;
 
-	Tower* tower;
 	
 	// 12시 방향 시간 표기
 	Label* roundViewer;
 	Label* timeViewer;
-	Label* monsterAmountViewer;
+
+	// 1시 방향 적군 수 표기
+	Label* monsterPresentViewer;
 	Label* monsterExistViewer;
 
 	Vec2 mouse;
@@ -134,6 +137,7 @@ private:
 
 	//기본 능력치
 	unsigned int MP;
+	int MPMax;
 
 	//Activate Debug
 	bool debug;

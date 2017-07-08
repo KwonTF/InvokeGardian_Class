@@ -88,9 +88,6 @@ bool HelloWorld::init()
 	this->schedule(schedule_selector(HelloWorld::mpRestore), 0.5f);
 	this->schedule(schedule_selector(HelloWorld::monsterCreateTimer));
 
-	divisonNum = 1;
-	MP = 100;
-	SlotLevel = 2;
     return true;
 }
 
@@ -123,9 +120,9 @@ void HelloWorld::createGameScene()//권태형 제작
 	mpBar = CCProgressTimer::create(mpSprite);
 	mpBar->setType(kCCProgressTimerTypeBar);
 	mpBar->setPercentage(MP);
-	mpBar->setMidpoint(ccp(0, 0.5f));
+	mpBar->setMidpoint(Vec2::ANCHOR_MIDDLE_LEFT);
 	mpBar->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
-	mpBar->setBarChangeRate(Vec2(1, 0));
+	mpBar->setBarChangeRate(Vec2::ANCHOR_BOTTOM_RIGHT);
 
 	hpSprite = Sprite::create("UI/HPStatusBar.png");
 	hpBar = CCProgressTimer::create(hpSprite);
@@ -137,7 +134,7 @@ void HelloWorld::createGameScene()//권태형 제작
 
 	statusBar = Sprite::create("UI/MainStatusBar.png");
 	statusBar->setAnchorPoint(Vec2::ANCHOR_MIDDLE_BOTTOM);
-	statusBar->setPosition(_winSize.width / 2, -50);
+	statusBar->setPosition(_winSize.width / 2, 0);
 
 	mpBar->setPosition(_winSize.width / 2, 0);
 	mpState = Label::createWithTTF("100/100", fontPath, 30);
@@ -191,6 +188,11 @@ create by ZeroFe
 */
 void HelloWorld::initGameVariable()
 {
+	divisonNum = 1;
+	MP = 100;
+	MPMax = 100;
+	SlotLevel = 2;
+
 	roundNum = 1;
 
 	gameTime = ROUNDTIME;
@@ -206,10 +208,15 @@ void HelloWorld::initGameVariable()
 
 void HelloWorld::setMonsterAmountViewer()
 {
-	monsterAmountViewer = Label::create("Num", fontPath, 30);
-	monsterAmountViewer->setPosition(_winSize.width - 30 , _winSize.height - 20);
-	monsterAmountViewer->setAnchorPoint(Vec2::ANCHOR_TOP_RIGHT);
-	this->addChild(monsterAmountViewer);
+	monsterPresentViewer = Label::create("Num", fontPath, 30);
+	monsterPresentViewer->setPosition(_winSize.width - 30 , _winSize.height - 20);
+	monsterPresentViewer->setAnchorPoint(Vec2::ANCHOR_TOP_RIGHT);
+	this->addChild(monsterPresentViewer);
+
+	monsterExistViewer = Label::create("Num", fontPath, 30);
+	monsterExistViewer->setPosition(_winSize.width - 30, _winSize.height - 60);
+	monsterExistViewer->setAnchorPoint(Vec2::ANCHOR_TOP_RIGHT);
+	this->addChild(monsterExistViewer);
 }
 
 void HelloWorld::setDebugMode()
@@ -218,7 +225,7 @@ void HelloWorld::setDebugMode()
 		ttf1->setOpacity(0);
 	}
 	else {
-		ttf1->setOpacity(200);
+		ttf1->setOpacity(255);
 	}
 }
 
@@ -243,6 +250,7 @@ void HelloWorld::makeTower()
 	tower->getPhysicsBody()->setCategoryBitmask(0x003);
 	tower->getPhysicsBody()->setContactTestBitmask(0xC30);
 	tower->getPhysicsBody()->setCollisionBitmask(0x030);
+	tower->setDeathCallback(CC_CALLBACK_0(HelloWorld::goGameOver, this));
 
 	tower->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
 	tower->setPosition(Vec2(_winSize.width / 2, _winSize.height/2));
@@ -266,16 +274,9 @@ void HelloWorld::onTimeUpdate(float input)//권태형 제작
 	std::string mpText = std::to_string(static_cast<int>(ceil(MP))) + " / 100";
 	mpState->setString(mpText);
 
-	hpBar->setPercentage(tower->getHP() / 5);
-	std::string hpText = std::to_string(static_cast<int>(ceil(tower->getHP()))) + " / 500";
+	hpBar->setPercentage(tower->getHPCurrent() * 100 / tower->getHPMax());
+	std::string hpText = std::to_string(static_cast<int>(ceil(tower->getHPCurrent()))) + " / " + std::to_string(static_cast<int>(ceil(tower->getHPMax())));
 	hpState->setString(hpText);
-	if (tower->getHP() <= 0) {
-		Scene* pScene = GameOver::scene();
-
-		TransitionScene* pTran = TransitionFade::create(0.5f, pScene);
-
-		Director::sharedDirector()->replaceScene(pTran);
-	}
 }
 
 /*
@@ -307,12 +308,13 @@ void HelloWorld::gameTimer(float dt)
 	timeViewer->setString(std::to_string(gameTime));
 
 	// 몬스터 확인용
-	monsterAmountViewer->setString(std::to_string(monsterExistAmount));
+	monsterPresentViewer->setString(std::to_string(monsterPresentAmount));
+	monsterExistViewer->setString(std::to_string(monsterExistAmount));
 }
 
 void HelloWorld::mpRestore(float input)
 {
-	if (MP < 100) {
+	if (MP < MPMax) {
 		MP++;
 	}
 }
@@ -345,13 +347,9 @@ void HelloWorld::monsterCreateTimer(float dt)
 
 		if (monsterPresentAmount % 4 == 0)
 			if (roundCount >= 60)
-			{
 				roundCount -= 8;
-			}
 			else
-			{
 				roundCount -= 3;
-			}
 	}
 }
 
@@ -466,7 +464,7 @@ void HelloWorld::setRoundVariable()
 void HelloWorld::monsterDeath()
 {
 	monsterExistAmount--;
-	monsterAmountViewer->setString(std::to_string(monsterExistAmount));
+	monsterExistViewer->setString(std::to_string(monsterExistAmount));
 	// 라운드 변경
   	if (monsterPresentAmount == monsterRoundAmount && monsterExistAmount <= 0)
 	{
@@ -474,8 +472,14 @@ void HelloWorld::monsterDeath()
 		// 남은 시간 1초 남기고 없애기
 		int extraTime = gameTime - 1;
 		gameTime = gameTime - extraTime;
+		
 		// 남은 시간만큼 마나 / 타워 체력 회복
-		// (체력 회복은 체젠에 기반하여)
+		tower->healTower(tower->getHPRegen() * gameTime);
+		// 마나 채우기 완전한 알고리즘 아님 수정 필요
+		if (MP + gameTime > MPMax)
+			MP = MPMax;
+		else
+			MP += gameTime;
 
 		// 업그레이드 가능 상태로 만들기
 		canUpgrade = true;
@@ -496,7 +500,11 @@ void HelloWorld::explodeEffect(Vec2 point)
 
 void HelloWorld::goGameOver()
 {
+	Scene* pScene = GameOver::scene();
 
+	TransitionScene* pTran = TransitionFade::create(0.5f, pScene);
+
+	Director::sharedDirector()->replaceScene(pTran);
 }
 
 bool HelloWorld::anyRay(PhysicsWorld &world, const PhysicsRayCastInfo &info, void *data)

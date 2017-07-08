@@ -9,6 +9,7 @@ Unit::Unit()
 	moveSpeed = 0;
 
 	hpGage = nullptr;
+
 	for (int i = 0; i < 4; i++)
 	{
 		shadow[i] = nullptr;
@@ -69,37 +70,6 @@ void Unit::collisioned(int damage, std::vector<Condition*> &c)
 	}
 
 	log("Unit collisioned : hp - %d, damage - %d", hpCurrent, damage);
-}
-
-void Unit::setHP(int HP)
-{
-	hpCurrent = HP;
-	hpMax = HP;
-}
-
-void Unit::setHPRegen(int regen)
-{
-	hpRegen = regen;
-}
-
-void Unit::setAttack(int atk)
-{
-	attack = atk;
-}
-
-void Unit::setSpeed(float speed)
-{
-	moveSpeed = speed;
-}
-
-int Unit::getHP()
-{
-	return hpCurrent;
-}
-
-float Unit::getSpeed()
-{
-	return moveSpeed;
 }
 
 void Unit::setHpGage(const std::string &filename)

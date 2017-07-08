@@ -40,14 +40,16 @@ public:
 	void setImageInfo(const std::string *filename, const int fileNum);
 
 	// set ability
-	void setHP(int hp);
-	void setHPRegen(int regen);
-	void setAttack(int atk);
-	void setSpeed(float spd);
+	inline void setHP(const int hp) {hpCurrent = hp; hpMax = hp;}
+	inline void setHPRegen(const int regen) { hpRegen = regen; }
+	inline void setAttack(const int atk) { attack = atk; }
+	inline void setSpeed(const float spd) { moveSpeed = spd; }
 
 	// get ability
-	int getHP();
-	float getSpeed();
+	inline int getHPCurrent() { return hpCurrent; }
+	inline int getHPMax() { return hpMax; }
+	inline int getHPRegen() { return hpRegen; }
+	inline float getSpeed() { return moveSpeed; }
 
 	// add sub sprite
 	void setHpGage(const std::string &filename);

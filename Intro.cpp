@@ -43,11 +43,11 @@ void Intro::createGameScene(void)
 	auto item_3 = MenuItemImage::create("UI/Menu_Exit.png", "UI/Menu_Exit.png", "UI/Menu_Exit.png", CC_CALLBACK_1(Intro::menuCallback3, this));
 	
 	auto item_4 = MenuItemImage::create("UI/Menu_Debug.png", "UI/Menu_Debug.png", "UI/Menu_Debug.png", CC_CALLBACK_1(Intro::menuCallback1, this));
-	auto DebugMenu = Menu::create(item_4, NULL);
+	auto DebugMenu = Menu::create(item_4, nullptr);
 	DebugMenu ->setPosition(_screenSize.width * 0.9f, _screenSize.height*0.9f);
 	this->addChild(DebugMenu);
 
-	auto menu = Menu::create(item_1, item_2, item_3, NULL);
+	auto menu = Menu::create(item_1, item_2, item_3, nullptr);
 	
 	menu->alignItemsVertically();
 	menu->setPosition(Vec2(1000,270));

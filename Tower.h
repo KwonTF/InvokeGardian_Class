@@ -16,6 +16,8 @@ public:
 	~Tower() {};
 
 	static Tower* create(const std::string &filename);
+
+	void healTower(const int heal);
 	
 	void destroy() override;
 

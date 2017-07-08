@@ -18,7 +18,7 @@ public:
 	virtual ~Collisioner();
 	void setCondition(std::vector<Condition*> input);
 	std::vector<Condition*> &getCondition();
-	int getAttack();
+	inline int getAttack() { return attack; }
 	virtual void collisioned(int damage, std::vector<Condition*> &c) = 0;
 
 	// 충돌 비트마스크 설정

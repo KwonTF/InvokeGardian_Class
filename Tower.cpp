@@ -20,6 +20,13 @@ Tower* Tower::create(const std::string &filename)
 	return nullptr;
 }
 
+void Tower::healTower(const int heal)
+{
+	if (hpCurrent + heal > hpMax)
+		hpCurrent = hpMax;
+	else
+		hpCurrent += heal;
+}
 
 void Tower::destroy()
 {
