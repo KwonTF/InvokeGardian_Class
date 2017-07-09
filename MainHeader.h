@@ -14,7 +14,8 @@
 // 고정값
 const unsigned int ROUNDTIME = 90;
 const unsigned int SETUPTIME = 45;
-const unsigned int _MPSIZERATE = 52;
+const int _MPSIZERATE = 90;
+const int secondPerFrame = 60;
 
 // 전역 변수(옵션, 디버깅용)
 

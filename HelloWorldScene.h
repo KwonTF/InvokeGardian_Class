@@ -6,6 +6,8 @@
 #include "SimpleAudioEngine.h"  
 #include "GameOver.h"
 
+
+
 const std::string fontPath = "fonts/nasalization-rg.ttf";
 class HelloWorld : public cocos2d::Layer
 {
@@ -29,6 +31,13 @@ private:
 
 	int roundCount;				// 라운드 별 적군 생성 주기
 	int createCount;			// 적군 생성 카운트
+
+	//기본 능력치
+	int MPCurrent;				// 현재 마나
+	int MPMax;					// 마나 최대치
+	int MPRegenCount;			// 마나 리젠 카운트
+	int MPRegenAmount;			// 마나 리젠량
+
 public:
 	// start function
     static cocos2d::Scene* createScene(int input);
@@ -134,10 +143,6 @@ private:
 
 	//스킬 슬롯 레벨
 	unsigned int SlotLevel;
-
-	//기본 능력치
-	unsigned int MP;
-	int MPMax;
 
 	//Activate Debug
 	bool debug;

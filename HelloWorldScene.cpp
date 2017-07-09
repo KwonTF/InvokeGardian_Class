@@ -77,15 +77,15 @@ bool HelloWorld::init()
 	layerMissile->setAnchorPoint(Vec2::ANCHOR_TOP_RIGHT);
 	layerMissile->setPosition(Vec2());
 	this->addChild(layerMissile);
-	createGameScene();
 	initGameVariable();
+	createGameScene();
 	makeTower();
 	setMonsterAmountViewer();
 	setDebugMode();
 	// 스케쥴 설정
 	this->schedule(schedule_selector(HelloWorld::onTimeUpdate));
 	this->schedule(schedule_selector(HelloWorld::gameTimer), 1.0f);
-	this->schedule(schedule_selector(HelloWorld::mpRestore), 0.5f);
+	this->schedule(schedule_selector(HelloWorld::mpRestore));
 	this->schedule(schedule_selector(HelloWorld::monsterCreateTimer));
 
     return true;
@@ -119,7 +119,7 @@ void HelloWorld::createGameScene()//권태형 제작
 	mpSprite = Sprite::create("UI/MPStatusBar.png");
 	mpBar = CCProgressTimer::create(mpSprite);
 	mpBar->setType(kCCProgressTimerTypeBar);
-	mpBar->setPercentage(MP);
+	mpBar->setPercentage(MPCurrent * 100 / MPMax);
 	mpBar->setMidpoint(Vec2::ANCHOR_MIDDLE_LEFT);
 	mpBar->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
 	mpBar->setBarChangeRate(Vec2::ANCHOR_BOTTOM_RIGHT);
@@ -138,7 +138,7 @@ void HelloWorld::createGameScene()//권태형 제작
 
 	mpBar->setPosition(_winSize.width / 2, 0);
 	mpState = Label::createWithTTF("100/100", fontPath, 30);
-	mpState->setColor(Color3B(0, 100, 250));
+	mpState->setColor(Color3B(0, 100, 255));
 	mpState->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
 	mpState->setPosition(_winSize.width / 2, 0);
 
@@ -166,7 +166,7 @@ void HelloWorld::createGameScene()//권태형 제작
 	roundViewer->setAnchorPoint(Vec2::ANCHOR_MIDDLE_TOP);
 	this->addChild(roundViewer);
 
-	timeViewer = Label::create("Default", fontPath, 30);
+	timeViewer = Label::create(std::to_string(gameTime), fontPath, 30);
 	timeViewer->setColor(Color3B::RED);
 	timeViewer->setPosition(_winSize.width / 2, _winSize.height - 60);
 	timeViewer->setAnchorPoint(Vec2::ANCHOR_MIDDLE_TOP);
@@ -189,8 +189,12 @@ create by ZeroFe
 void HelloWorld::initGameVariable()
 {
 	divisonNum = 1;
-	MP = 100;
+
+	MPCurrent = 100;
 	MPMax = 100;
+	MPRegenCount = 0;
+	MPRegenAmount = 3;
+
 	SlotLevel = 2;
 
 	roundNum = 1;
@@ -199,11 +203,7 @@ void HelloWorld::initGameVariable()
 	isRound = true;
 	canUpgrade = false;
 
-	roundViewer->setString("Round");
-	timeViewer->setString(std::to_string(gameTime));
-
 	setRoundVariable();
-
 }
 
 void HelloWorld::setMonsterAmountViewer()
@@ -270,8 +270,8 @@ void HelloWorld::onTimeUpdate(float input)//권태형 제작
 	diffUnitVec2 = diffUnitVec2.getNormalized();
 	//cocos2d::log("%f", cursorAngle);
 	player->setRotation(90 - diffUnitVec2.getAngle() * 180 / M_PI - 90);
-	mpBar->setPercentage(MP);
-	std::string mpText = std::to_string(static_cast<int>(ceil(MP))) + " / 100";
+	mpBar->setPercentage(MPCurrent *  100 / MPMax);
+	std::string mpText = std::to_string(static_cast<int>(ceil(MPCurrent))) + " / " + std::to_string(static_cast<int>(ceil(MPMax)));
 	mpState->setString(mpText);
 
 	hpBar->setPercentage(tower->getHPCurrent() * 100 / tower->getHPMax());
@@ -314,8 +314,14 @@ void HelloWorld::gameTimer(float dt)
 
 void HelloWorld::mpRestore(float input)
 {
-	if (MP < MPMax) {
-		MP++;
+	MPRegenCount += MPRegenAmount;
+
+	if (MPRegenCount >= _MPSIZERATE)
+	{
+		MPRegenCount -= _MPSIZERATE;
+
+		if (MPCurrent < MPMax)
+			MPCurrent++;
 	}
 }
 
@@ -372,7 +378,7 @@ void HelloWorld::onMouseMove(cocos2d::Event * event)
 void HelloWorld::onKeyPressed(EventKeyboard::KeyCode keyCode, Event * event)
 {
 	int temp = tempVector.size();
-	int tempMP = MP;
+	int tempMP = MPCurrent;
 	if (keyCode == EventKeyboard::KeyCode::KEY_SPACE) {
 		tempMP -= GameData::mpReduce[temp];
 		if (tempMP >= 0) {
@@ -382,7 +388,7 @@ void HelloWorld::onKeyPressed(EventKeyboard::KeyCode keyCode, Event * event)
 				tempspr->setTexture("UI/SkillBox.png");
 			}
 			divisonNum = 1;
-			MP = tempMP;
+			MPCurrent = tempMP;
 			temp = tempVector.size();
 		}
 	}
@@ -474,12 +480,9 @@ void HelloWorld::monsterDeath()
 		gameTime = gameTime - extraTime;
 		
 		// 남은 시간만큼 마나 / 타워 체력 회복
-		tower->healTower(tower->getHPRegen() * gameTime);
+		tower->healTower(tower->getHPRegen() * extraTime);
 		// 마나 채우기 완전한 알고리즘 아님 수정 필요
-		if (MP + gameTime > MPMax)
-			MP = MPMax;
-		else
-			MP += gameTime;
+		MPRegenCount += MPRegenAmount * secondPerFrame * extraTime;
 
 		// 업그레이드 가능 상태로 만들기
 		canUpgrade = true;
