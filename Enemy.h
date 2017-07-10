@@ -4,7 +4,6 @@
 #include "Missile.h"
 #include "Mutate.h"
 
-typedef std::function<void()> monsterCallback;
 typedef std::function<void(Vec2)> ExplodeCallback;
 
 /*
@@ -33,7 +32,8 @@ private:
 	//넉백 변수
 	float knockBackSpeed;
 
-	monsterCallback deathCallback;
+	unitCallback createCallback;
+	unitCallback deathCallback;
 	ExplodeCallback explodeCallback;
 public:
 	Enemy();
@@ -46,8 +46,9 @@ public:
 	int getRange();
 
 	void setEnemyTeam();
-	void setDeathCallback(const monsterCallback &callback);
-	void setExplodeCallback(const ExplodeCallback &callback);
+	inline void setCreateCallback(const unitCallback &callback) { createCallback = callback; createCallback(); }
+	inline void setDeathCallback(const unitCallback &callback) {deathCallback = callback;}
+	void setExplodeCallback(const ExplodeCallback &callback) = delete;
 
 	// 변이 관련 함수
 	void typeEnhance(Mutate mutateInfo);

@@ -4,6 +4,8 @@
 
 USING_NS_CC;
 
+typedef std::function<void()> unitCallback;
+
 /*
 base class of game unit
 create by ZeroFe

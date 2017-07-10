@@ -61,28 +61,17 @@ void Enemy::setEnemyTeam()
 	}
 }
 
-// if Enemy dead, callback to HelloWorld
-void Enemy::setDeathCallback(const monsterCallback &callback)
-{
-	deathCallback = callback;
-}
-
-void Enemy::setExplodeCallback(const ExplodeCallback & callback)
-{
-	explodeCallback = callback;
-}
-
 // add type to enemy
 // 0 : normal, 1 : range, 2 : mass, 3 : divide, 4 : golem, 5 : faster
 void Enemy::typeEnhance(Mutate mutateInfo)
 {
 	// 능력치 변화
-	hpMax = (int)(hpMax * mutate.getHpPer());
-	hpCurrent = (int)(hpCurrent * mutate.getHpPer());
-	//attackRange += mutate::Range[monsterType];
-	attack = (int)(attack * mutate.getAtkPer());
-	moveSpeed = moveSpeed * mutate.getSpdPer();
-	attackCoolTime = (int)(attackCoolTime * mutate.getAsPer());
+	hpMax = (int)(hpMax * mutate.hpPer);
+	hpCurrent = (int)(hpCurrent * mutate.hpPer);
+	attackRange = (int)(attackRange * mutate.rangePer);
+	attack = (int)(attack * mutate.atkPer);
+	moveSpeed = moveSpeed * mutate.spdPer;
+	attackCoolTime = (int)(attackCoolTime * mutate.asPer);
 
 	// 기능 추가
 	// 1. range type : 사거리 추가 - 능력치 변화에서 해결

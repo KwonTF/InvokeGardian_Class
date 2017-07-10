@@ -35,7 +35,7 @@ void Tower::destroy()
 	deathCallback();
 }
 
-void Tower::setDeathCallback(const gameoverCallback &callback)
+void Tower::setDeathCallback(const unitCallback &callback)
 {
 	deathCallback = callback;
 }

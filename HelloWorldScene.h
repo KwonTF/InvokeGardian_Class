@@ -82,6 +82,7 @@ public:
 	void setRoundVariable();
 
 	// 콜백 함수
+	void monsterCreate();
 	void monsterDeath();
 	void explodeEffect(Vec2 point);
 	void goGameOver();

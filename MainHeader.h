@@ -16,6 +16,7 @@ const unsigned int ROUNDTIME = 90;
 const unsigned int SETUPTIME = 45;
 const int _MPSIZERATE = 90;
 const int secondPerFrame = 60;
+const int MUTATE_MAXLEVEL = 5;
 
 // 전역 변수(옵션, 디버깅용)
 

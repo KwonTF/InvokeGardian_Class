@@ -15,7 +15,7 @@ bool GameOver::init()
 cocos2d::CCScene * GameOver::scene()
 {
 	// 'scene' is an autorelease object
-	CCScene *scene = CCScene::create();
+	Scene *scene = Scene::create();
 
 	// 'layer' is an autorelease object
 	GameOver *layer = GameOver::create();
@@ -29,19 +29,19 @@ cocos2d::CCScene * GameOver::scene()
 
 void GameOver::changeScene(void)
 {
-	CCScene* pScene = Intro::scene();
+	Scene* pScene = Intro::scene();
 
-	CCTransitionScene* pTran = CCTransitionFade::create(0.2f, pScene);
+	TransitionScene* pTran = TransitionFade::create(0.2f, pScene);
 
-	CCDirector::sharedDirector()->replaceScene(pTran);
+	Director::sharedDirector()->replaceScene(pTran);
 }
 
 void GameOver::createGameScene(void)
 {
-	_screenSize = CCDirector::sharedDirector()->getWinSize();
+	_screenSize = Director::sharedDirector()->getWinSize();
 
-	CCSprite* openingImage = CCSprite::create("Background/GameOver_Background.png");
-	openingImage->setPosition(ccp(_screenSize.width * 0.5f, _screenSize.height * 0.5f));
+	CCSprite* openingImage = Sprite::create("Background/GameOver_Background.png");
+	openingImage->setPosition(Vec2(_screenSize.width, _screenSize.height) * 0.5f);
 	this->addChild(openingImage);
 	auto item_1 = MenuItemImage::create("UI/GameOver_Menu.png", "UI/GameOver_Menu.png", "UI/GameOver_Menu.png", CC_CALLBACK_1(GameOver::menuCallback1, this));
 	auto item_2 = MenuItemImage::create("UI/GameOver_Exit.png", "UI/GameOver_Exit.png", "UI/GameOver_Exit.png", CC_CALLBACK_1(GameOver::menuCallback2, this));

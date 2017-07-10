@@ -2,13 +2,11 @@
 #include "cocos2d.h"
 #include "Unit.h"
 
-typedef std::function<void()> gameoverCallback;
-
 class Tower : public Unit
 {
 // 변수 목록
 private:
-	gameoverCallback deathCallback;
+	unitCallback deathCallback;
 
 public:
 	Tower();
@@ -20,5 +18,5 @@ public:
 	
 	void destroy() override;
 
-	void setDeathCallback(const gameoverCallback &callback);
+	void setDeathCallback(const unitCallback &callback);
 };

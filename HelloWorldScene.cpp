@@ -306,10 +306,6 @@ void HelloWorld::gameTimer(float dt)
 	// 시간 감소 부분
 	gameTime--;
 	timeViewer->setString(std::to_string(gameTime));
-
-	// 몬스터 확인용
-	monsterPresentViewer->setString(std::to_string(monsterPresentAmount));
-	monsterExistViewer->setString(std::to_string(monsterExistAmount));
 }
 
 void HelloWorld::mpRestore(float input)
@@ -334,17 +330,32 @@ void HelloWorld::monsterCreateTimer(float dt)
 		// 몬스터 생성
 		if (monsterPresentAmount < monsterRoundAmount)
 		{
+			// 몬스터 개체수 표기
 			monsterPresentAmount++;
-			monsterExistAmount++;
+			monsterPresentViewer->setString(std::to_string(monsterPresentAmount));
 
+			// 몬스터 변이 정보 정하기
+			int mutateType = 0;
+			int mutateLevel = 1;
+
+			if (mutateCreatePer >(rand() % 100))
+			{
+				while (mutateLevelUpPer > (rand() % 100) && MUTATE_MAXLEVEL)
+					mutateLevel++;
+				mutateType = (rand() % 5) + 1;
+			}
+
+			// 몬스터 생성
 			auto monster = makeMonster();
 			monster->setBaseAbillity(GameData::roundEnemyHP[roundNum], GameData::roundEnemyAttack[roundNum],
 				GameData::enemyAttackRange, GameData::enemyMoveSpeed, GameData::enemyAttackSpeed);
 			monster->setEnemyAim(tower->getPosition());
+			monster->setCreateCallback(CC_CALLBACK_0(HelloWorld::monsterCreate, this));
 			monster->setDeathCallback(CC_CALLBACK_0(HelloWorld::monsterDeath, this));
 			//monster->setExplodeCallback(CC_CALLBACK_0(HelloWorld::explodeEffect, this, monster->getPosition()));
-			monster->projectImage("Unit/Hostile_Tank.png");
+			//monster->projectImage("Unit/Hostile_Tank.png"); faster 타입에만 적용
 			monster->setHpGage("Others/hpGage.png");
+			// 변이 적용시키기
 			enemyVector.pushBack(monster);
 			addChild(monster);
 		}
@@ -463,8 +474,14 @@ void HelloWorld::setRoundVariable()
 	mutateCreatePer = GameData::enemyMutateRate[roundNum];
 	mutateLevelUpPer = GameData::enemyLevelUpRate[roundNum];
 
-	roundCount = 120;
+	roundCount = 2 * secondPerFrame;
 	createCount = 0;
+}
+
+void HelloWorld::monsterCreate()
+{
+	monsterExistAmount++;
+	monsterExistViewer->setString(std::to_string(monsterExistAmount));
 }
 
 void HelloWorld::monsterDeath()

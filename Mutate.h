@@ -6,12 +6,13 @@
 create by ZeroFe
 */
 class Mutate {
-private:
+public:
 	int type;
 	int level;
 
 	float hpPer;
 	float atkPer;
+	float rangePer;
 	float asPer;
 	float spdPer;
 
@@ -20,14 +21,6 @@ public:
 	Mutate();
 	~Mutate();
 
-	void setMutateInfo(int mType, int mLevel);
+	void setMutateInfo(Mutate &mutate);
 	void setImageInfo(std::string image);
-
-	const int getType();
-	const int getLevel();
-
-	const float getHpPer();
-	const float getAtkPer();
-	const float getAsPer();
-	const float getSpdPer();
 };
