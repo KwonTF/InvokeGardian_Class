@@ -10,3 +10,7 @@ MultiLayerPopUp::~MultiLayerPopUp()
 
 }
 
+void MultiLayerPopUp::addLayer(Layer *cLayer)
+{
+
+}

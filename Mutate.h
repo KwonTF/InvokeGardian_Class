@@ -21,6 +21,8 @@ public:
 	Mutate();
 	~Mutate();
 
-	void setMutateInfo(Mutate &mutate);
+	void setMutateInfo(int mType, int mLevel, float mHpPer, 
+		float mAtkPer, float mRangePer, float mAsPer, float mSpdPer);
 	void setImageInfo(std::string image);
+	Mutate& operator =(const Mutate& mutate);
 };

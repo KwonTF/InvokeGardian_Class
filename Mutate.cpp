@@ -17,7 +17,25 @@ Mutate::~Mutate()
 
 }
 
-void Mutate::setMutateInfo(Mutate &mutate)
+void Mutate::setMutateInfo(int mType, int mLevel, float mHpPer,
+	float mAtkPer, float mRangePer, float mAsPer, float mSpdPer)
+{
+	type = mType;
+	level = mLevel;
+
+	hpPer = mHpPer;
+	atkPer = mAtkPer;
+	rangePer = mRangePer;
+	asPer = mAsPer;
+	spdPer = mSpdPer;
+}
+
+void Mutate::setImageInfo(std::string image)
+{
+	imageName = image;
+}
+
+Mutate& Mutate::operator=(const Mutate& mutate)
 {
 	type = mutate.type;
 	level = mutate.level;
@@ -27,9 +45,8 @@ void Mutate::setMutateInfo(Mutate &mutate)
 	rangePer = mutate.rangePer;
 	asPer = mutate.asPer;
 	spdPer = mutate.spdPer;
-}
 
-void Mutate::setImageInfo(std::string image)
-{
-	imageName = image;
+	imageName = mutate.imageName;
+
+	return *this;
 }

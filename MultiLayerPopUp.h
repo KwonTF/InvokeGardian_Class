@@ -5,7 +5,7 @@
 레이어가 다수인 팝업
 creater : ZeroFe
 */
-class MultiLayerPopUp : public cocos2d::Layer
+class MultiLayerPopUp : public PopUp
 {
 private:
 
@@ -15,5 +15,5 @@ public:
 
 	static MultiLayerPopUp* create(Sprite  *BgBoard, Sprite  *BgImg);
 
-	void addLayer();
+	void addLayer(Layer *cLayer);
 };

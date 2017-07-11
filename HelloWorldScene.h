@@ -6,7 +6,7 @@
 #include "SimpleAudioEngine.h"  
 #include "GameOver.h"
 
-
+inline float persent(int Current, int Max) { return (Current * 100) / Max; }
 
 const std::string fontPath = "fonts/nasalization-rg.ttf";
 class HelloWorld : public cocos2d::Layer
