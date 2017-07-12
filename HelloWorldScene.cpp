@@ -132,9 +132,10 @@ void HelloWorld::createGameScene()//권태형 제작
 	hpBar->setAnchorPoint(Vec2::ANCHOR_BOTTOM_RIGHT);
 	hpBar->setBarChangeRate(Vec2::ANCHOR_BOTTOM_RIGHT);
 
+	//위치교정으로 -50.... 으에...
 	statusBar = Sprite::create("UI/MainStatusBar.png");
 	statusBar->setAnchorPoint(Vec2::ANCHOR_MIDDLE_BOTTOM);
-	statusBar->setPosition(_winSize.width / 2, 0);
+	statusBar->setPosition(_winSize.width / 2 + 3, -54);
 
 	mpBar->setPosition(_winSize.width / 2, 0);
 	mpState = Label::createWithTTF("100/100", fontPath, 30);
@@ -152,6 +153,20 @@ void HelloWorld::createGameScene()//권태형 제작
 	ttf1->setPosition(100, 100);
 	ttf1->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
 
+	/* for UI check	
+	Sprite* pop1 = Sprite::create("UI/Popup_1.png");
+	pop1->setAnchorPoint(Vec2::ANCHOR_MIDDLE_LEFT);
+	pop1->setPosition(0,_winSize.height/2);
+	this->addChild(pop1);
+	Sprite* pop2 = Sprite::create("UI/Popup_2.png");
+	pop2->setAnchorPoint(Vec2::ANCHOR_MIDDLE_LEFT);
+	pop2->setPosition(0, _winSize.height / 2);
+	this->addChild(pop2);
+	Sprite* pop3 = Sprite::create("UI/Popup_3.png");
+	pop3->setAnchorPoint(Vec2::ANCHOR_MIDDLE_LEFT);
+	pop3->setPosition(0, _winSize.height / 2);
+	this->addChild(pop3);
+	*/
 	this->addChild(player);
 	this->addChild(ttf1);
 	this->addChild(statusBar);
@@ -225,7 +240,8 @@ void HelloWorld::setDebugMode()
 		ttf1->setOpacity(0);
 	}
 	else {
-		ttf1->setOpacity(255);
+		//의도된 투명도 더 낮출까도 고민중
+		ttf1->setOpacity(180);
 	}
 }
 
