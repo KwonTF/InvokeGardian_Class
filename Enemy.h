@@ -45,7 +45,6 @@ public:
 	void setRange(int range);
 	int getRange();
 
-	void setEnemyTeam();
 	inline void setCreateCallback(const unitCallback &callback) { createCallback = callback; createCallback(); }
 	inline void setDeathCallback(const unitCallback &callback) {deathCallback = callback;}
 	void setExplodeCallback(const ExplodeCallback &callback) = delete;

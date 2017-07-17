@@ -65,27 +65,6 @@ void Missile::setDivideCount(int count)
 	divideCount = count;
 }
 
-/*
-set Missile's bitmask
-team - 0 is player team, others are enemy
-*/
-void Missile::setMissileTeam(int team)
-{
-	// no collision
-	getPhysicsBody()->setCollisionBitmask(0x000);
-
-	if (team == 0)
-	{
-		getPhysicsBody()->setCategoryBitmask(0x300);
-		getPhysicsBody()->setContactTestBitmask(0x0F0);
-	}
-	else
-	{
-		getPhysicsBody()->setCategoryBitmask(0xC00);
-		getPhysicsBody()->setContactTestBitmask(0x00F);
-	}
-}
-
 void Missile::setRemoveTime(float time)
 {
 	removeTime = time;

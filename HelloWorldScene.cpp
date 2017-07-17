@@ -50,7 +50,7 @@ bool HelloWorld::init()
 
 	// Set MouseEvent
 	auto Mouse = EventListenerMouse::create();
-	mouse = Vec2(0, 0);
+	mouse = Vec2::ZERO;
 	Mouse->onMouseDown = CC_CALLBACK_1(HelloWorld::onMouseDown, this);
 	Mouse->onMouseUp = CC_CALLBACK_1(HelloWorld::onMouseUp, this);
 	Mouse->onMouseScroll = CC_CALLBACK_1(HelloWorld::onMouseScroll, this);
@@ -77,11 +77,13 @@ bool HelloWorld::init()
 	layerMissile->setAnchorPoint(Vec2::ANCHOR_TOP_RIGHT);
 	layerMissile->setPosition(Vec2());
 	this->addChild(layerMissile);
+
 	initGameVariable();
 	createGameScene();
 	makeTower();
 	setMonsterAmountViewer();
 	setDebugMode();
+
 	// 스케쥴 설정
 	this->schedule(schedule_selector(HelloWorld::onTimeUpdate));
 	this->schedule(schedule_selector(HelloWorld::gameTimer), 1.0f);
@@ -102,6 +104,7 @@ bool HelloWorld::onContactBegin(PhysicsContact& contact)
 	return true;
 }
 
+// raycast 용
 void HelloWorld::onTouchesEnded(const std::vector<Touch*> &touches, Event* event)
 {
 	for (auto &touch : touches)
@@ -119,7 +122,7 @@ void HelloWorld::createGameScene()//권태형 제작
 	mpSprite = Sprite::create("UI/MPStatusBar.png");
 	mpBar = CCProgressTimer::create(mpSprite);
 	mpBar->setType(kCCProgressTimerTypeBar);
-	mpBar->setPercentage(MPCurrent * 100 / MPMax);
+	mpBar->setPercentage(persent(100, 100));
 	mpBar->setMidpoint(Vec2::ANCHOR_MIDDLE_LEFT);
 	mpBar->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
 	mpBar->setBarChangeRate(Vec2::ANCHOR_BOTTOM_RIGHT);
@@ -127,15 +130,29 @@ void HelloWorld::createGameScene()//권태형 제작
 	hpSprite = Sprite::create("UI/HPStatusBar.png");
 	hpBar = CCProgressTimer::create(hpSprite);
 	hpBar->setType(kCCProgressTimerTypeBar);
-	hpBar->setPercentage(500/5);
-	hpBar->setMidpoint(ccp(1, 0.5f));
+	hpBar->setPercentage(persent(500, 500));
+	hpBar->setMidpoint(Vec2::ANCHOR_MIDDLE_RIGHT);
 	hpBar->setAnchorPoint(Vec2::ANCHOR_BOTTOM_RIGHT);
 	hpBar->setBarChangeRate(Vec2::ANCHOR_BOTTOM_RIGHT);
 
-	//위치교정으로 -50.... 으에...
 	statusBar = Sprite::create("UI/MainStatusBar.png");
 	statusBar->setAnchorPoint(Vec2::ANCHOR_MIDDLE_BOTTOM);
-	statusBar->setPosition(_winSize.width / 2 + 3, -54);
+	statusBar->setPosition(_winSize.width / 2, 0);
+
+	/* for UI check
+	Sprite* pop1 = Sprite::create("UI/Popup_1.png");
+	pop1->setAnchorPoint(Vec2::ANCHOR_MIDDLE_LEFT);
+	pop1->setPosition(0,_winSize.height/2);
+	this->addChild(pop1);
+	Sprite* pop2 = Sprite::create("UI/Popup_2.png");
+	pop2->setAnchorPoint(Vec2::ANCHOR_MIDDLE_LEFT);
+	pop2->setPosition(0, _winSize.height / 2);
+	this->addChild(pop2);
+	Sprite* pop3 = Sprite::create("UI/Popup_3.png");
+	pop3->setAnchorPoint(Vec2::ANCHOR_MIDDLE_LEFT);
+	pop3->setPosition(0, _winSize.height / 2);
+	this->addChild(pop3);
+	*/
 
 	mpBar->setPosition(_winSize.width / 2, 0);
 	mpState = Label::createWithTTF("100/100", fontPath, 30);
@@ -153,20 +170,6 @@ void HelloWorld::createGameScene()//권태형 제작
 	ttf1->setPosition(100, 100);
 	ttf1->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
 
-	/* for UI check	
-	Sprite* pop1 = Sprite::create("UI/Popup_1.png");
-	pop1->setAnchorPoint(Vec2::ANCHOR_MIDDLE_LEFT);
-	pop1->setPosition(0,_winSize.height/2);
-	this->addChild(pop1);
-	Sprite* pop2 = Sprite::create("UI/Popup_2.png");
-	pop2->setAnchorPoint(Vec2::ANCHOR_MIDDLE_LEFT);
-	pop2->setPosition(0, _winSize.height / 2);
-	this->addChild(pop2);
-	Sprite* pop3 = Sprite::create("UI/Popup_3.png");
-	pop3->setAnchorPoint(Vec2::ANCHOR_MIDDLE_LEFT);
-	pop3->setPosition(0, _winSize.height / 2);
-	this->addChild(pop3);
-	*/
 	this->addChild(player);
 	this->addChild(ttf1);
 	this->addChild(statusBar);
@@ -240,8 +243,7 @@ void HelloWorld::setDebugMode()
 		ttf1->setOpacity(0);
 	}
 	else {
-		//의도된 투명도 더 낮출까도 고민중
-		ttf1->setOpacity(180);
+		ttf1->setOpacity(255);
 	}
 }
 
@@ -263,11 +265,8 @@ void HelloWorld::makeTower()
 	auto body = PhysicsBody::createBox(tower->getContentSize(), material);
 	tower->setPhysicsBody(body);
 	tower->getPhysicsBody()->setDynamic(false);
-	tower->getPhysicsBody()->setCategoryBitmask(0x003);
-	tower->getPhysicsBody()->setContactTestBitmask(0xC30);
-	tower->getPhysicsBody()->setCollisionBitmask(0x030);
+	tower->setPhysicsBitmask(Collisioner::bitmaskPlayerAll, ~(Collisioner::bitmaskBulletOne + Collisioner::bitmaskPlayerAll), Collisioner::bitmaskEnemyAll);
 	tower->setDeathCallback(CC_CALLBACK_0(HelloWorld::goGameOver, this));
-
 	tower->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
 	tower->setPosition(Vec2(_winSize.width / 2, _winSize.height/2));
 
@@ -280,17 +279,13 @@ void HelloWorld::onTimeUpdate(float input)//권태형 제작
 {
 	Vec2 playerPos = player->getPosition();
 
-	//각도 구하기
-	diffUnitVec2 = mouse - playerPos;
-	diffUnitVec3 = diffUnitVec2;
-	diffUnitVec2 = diffUnitVec2.getNormalized();
-	//cocos2d::log("%f", cursorAngle);
-	player->setRotation(90 - diffUnitVec2.getAngle() * 180 / M_PI - 90);
-	mpBar->setPercentage(MPCurrent *  100 / MPMax);
+	// 플레이어 각도 설정
+	player->setRotation(-MathCalculator::calculateAngle(playerPos, mouse) * MathCalculator::radian());
+	mpBar->setPercentage(persent(MPCurrent, MPMax));
 	std::string mpText = std::to_string(static_cast<int>(ceil(MPCurrent))) + " / " + std::to_string(static_cast<int>(ceil(MPMax)));
 	mpState->setString(mpText);
 
-	hpBar->setPercentage(tower->getHPCurrent() * 100 / tower->getHPMax());
+	hpBar->setPercentage(persent(tower->getHPCurrent(), tower->getHPMax()));
 	std::string hpText = std::to_string(static_cast<int>(ceil(tower->getHPCurrent()))) + " / " + std::to_string(static_cast<int>(ceil(tower->getHPMax())));
 	hpState->setString(hpText);
 }
@@ -361,6 +356,9 @@ void HelloWorld::monsterCreateTimer(float dt)
 				mutateType = (rand() % 5) + 1;
 			}
 
+			// 변이 정보로부터 데이터 가져오기
+
+
 			// 몬스터 생성
 			auto monster = makeMonster();
 			monster->setBaseAbillity(GameData::roundEnemyHP[roundNum], GameData::roundEnemyAttack[roundNum],
@@ -392,7 +390,7 @@ void HelloWorld::onMouseDown(cocos2d::Event * event)
 	std::string output = "X: " + std::to_string(static_cast<int>(ceil(mousePosition.x))) + " Y: " + std::to_string(static_cast<int>(ceil(mousePosition.y)));
 	ttf1->setString(output);
 	mousePosition.y = _winSize.height - mousePosition.y;
-	player->gotoPoint(mousePosition, calculateDegree(player->getPosition(), mousePosition));
+	player->gotoPoint(mousePosition, MathCalculator::calculateAngle(player->getPosition(), mousePosition) * MathCalculator::radian());
 }
 
 void HelloWorld::onMouseMove(cocos2d::Event * event)
@@ -587,9 +585,9 @@ Enemy* HelloWorld::makeMonster()
 
 	monster->setPhysicsBody(body);
 	monster->getPhysicsBody()->setDynamic(false);
-	monster->setEnemyTeam();
+	monster->setPhysicsBitmask(Collisioner::bitmaskEnemyAll, ~(Collisioner::bitmaskBulletTwo + Collisioner::bitmaskEnemyAll), Collisioner::bitmaskPlayerAll);
 	monster->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
-	monster->setPosition(Vec2(_winSize.width * (rand() % 2), (rand() % 720)));
+	monster->setPosition(Vec2(_winSize.width * (rand() % 2), (rand() % static_cast<int>(_winSize.height))));
 	return monster;
 }
 
@@ -618,23 +616,15 @@ void HelloWorld::fireMissile()
 	// Missile로 만든거
 	for (int i = 0; i < divisonNum; i++) {
 		auto missile = HelloWorld::makeMissile();
-		Vec2 tempVec = diffUnitVec3;
+		Vec2 tempVec = MathCalculator::calculateUnitVec2(player->getPosition(), mouse);
 		if (divisonNum > 1) {
 			tempVec.x += random() % 100 - 50;
 			tempVec.y += random() % 100 - 50;
 		}
-		tempVec = tempVec.getNormalized();
 		missile->getPhysicsBody()->setVelocity(tempVec * missile->getSpeed());
-		missile->setMissileTeam(0);
+		missile->setPhysicsBitmask(Collisioner::bitmaskBulletOne, ~(Collisioner::bitmaskBulletAll + Collisioner::bitmaskPlayerAll), Collisioner::bitmaskZero);
 		missile->setCondition(tempVector);
 		missile->castEffect();
 		layerMissile->addChild(missile);
 	}
-}
-
-float calculateDegree(Vec2 current, Vec2 point)
-{
-	Vec2 tempVec = point - current;
-	tempVec = tempVec.getNormalized();
-	return tempVec.getAngle()* 180 / M_PI;
 }

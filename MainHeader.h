@@ -10,6 +10,7 @@
 #include "Player.h"
 #include "BulletObj.h"
 #include "GameData.h"
+#include "MathCalculator.h"
 
 // °íÁ¤°ª
 const unsigned int ROUNDTIME = 90;

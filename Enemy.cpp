@@ -50,28 +50,17 @@ int Enemy::getRange()
 	return attackRange;
 }
 
-// set Enemy's PhysicsBody BitMask
-void Enemy::setEnemyTeam()
-{
-	if (getPhysicsBody() != nullptr)
-	{
-		getPhysicsBody()->setCategoryBitmask(0x0C0);
-		getPhysicsBody()->setContactTestBitmask(0x30C);
-		getPhysicsBody()->setCollisionBitmask(0x00C);
-	}
-}
-
 // add type to enemy
 // 0 : normal, 1 : range, 2 : mass, 3 : divide, 4 : golem, 5 : faster
 void Enemy::typeEnhance(Mutate mutateInfo)
 {
 	// 능력치 변화
-	hpMax = (int)(hpMax * mutate.hpPer);
-	hpCurrent = (int)(hpCurrent * mutate.hpPer);
-	attackRange = (int)(attackRange * mutate.rangePer);
-	attack = (int)(attack * mutate.atkPer);
+	hpMax = static_cast<int>(hpMax * mutate.hpPer);
+	hpCurrent = static_cast<int>(hpCurrent * mutate.hpPer);
+	attackRange = static_cast<int>(attackRange * mutate.rangePer);
+	attack = static_cast<int>(attack * mutate.atkPer);
 	moveSpeed = moveSpeed * mutate.spdPer;
-	attackCoolTime = (int)(attackCoolTime * mutate.asPer);
+	attackCoolTime = static_cast<int>(attackCoolTime * mutate.asPer);
 
 	// 기능 추가
 	// 1. range type : 사거리 추가 - 능력치 변화에서 해결
@@ -131,7 +120,7 @@ void Enemy::shootMissile()
 	missile->setPhysicsBody(body);
 	missile->setPosition(getPosition());
 	missile->getPhysicsBody()->setVelocity(diff * missile->getSpeed());
-	missile->setMissileTeam(1);
+	missile->setPhysicsBitmask(Collisioner::bitmaskBulletTwo, ~(Collisioner::bitmaskBulletAll + Collisioner::bitmaskEnemyAll), Collisioner::bitmaskZero);
 	
 
 	// 게임에 추가

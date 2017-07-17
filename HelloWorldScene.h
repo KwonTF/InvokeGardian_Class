@@ -99,7 +99,6 @@ public:
 	void setDebugID(int input);
 private:
 	Player* player;
-
 	Tower* tower;
 
 	Size _winSize;
@@ -117,7 +116,6 @@ private:
 
 	Label* ttf1;
 
-	
 	// 12시 방향 시간 표기
 	Label* roundViewer;
 	Label* timeViewer;
@@ -127,9 +125,6 @@ private:
 	Label* monsterExistViewer;
 
 	Vec2 mouse;
-	Vec2 diffUnitVec2;
-	Vec2 diffUnitVec3;
-	float cursorAngle;
 	std::vector<Condition*> tempVector;
 	Vector<Enemy*> enemyVector;
 
@@ -149,8 +144,4 @@ private:
 	bool debug;
 	int debugID;
 };
-//마우스 좌표와 특정 시점과의 각도를 계산
-// 삭제 : Vec2 계산으로 더 간단하게 가능해서...
-float calculateDegree(Vec2 current, Vec2 point);
-
 #endif // __HELLOWORLD_SCENE_H__

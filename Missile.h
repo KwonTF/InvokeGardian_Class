@@ -41,8 +41,6 @@ public:
 	void setRange(int movelimit);
 	void setPenetCount(int count);
 	void setDivideCount(int count);
-
-	void setMissileTeam(int team);
 	void setRemoveTime(float time);
 
 	float getSpeed();
