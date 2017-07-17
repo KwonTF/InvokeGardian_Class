@@ -95,6 +95,7 @@ public:
 	Missile *makeMissile();
 	void fireMissile();
 
+	void UISetting();
 	void setDebugMode();
 	void setDebugID(int input);
 private:

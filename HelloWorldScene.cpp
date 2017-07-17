@@ -119,84 +119,7 @@ void HelloWorld::createGameScene()//권태형 제작
 	player->setPosition(_winSize.width / 2 - 200, _winSize.height / 2 - 200);
 	player->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
 
-	mpSprite = Sprite::create("UI/MPStatusBar.png");
-	mpBar = CCProgressTimer::create(mpSprite);
-	mpBar->setType(kCCProgressTimerTypeBar);
-	mpBar->setPercentage(persent(100, 100));
-	mpBar->setMidpoint(Vec2::ANCHOR_MIDDLE_LEFT);
-	mpBar->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
-	mpBar->setBarChangeRate(Vec2::ANCHOR_BOTTOM_RIGHT);
-
-	hpSprite = Sprite::create("UI/HPStatusBar.png");
-	hpBar = CCProgressTimer::create(hpSprite);
-	hpBar->setType(kCCProgressTimerTypeBar);
-	hpBar->setPercentage(persent(500, 500));
-	hpBar->setMidpoint(Vec2::ANCHOR_MIDDLE_RIGHT);
-	hpBar->setAnchorPoint(Vec2::ANCHOR_BOTTOM_RIGHT);
-	hpBar->setBarChangeRate(Vec2::ANCHOR_BOTTOM_RIGHT);
-
-	statusBar = Sprite::create("UI/MainStatusBar.png");
-	statusBar->setAnchorPoint(Vec2::ANCHOR_MIDDLE_BOTTOM);
-	statusBar->setPosition(_winSize.width / 2, 0);
-
-	/* for UI check
-	Sprite* pop1 = Sprite::create("UI/Popup_1.png");
-	pop1->setAnchorPoint(Vec2::ANCHOR_MIDDLE_LEFT);
-	pop1->setPosition(0,_winSize.height/2);
-	this->addChild(pop1);
-	Sprite* pop2 = Sprite::create("UI/Popup_2.png");
-	pop2->setAnchorPoint(Vec2::ANCHOR_MIDDLE_LEFT);
-	pop2->setPosition(0, _winSize.height / 2);
-	this->addChild(pop2);
-	Sprite* pop3 = Sprite::create("UI/Popup_3.png");
-	pop3->setAnchorPoint(Vec2::ANCHOR_MIDDLE_LEFT);
-	pop3->setPosition(0, _winSize.height / 2);
-	this->addChild(pop3);
-	*/
-
-	mpBar->setPosition(_winSize.width / 2, 0);
-	mpState = Label::createWithTTF("100/100", fontPath, 30);
-	mpState->setColor(Color3B(0, 100, 255));
-	mpState->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
-	mpState->setPosition(_winSize.width / 2, 0);
-
-	hpBar->setPosition(_winSize.width / 2, 0);
-	hpState = Label::create("500/500", fontPath, 30);
-	hpState->setColor(Color3B(100, 0, 0));
-	hpState->setAnchorPoint(Vec2::ANCHOR_BOTTOM_RIGHT);
-	hpState->setPosition(_winSize.width / 2, 0);
-
-	ttf1 = Label::create("Default", fontPath, 30);
-	ttf1->setPosition(100, 100);
-	ttf1->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
-
-	this->addChild(player);
-	this->addChild(ttf1);
-	this->addChild(statusBar);
-	this->addChild(mpBar);
-	this->addChild(hpBar);
-	this->addChild(mpState);
-	this->addChild(hpState);
-	
-	roundViewer = Label::create("Round", fontPath, 30);
-	roundViewer->setColor(Color3B::RED);
-	roundViewer->setPosition(_winSize.width / 2, _winSize.height - 20);
-	roundViewer->setAnchorPoint(Vec2::ANCHOR_MIDDLE_TOP);
-	this->addChild(roundViewer);
-
-	timeViewer = Label::create(std::to_string(gameTime), fontPath, 30);
-	timeViewer->setColor(Color3B::RED);
-	timeViewer->setPosition(_winSize.width / 2, _winSize.height - 60);
-	timeViewer->setAnchorPoint(Vec2::ANCHOR_MIDDLE_TOP);
-	this->addChild(timeViewer);
-
-	for (int i = 0; i < 6; i++) {
-		Sprite* temp = Sprite::create("UI/SkillBox.png");
-		temp->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
-		temp->setPosition(_winSize.width / 12 * (i+3.5) , _winSize.height * 1 / 20 * 2);
-		Skillboxes.pushBack(temp);
-		this->addChild(temp);
-	}
+	UISetting();
 }
 
 /*
@@ -235,6 +158,95 @@ void HelloWorld::setMonsterAmountViewer()
 	monsterExistViewer->setPosition(_winSize.width - 30, _winSize.height - 60);
 	monsterExistViewer->setAnchorPoint(Vec2::ANCHOR_TOP_RIGHT);
 	this->addChild(monsterExistViewer);
+}
+
+void HelloWorld::UISetting()
+{
+	mpSprite = Sprite::create("UI/MPStatusBar.png");
+	mpBar = CCProgressTimer::create(mpSprite);
+	mpBar->setType(kCCProgressTimerTypeBar);
+	mpBar->setPercentage(persent(100, 100));
+	mpBar->setMidpoint(Vec2::ANCHOR_MIDDLE_LEFT);
+	mpBar->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
+	mpBar->setBarChangeRate(Vec2::ANCHOR_BOTTOM_RIGHT);
+
+	hpSprite = Sprite::create("UI/HPStatusBar.png");
+	hpBar = CCProgressTimer::create(hpSprite);
+	hpBar->setType(kCCProgressTimerTypeBar);
+	hpBar->setPercentage(persent(500, 500));
+	hpBar->setMidpoint(Vec2::ANCHOR_MIDDLE_RIGHT);
+	hpBar->setAnchorPoint(Vec2::ANCHOR_BOTTOM_RIGHT);
+	hpBar->setBarChangeRate(Vec2::ANCHOR_BOTTOM_RIGHT);
+
+	statusBar = Sprite::create("UI/MainStatusBar.png");
+	statusBar->setAnchorPoint(Vec2::ANCHOR_MIDDLE_BOTTOM);
+	statusBar->setPosition(_winSize.width / 2, 0);
+
+	// for UI check
+	Sprite* popback = Sprite::create("UI/PopBack.png");
+	popback->setAnchorPoint(Vec2::ANCHOR_MIDDLE_LEFT);
+	popback->setPosition(0, _winSize.height / 2);
+	this->addChild(popback);
+	Sprite* pop1 = Sprite::create("UI/Popup_1.png");
+	pop1->setAnchorPoint(Vec2::ANCHOR_MIDDLE_LEFT);
+	pop1->setPosition(0,_winSize.height/2);
+	this->addChild(pop1);
+	Sprite* pop2 = Sprite::create("UI/Popup_2.png");
+	pop2->setAnchorPoint(Vec2::ANCHOR_MIDDLE_LEFT);
+	pop2->setPosition(0, _winSize.height / 2);
+	this->addChild(pop2);
+	Sprite* pop3 = Sprite::create("UI/Popup_3.png");
+	pop3->setAnchorPoint(Vec2::ANCHOR_MIDDLE_LEFT);
+	pop3->setPosition(0, _winSize.height / 2);
+	this->addChild(pop3);
+	Sprite* popbutton = Sprite::create("UI/PopButton.png");
+	popbutton->setAnchorPoint(Vec2::ANCHOR_MIDDLE_LEFT);
+	popbutton->setPosition(0, _winSize.height / 2);
+	this->addChild(popbutton);
+
+	mpBar->setPosition(_winSize.width / 2, 0);
+	mpState = Label::createWithTTF("100/100", fontPath, 30);
+	mpState->setColor(Color3B(0, 100, 255));
+	mpState->setAnchorPoint(Vec2::ANCHOR_BOTTOM_LEFT);
+	mpState->setPosition(_winSize.width / 2, 0);
+
+	hpBar->setPosition(_winSize.width / 2, 0);
+	hpState = Label::create("500/500", fontPath, 30);
+	hpState->setColor(Color3B(100, 0, 0));
+	hpState->setAnchorPoint(Vec2::ANCHOR_BOTTOM_RIGHT);
+	hpState->setPosition(_winSize.width / 2, 0);
+
+	ttf1 = Label::create("Default", fontPath, 30);
+	ttf1->setPosition(100, 100);
+	ttf1->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
+
+	this->addChild(player);
+	this->addChild(ttf1);
+	this->addChild(statusBar);
+	this->addChild(mpBar);
+	this->addChild(hpBar);
+	this->addChild(mpState);
+	this->addChild(hpState);
+
+	roundViewer = Label::create("Round", fontPath, 30);
+	roundViewer->setColor(Color3B::RED);
+	roundViewer->setPosition(_winSize.width / 2, _winSize.height - 20);
+	roundViewer->setAnchorPoint(Vec2::ANCHOR_MIDDLE_TOP);
+	this->addChild(roundViewer);
+
+	timeViewer = Label::create(std::to_string(gameTime), fontPath, 30);
+	timeViewer->setColor(Color3B::RED);
+	timeViewer->setPosition(_winSize.width / 2, _winSize.height - 60);
+	timeViewer->setAnchorPoint(Vec2::ANCHOR_MIDDLE_TOP);
+	this->addChild(timeViewer);
+
+	for (int i = 0; i < 6; i++) {
+		Sprite* temp = Sprite::create("UI/SkillBox.png");
+		temp->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
+		temp->setPosition(_winSize.width / 12 * (i + 3.5), _winSize.height * 1 / 20 * 2);
+		Skillboxes.pushBack(temp);
+		this->addChild(temp);
+	}
 }
 
 void HelloWorld::setDebugMode()
