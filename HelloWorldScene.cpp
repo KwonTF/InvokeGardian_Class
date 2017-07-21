@@ -640,3 +640,20 @@ void HelloWorld::fireMissile()
 		layerMissile->addChild(missile);
 	}
 }
+
+void HelloWorld::popUpCallback(Ref* pSender)
+{
+	PopUp *pPopup = static_cast<PopUp *>(pSender); //현재 팝업에 대한 클래스로 캐스팅 
+
+	// 버튼 태그 받기
+	int nTag = pPopup->getBtnTag();
+
+	if (nTag == 1)
+	{
+		//닫기 버튼 이다~~
+	}
+	else if (nTag == 2)
+	{
+		//헬프 버튼이다~~
+	}
+}

@@ -14,6 +14,9 @@ class PopUp : public cocos2d::Layer
 {
 protected:
 	static const int zOrder;
+	static const int zBoardPos;
+	static const int zImgPos;
+	static const int zBtnPos;
 
 	Layer *parentLayer;
 
@@ -21,6 +24,8 @@ protected:
 	Sprite *bgImg;
 
 	int btnTag;
+
+	bool isPause;
 
 	popupCallback pCallback;
 public:
@@ -38,7 +43,7 @@ public:
 		const std::string& disabledTexture, ui::Widget::TextureResType texType,
 		const Vec2 &pos, const std::string& text, const int nTag);
 
-	int getBtnTag();
+	const int getBtnTag();
 
 	void onBtnCallbackFunc(Ref *pSender, cocos2d::ui::Widget::TouchEventType touchType);
 

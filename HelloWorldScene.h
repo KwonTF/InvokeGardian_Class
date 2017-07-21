@@ -95,7 +95,9 @@ public:
 	Missile *makeMissile();
 	void fireMissile();
 
+	// UI 관련 함수
 	void UISetting();
+	void popUpCallback(Ref* pSender);
 	void setDebugMode();
 	void setDebugID(int input);
 private:

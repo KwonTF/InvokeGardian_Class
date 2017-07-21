@@ -1,12 +1,18 @@
 #include "PopUp.h"
 
 const int PopUp::zOrder = 100;
+const int PopUp::zBoardPos = -10;
+const int PopUp::zImgPos = -1;
+const int PopUp::zBtnPos = 1;
 
 PopUp::PopUp()
 {
 	parentLayer = nullptr;
 
 	pCallback = nullptr;
+
+	btnTag = 1;
+	isPause = true;
 }
 
 PopUp::~PopUp()
@@ -34,14 +40,81 @@ PopUp *PopUp::create(Sprite  *BgBoard, Sprite  *BgImg)
 	return pRet;
 }
 
+// 백그라운드 보드 설정 (최적화 작업중)
+void PopUp::setBgBoard(Sprite *BgBoard)
+{
+	if (BgBoard)
+		return;
+	else
+	{
+		bgBoard = BgBoard;
+	}
+
+	Size size = Director::getInstance()->getWinSize();
+	BgBoard->setPosition(size.width / 2, size.height / 2);
+	addChild(BgBoard, zBoardPos);
+}
+
+// 백그라운드 이미지 설정 (최적화 작업중)
+void PopUp::setBgImg(Sprite *BgImg)
+{
+	if (BgImg)
+	{
+#if COCOS2D_DEBUG > 0
+		char msg[256] = { 0 };
+		sprintf(msg, "Already BackgroundImage");
+		CCASSERT(bgImg == nullptr, msg);
+#endif
+		return;
+	}
+
+	bgImg = BgImg;
+	if (!bgImg)return;
+
+	Size size = Director::getInstance()->getWinSize();
+	bgImg->setPosition(size.width / 2, size.height / 2);
+	addChild(bgImg, zImgPos);
+}
+
 // 클래스에서 부를 함수 설정
 void PopUp::setCallbackFunc(const popupCallback &callback)
 {
 	pCallback = callback;
 }
 
+void PopUp::setPauseParentLayer(const bool pause)
+{
+
+}
+
+void PopUp::addButton
+(const std::string& normalTexture, const std::string& selectedTexture,
+const std::string& disabledTexture, ui::Widget::TextureResType texType,
+const Vec2 &pos, const std::string& text, const int nTag)
+{
+	//팝업창에 버튼을 생성한다.
+	cocos2d::ui::Button *pBtn = cocos2d::ui::Button::create();
+	pBtn->setTouchEnabled(true);
+	pBtn->loadTextures(normalTexture, selectedTexture, disabledTexture, texType);
+	pBtn->setTitleText(text);
+	if (bgImg)
+	{
+		Vec2 btnPos(pos.x + bgImg->getPositionX(), pos.y + bgImg->getPositionY());
+		pBtn->setPosition(btnPos);
+	}
+	else
+	{
+		pBtn->setPosition(pos);
+	}
+
+	pBtn->setTag(nTag);	// 태그 설정
+	pBtn->addTouchEventListener(CC_CALLBACK_2(PopUp::onBtnCallbackFunc, this)); //버튼이 클릭시 콜백함수 설정
+
+	addChild(pBtn, (int)zOrder + zBtnPos);
+}
+
 // 팝업 태그 불러오기(버튼 태그 기준으로 if문 짤 것)
-int PopUp::getBtnTag()
+const int PopUp::getBtnTag()
 {
 	return btnTag;
 }

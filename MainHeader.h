@@ -11,6 +11,7 @@
 #include "BulletObj.h"
 #include "GameData.h"
 #include "MathCalculator.h"
+#include "MultiLayerPopUp.h"
 
 // °íÁ¤°ª
 const unsigned int ROUNDTIME = 90;
