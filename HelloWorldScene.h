@@ -100,6 +100,7 @@ public:
 	void popUpCallback(Ref* pSender);
 	void setDebugMode();
 	void setDebugID(int input);
+	void popUpClick();
 private:
 	Player* player;
 	Tower* tower;
@@ -108,7 +109,12 @@ private:
 	Sprite* Background;
 	Layer* layerMissile;
 	Sprite* statusBar;
-
+	Sprite* popbutton;
+	Sprite* popback;
+	Sprite* pop1;
+	Sprite* pop2;
+	Sprite* pop3;
+	
 	Sprite* mpSprite;
 	CCProgressTimer* mpBar;
 	Label* mpState;

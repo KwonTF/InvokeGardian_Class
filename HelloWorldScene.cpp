@@ -181,29 +181,33 @@ void HelloWorld::UISetting()
 	statusBar = Sprite::create("UI/MainStatusBar.png");
 	statusBar->setAnchorPoint(Vec2::ANCHOR_MIDDLE_BOTTOM);
 	statusBar->setPosition(_winSize.width / 2, 0);
-
+	Sprite* slotBack = Sprite::create("UI/SlotBack.png");
+	slotBack->setAnchorPoint(Vec2::ANCHOR_MIDDLE_BOTTOM);
+	slotBack->setPosition(_winSize.width/2,40);
 	// for UI check
-	Sprite* popback = Sprite::create("UI/PopBack.png");
+	popback = Sprite::create("UI/PopBack.png");
 	popback->setAnchorPoint(Vec2::ANCHOR_MIDDLE_LEFT);
-	popback->setPosition(0, _winSize.height / 2);
+	popback->setPosition(-300, _winSize.height / 2);
 	this->addChild(popback);
-	Sprite* pop1 = Sprite::create("UI/Popup_1.png");
+	pop1 = Sprite::create("UI/Popup_1.png");
 	pop1->setAnchorPoint(Vec2::ANCHOR_MIDDLE_LEFT);
-	pop1->setPosition(0,_winSize.height/2);
+	pop1->setPosition(-300,_winSize.height/2);
 	this->addChild(pop1);
-	Sprite* pop2 = Sprite::create("UI/Popup_2.png");
+	pop2 = Sprite::create("UI/Popup_2.png");
 	pop2->setAnchorPoint(Vec2::ANCHOR_MIDDLE_LEFT);
-	pop2->setPosition(0, _winSize.height / 2);
+	pop2->setPosition(-300, _winSize.height / 2);
 	this->addChild(pop2);
-	Sprite* pop3 = Sprite::create("UI/Popup_3.png");
+	pop3 = Sprite::create("UI/Popup_3.png");
 	pop3->setAnchorPoint(Vec2::ANCHOR_MIDDLE_LEFT);
-	pop3->setPosition(0, _winSize.height / 2);
+	pop3->setPosition(-300, _winSize.height / 2);
 	this->addChild(pop3);
-	Sprite* popbutton = Sprite::create("UI/PopButton.png");
+	popbutton = Sprite::create("UI/PopButton.png");
 	popbutton->setAnchorPoint(Vec2::ANCHOR_MIDDLE_LEFT);
 	popbutton->setPosition(0, _winSize.height / 2);
+	popbutton->setRotation(0);
+	popbutton->setOpacity(0);
 	this->addChild(popbutton);
-
+	
 	mpBar->setPosition(_winSize.width / 2, 0);
 	mpState = Label::createWithTTF("100/100", fontPath, 30);
 	mpState->setColor(Color3B(0, 100, 255));
@@ -227,6 +231,7 @@ void HelloWorld::UISetting()
 	this->addChild(hpBar);
 	this->addChild(mpState);
 	this->addChild(hpState);
+	this->addChild(slotBack);
 
 	roundViewer = Label::create("Round", fontPath, 30);
 	roundViewer->setColor(Color3B::RED);
@@ -267,6 +272,27 @@ void HelloWorld::setDebugID(int input)
 	else
 		debug = false;
 	setDebugMode();
+}
+
+
+void HelloWorld::popUpClick()
+{
+	if (popbutton->getPositionX() > 0) {
+		popback->setPosition(-300, _winSize.height / 2);
+		pop1->setPosition(-300, _winSize.height / 2);
+		pop2->setPosition(-300, _winSize.height / 2);
+		pop3->setPosition(-300, _winSize.height / 2);
+		popbutton->setPosition(0, _winSize.height / 2);
+		popbutton->setRotation(0);
+	}
+	else{
+		popback->setPosition(0, _winSize.height / 2);
+		pop1->setPosition(0, _winSize.height / 2);
+		pop2->setPosition(0, _winSize.height / 2);
+		pop3->setPosition(0, _winSize.height / 2);
+		popbutton->setPosition(350, _winSize.height / 2);
+		popbutton->setRotation(180);
+	}
 }
 
 void HelloWorld::makeTower()
@@ -402,7 +428,12 @@ void HelloWorld::onMouseDown(cocos2d::Event * event)
 	std::string output = "X: " + std::to_string(static_cast<int>(ceil(mousePosition.x))) + " Y: " + std::to_string(static_cast<int>(ceil(mousePosition.y)));
 	ttf1->setString(output);
 	mousePosition.y = _winSize.height - mousePosition.y;
-	player->gotoPoint(mousePosition, MathCalculator::calculateAngle(player->getPosition(), mousePosition) * MathCalculator::radian());
+	Rect rect = popbutton->getBoundingBox();
+	if (rect.containsPoint(mousePosition)&&popbutton->getOpacity() == 255) {
+		popUpClick();
+	}
+	else
+		player->gotoPoint(mousePosition, MathCalculator::calculateAngle(player->getPosition(), mousePosition) * MathCalculator::radian());
 }
 
 void HelloWorld::onMouseMove(cocos2d::Event * event)
@@ -529,6 +560,7 @@ void HelloWorld::monsterDeath()
 
 		// 업그레이드 가능 상태로 만들기
 		canUpgrade = true;
+		popbutton->setOpacity(255);
   		roundViewer->setColor(Color3B::GREEN);
 		timeViewer->setColor(Color3B::GREEN);
 		enemyVector.clear();
@@ -616,7 +648,7 @@ Missile* HelloWorld::makeMissile()
 	missile->setPosition(player->getPosition());
 
 	// 내부 값 설정
-	missile->setAttack(10);
+	missile->setAttack(20+tempVector.size()*20);
 	missile->setSpeed(400.0);
 	missile->setRange(200);
 	missile->setPenetCount(1);
