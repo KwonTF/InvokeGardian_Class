@@ -18,6 +18,8 @@ public:
 
 	static Explosion* create(const std::string &filename);
 
+	void make() override;
+
 	virtual void collisioned(int damage, std::vector<Condition*> &c);
 
 	void setAttack(int atk);

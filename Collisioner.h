@@ -17,6 +17,9 @@ protected:
 public:
 	Collisioner();
 	virtual ~Collisioner();
+
+	virtual void make();
+
 	void setCondition(std::vector<Condition*> input);
 	void setPhysicsBitmask(const int categoryBitmask, const int contactBitmask, const int collisionBitmask);
 

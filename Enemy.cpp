@@ -30,6 +30,23 @@ Enemy* Enemy::create(const std::string &filename)
 	return nullptr;
 }
 
+/*
+// 해당 객체의 PhysicsBody 생성
+// Bitmask, 위치 등은 따로 설정해줘야함
+void Enemy::make()
+{
+	auto material = PhysicsMaterial(0.1f, 1.0f, 0.5f);
+
+	auto body = PhysicsBody::createBox(this->getContentSize(), material);
+
+	this->setPhysicsBody(body);
+	this->getPhysicsBody()->setDynamic(false);
+	//monster->setPhysicsBitmask(Collisioner::bitmaskEnemyAll, ~(Collisioner::bitmaskBulletTwo + Collisioner::bitmaskEnemyAll), Collisioner::bitmaskPlayerAll);
+	this->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
+	//monster->setPosition(Vec2(_winSize.width * (rand() % 2), (rand() % static_cast<int>(_winSize.height))));
+}
+*/
+
 void Enemy::setBaseAbillity(int hp, int atk, int range, int speed, int as)
 {
 	hpMax = hp;
@@ -37,17 +54,6 @@ void Enemy::setBaseAbillity(int hp, int atk, int range, int speed, int as)
 	attack = atk;
 	attackRange = range;
 	moveSpeed = speed;
-}
-
-// set Enemy's attack range
-void Enemy::setRange(int range)
-{
-	attackRange = range;
-}
-
-int Enemy::getRange()
-{
-	return attackRange;
 }
 
 // add type to enemy
@@ -65,24 +71,25 @@ void Enemy::typeEnhance(Mutate mutateInfo)
 	// 기능 추가
 	// 1. range type : 사거리 추가 - 능력치 변화에서 해결
 	// 2. mass type : 여러 마리 생성 - 유닛 포지션 받아서 재귀함수로 주변 위치에 생성하게 함
+	if (mutate.type == 2)
+	{
+		Vec2 pos = getPosition();
+		for (int i = 0; i < mutate.level + 1; i++)
+		{
+
+		}
+	}
 	// 3. divide type : 죽으면 몬스터를 새로 생성하는 함수 추가
+	else if (mutate.type == 3)
+	{
+
+	}
 	// 4. golem type : 능력치 변화에서 해결
 	// 5. faster type : 잔상효과만 적용해주기
-}
-
-void Enemy::setMassType()
-{
-
-}
-
-void Enemy::setDivideType()
-{
-
-}
-
-void Enemy::setFasterType()
-{
-
+	else if (mutate.type == 5)
+	{
+		projectImage(mutate.imageName);
+	}
 }
 
 // for divide type, add monster divide ability
@@ -110,7 +117,7 @@ void Enemy::shootMissile()
 	missile->setSpeed(300.0);
 	missile->setPenetCount(1);
 	missile->setRange(600);
-	missile->setColor(Color3B(250, 0, 0));
+	missile->setColor(Color3B::RED);
 
 	// 몸체 설정
 	auto material = PhysicsMaterial(0.1f, 1.0f, 0.5f);

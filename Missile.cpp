@@ -26,6 +26,16 @@ Missile* Missile::create(const std::string &filename)
 	return nullptr;
 }
 
+void Missile::make()
+{
+	auto material = PhysicsMaterial(0.1f, 1.0f, 0.5f);
+
+	auto body = PhysicsBody::createCircle(this->getContentSize().width / 2, material);
+
+	// ¸öÃ¼ ¼³Á¤
+	this->setPhysicsBody(body);
+}
+
 // if Missile collisioned
 void Missile::collisioned(int damage, std::vector<Condition*> &c)
 {

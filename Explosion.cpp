@@ -22,6 +22,16 @@ Explosion* Explosion::create(const std::string &filename)
 	return nullptr;
 }
 
+void Explosion::make()
+{
+	auto material = PhysicsMaterial(0.1f, 1.0f, 0.5f);
+
+	auto body = PhysicsBody::createCircle(this->getContentSize().width / 2, material);
+
+	// ¸öÃ¼ ¼³Á¤
+	this->setPhysicsBody(body);
+}
+
 // explosion collsioned other collisioner, no effect for explosion(auto remove)
 void Explosion::collisioned(int damage, std::vector<Condition*> &c)
 {

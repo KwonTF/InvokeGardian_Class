@@ -21,6 +21,14 @@ Collisioner::~Collisioner()
 	conditionArray.clear();
 }
 
+void Collisioner::make()
+{
+	auto material = PhysicsMaterial(0.1f, 1.0f, 0.5f);
+	auto body = PhysicsBody::createBox(this->getContentSize(), material);
+	this->setPhysicsBody(body);
+	this->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
+}
+
 void Collisioner::setCondition(std::vector<Condition*> input)
 {
 	conditionArray = input;

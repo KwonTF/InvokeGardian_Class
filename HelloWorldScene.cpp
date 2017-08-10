@@ -181,9 +181,10 @@ void HelloWorld::UISetting()
 	statusBar = Sprite::create("UI/MainStatusBar.png");
 	statusBar->setAnchorPoint(Vec2::ANCHOR_MIDDLE_BOTTOM);
 	statusBar->setPosition(_winSize.width / 2, 0);
+
 	Sprite* slotBack = Sprite::create("UI/SlotBack.png");
 	slotBack->setAnchorPoint(Vec2::ANCHOR_MIDDLE_BOTTOM);
-	slotBack->setPosition(_winSize.width/2,40);
+	slotBack->setPosition(_winSize.width / 2, 40);
 	// for UI check
 	popback = Sprite::create("UI/PopBack.png");
 	popback->setAnchorPoint(Vec2::ANCHOR_MIDDLE_LEFT);
@@ -191,7 +192,7 @@ void HelloWorld::UISetting()
 	this->addChild(popback);
 	pop1 = Sprite::create("UI/Popup_1.png");
 	pop1->setAnchorPoint(Vec2::ANCHOR_MIDDLE_LEFT);
-	pop1->setPosition(-300,_winSize.height/2);
+	pop1->setPosition(-300, _winSize.height / 2);
 	this->addChild(pop1);
 	pop2 = Sprite::create("UI/Popup_2.png");
 	pop2->setAnchorPoint(Vec2::ANCHOR_MIDDLE_LEFT);
@@ -207,7 +208,7 @@ void HelloWorld::UISetting()
 	popbutton->setRotation(0);
 	popbutton->setOpacity(0);
 	this->addChild(popbutton);
-	
+
 	mpBar->setPosition(_winSize.width / 2, 0);
 	mpState = Label::createWithTTF("100/100", fontPath, 30);
 	mpState->setColor(Color3B(0, 100, 255));
@@ -274,7 +275,6 @@ void HelloWorld::setDebugID(int input)
 	setDebugMode();
 }
 
-
 void HelloWorld::popUpClick()
 {
 	if (popbutton->getPositionX() > 0) {
@@ -285,7 +285,7 @@ void HelloWorld::popUpClick()
 		popbutton->setPosition(0, _winSize.height / 2);
 		popbutton->setRotation(0);
 	}
-	else{
+	else {
 		popback->setPosition(0, _winSize.height / 2);
 		pop1->setPosition(0, _winSize.height / 2);
 		pop2->setPosition(0, _winSize.height / 2);
@@ -298,17 +298,10 @@ void HelloWorld::popUpClick()
 void HelloWorld::makeTower()
 {
 	tower = Tower::create("Unit/Hostile.png");
-
-	auto material = PhysicsMaterial(0.1f, 1.0f, 0.5f);
-	auto body = PhysicsBody::createBox(tower->getContentSize(), material);
-	tower->setPhysicsBody(body);
-	tower->getPhysicsBody()->setDynamic(false);
+	tower->make();
 	tower->setPhysicsBitmask(Collisioner::bitmaskPlayerAll, ~(Collisioner::bitmaskBulletOne + Collisioner::bitmaskPlayerAll), Collisioner::bitmaskEnemyAll);
 	tower->setDeathCallback(CC_CALLBACK_0(HelloWorld::goGameOver, this));
-	tower->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
 	tower->setPosition(Vec2(_winSize.width / 2, _winSize.height/2));
-
-	// hpBar 넣을 것
 
 	layerMissile->addChild(tower);
 }
@@ -398,7 +391,11 @@ void HelloWorld::monsterCreateTimer(float dt)
 
 
 			// 몬스터 생성
-			auto monster = makeMonster();
+			auto monster = Enemy::create("Unit/Hostile_Tank.png");
+			monster->make();
+			monster->setPhysicsBitmask(Collisioner::bitmaskEnemyAll, ~(Collisioner::bitmaskBulletTwo + Collisioner::bitmaskEnemyAll), Collisioner::bitmaskPlayerAll);
+			monster->setPosition(Vec2(_winSize.width * (rand() % 2), (rand() % static_cast<int>(_winSize.height))));
+			
 			monster->setBaseAbillity(GameData::roundEnemyHP[roundNum], GameData::roundEnemyAttack[roundNum],
 				GameData::enemyAttackRange, GameData::enemyMoveSpeed, GameData::enemyAttackSpeed);
 			monster->setEnemyAim(tower->getPosition());
@@ -428,8 +425,10 @@ void HelloWorld::onMouseDown(cocos2d::Event * event)
 	std::string output = "X: " + std::to_string(static_cast<int>(ceil(mousePosition.x))) + " Y: " + std::to_string(static_cast<int>(ceil(mousePosition.y)));
 	ttf1->setString(output);
 	mousePosition.y = _winSize.height - mousePosition.y;
+	player->gotoPoint(mousePosition, MathCalculator::calculateAngle(player->getPosition(), mousePosition) * MathCalculator::radian());
+
 	Rect rect = popbutton->getBoundingBox();
-	if (rect.containsPoint(mousePosition)&&popbutton->getOpacity() == 255) {
+	if (rect.containsPoint(mousePosition) && popbutton->getOpacity() == 255) {
 		popUpClick();
 	}
 	else
@@ -617,38 +616,15 @@ void HelloWorld::myTick(float dt)
 	addChild(_node);
 }
 
-// 실험용 몬스터 생성
-// create by ZeroFe
-Enemy* HelloWorld::makeMonster()
-{
-	Enemy* monster = Enemy::create("Unit/Hostile_Tank.png");
-
-	auto material = PhysicsMaterial(0.1f, 1.0f, 0.5f);
-
-	auto body = PhysicsBody::createBox(monster->getContentSize(), material);
-
-	monster->setPhysicsBody(body);
-	monster->getPhysicsBody()->setDynamic(false);
-	monster->setPhysicsBitmask(Collisioner::bitmaskEnemyAll, ~(Collisioner::bitmaskBulletTwo + Collisioner::bitmaskEnemyAll), Collisioner::bitmaskPlayerAll);
-	monster->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
-	monster->setPosition(Vec2(_winSize.width * (rand() % 2), (rand() % static_cast<int>(_winSize.height))));
-	return monster;
-}
-
 Missile* HelloWorld::makeMissile()
 {
 	Missile* missile = Missile::create("Others/Bullet.PNG");
+	missile->make();
 
-	auto material = PhysicsMaterial(0.1f, 1.0f, 0.5f);
-
-	auto body = PhysicsBody::createCircle(missile->getContentSize().width / 2, material);
-
-	// 몸체 설정
-	missile->setPhysicsBody(body);
 	missile->setPosition(player->getPosition());
 
 	// 내부 값 설정
-	missile->setAttack(20+tempVector.size()*20);
+	missile->setAttack(20 + tempVector.size() * 20);
 	missile->setSpeed(400.0);
 	missile->setRange(200);
 	missile->setPenetCount(1);

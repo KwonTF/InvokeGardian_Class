@@ -37,9 +37,11 @@ public:
 
 	static Unit* create(const std::string &filename);
 
+	void make() override;
+
 	virtual void collisioned(int damage, std::vector<Condition*> &c) override;
 
-	void setImageInfo(const std::string *filename, const int fileNum);
+	void setDeathAnimFile(const std::string * const filename, const int fileNum);
 
 	// set ability
 	inline void setHP(const int hp) {hpCurrent = hp; hpMax = hp;}

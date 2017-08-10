@@ -91,16 +91,17 @@ public:
 	void myTick(float dt);
 
 	// 객체 생성 함수
-	Enemy* makeMonster();
 	Missile *makeMissile();
 	void fireMissile();
 
 	// UI 관련 함수
 	void UISetting();
 	void popUpCallback(Ref* pSender);
+	void popUpClick();
+
+	// 디버그 관련 함수
 	void setDebugMode();
 	void setDebugID(int input);
-	void popUpClick();
 private:
 	Player* player;
 	Tower* tower;
@@ -114,7 +115,7 @@ private:
 	Sprite* pop1;
 	Sprite* pop2;
 	Sprite* pop3;
-	
+
 	Sprite* mpSprite;
 	CCProgressTimer* mpBar;
 	Label* mpState;

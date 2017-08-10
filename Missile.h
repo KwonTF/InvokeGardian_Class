@@ -35,6 +35,8 @@ public:
 
 	virtual void collisioned(int damage, std::vector<Condition*> &c);
 
+	void make() override;
+
 	// set ability
 	void setAttack(int atk);
 	void setSpeed(int s);

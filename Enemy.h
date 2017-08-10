@@ -34,6 +34,7 @@ private:
 
 	unitCallback createCallback;
 	unitCallback deathCallback;
+	unitCallback divideCallback;
 	ExplodeCallback explodeCallback;
 public:
 	Enemy();
@@ -41,9 +42,12 @@ public:
 
 	static Enemy* create(const std::string &filename);
 
+	//void make() override;
+
 	void setBaseAbillity(int hp, int attack, int range, int speed, int as);
-	void setRange(int range);
-	int getRange();
+	inline void setRange(const int range){ attackRange = range; }
+
+	inline int getRange() { return attackRange; }
 
 	inline void setCreateCallback(const unitCallback &callback) { createCallback = callback; createCallback(); }
 	inline void setDeathCallback(const unitCallback &callback) {deathCallback = callback;}
@@ -51,8 +55,6 @@ public:
 
 	// 변이 관련 함수
 	void typeEnhance(Mutate mutateInfo);
-
-	void divideEnemy();
 
 	// 공격 관련 함수
 	void setEnemyAim(const cocos2d::Vec2 &aimPos);
@@ -67,9 +69,6 @@ private:
 	void slowTimeReduce(float input);
 	void CalculateEffect(float input);
 	void KnockBack(float input);
-	
-	// type 생성 관련 함수
-	void setMassType();
-	void setDivideType();
-	void setFasterType();
+
+	void divideEnemy();
 };

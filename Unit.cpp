@@ -26,7 +26,7 @@ set unit image infomation
 filename : file root of unit's image
 fileNum : number of unit's image
 */
-void Unit::setImageInfo(const std::string* filename, const int fileNum)
+void Unit::setDeathAnimFile(const std::string * const filename, const int fileNum)
 {
 	image = new std::string[fileNum];
 	for (int i = 0; i < fileNum; i++)
@@ -48,6 +48,12 @@ Unit* Unit::create(const std::string &filename)
 
 	CC_SAFE_DELETE(unit);
 	return nullptr;
+}
+
+void Unit::make()
+{
+	Collisioner::make();
+	this->getPhysicsBody()->setDynamic(false);
 }
 
 void Unit::collisioned(int damage, std::vector<Condition*> &c)
