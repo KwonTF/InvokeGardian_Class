@@ -634,10 +634,12 @@ Missile* HelloWorld::makeMissile()
 void HelloWorld::fireMissile()
 {
 	// Missile로 만든거
-	for (int i = 0; i < divisonNum; i++) {
+	for (int i = 0; i < divisonNum; i++) 
+	{
 		auto missile = HelloWorld::makeMissile();
 		Vec2 tempVec = MathCalculator::calculateUnitVec2(player->getPosition(), mouse);
-		if (divisonNum > 1) {
+		if (divisonNum > 1) 
+		{
 			tempVec.x += random() % 100 - 50;
 			tempVec.y += random() % 100 - 50;
 		}

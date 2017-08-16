@@ -107,36 +107,17 @@ void Unit::projectImage(const std::string &filename)
 // make Unit's death Animation
 void Unit::deathAnimation()
 {
-	// Particle
-	Node* parentFinder;
+	Vector<SpriteFrame*> animFrames(imageNum - 1);
 
-	parentFinder = getParent();
-	if (parentFinder != NULL)
+	for (int i = 1; i < imageNum; i++)
 	{
-		// make particle and set ability
-		ParticleSystem *particleSys = ParticleExplosion::create();
-		particleSys->retain();
-
-		particleSys->setTexture(Director::getInstance()->getTextureCache()->addImage("Others/Fire.png"));
-
-		particleSys->setPosition(getPosition());
-		parentFinder->addChild(particleSys);
-
-		particleSys->setStartColor(Color4F::YELLOW);
-		particleSys->setEndColor(Color4F::YELLOW);
-		//particleSys->setStartColorVar(Color4F::YELLOW);
-		//particleSys->setEndColorVar(Color4F::YELLOW);
-
-		particleSys->setEmissionRate(500.0f);		// 파티클 생성률
-		particleSys->setStartSize(3.0f);			// 시작 생성 크기
-		particleSys->setStartSizeVar(0.0f);
-		particleSys->setDuration(1.0f);				// 파티클 생성시간
-		particleSys->setLife(0.3f);					// 파티클 유지시간
-		particleSys->setLifeVar(0.2f);
-
-		// invisible sprite image
-		this->setOpacity(0);
+		auto frame = SpriteFrame::create(image[i], Rect(0, 0, 32, 32)); //we assume that the sprites' dimentions are 40*40 rectangles.
+		animFrames.pushBack(frame);
 	}
+
+	auto animation = Animation::createWithSpriteFrames(animFrames, 0.1f);
+	auto animate = Animate::create(animation);
+	runAction(animate);
 }
 
 // destory unit from game

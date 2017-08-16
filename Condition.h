@@ -100,6 +100,7 @@ public:
 private:
 	unsigned int holdTime;
 };
+
 class Explode : public Condition {
 public:
 	Explode();
@@ -112,6 +113,6 @@ public:
 	float castSideEffect(float num)const override;
 	void enchance() override;
 private:
-	int explodeDamage;
+	int explodeRadius;
 	int burnDamage;
 };

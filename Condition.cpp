@@ -20,7 +20,12 @@ void Condition::enchance()
 }
 
 
-Slow::Slow() : Time(5.0), deffenceReduceRate(0.7), speedReduceRate(0.5){}
+Slow::Slow() 
+	: Time(5.0), deffenceReduceRate(0.7), speedReduceRate(0.5)
+{
+	elementDamage = 10;
+}
+
 Slow::Slow(const Slow &rhs)
 	: Condition(rhs), speedReduceRate(rhs.speedReduceRate), deffenceReduceRate(rhs.deffenceReduceRate){}
 
@@ -40,7 +45,11 @@ void Slow::enchance()
 }
 
 
-Knock::Knock():minusSpeed(-1000), stunTime(0) {}
+Knock::Knock()
+	:minusSpeed(-1000), stunTime(0) 
+{
+	elementDamage = 20;
+}
 Knock::Knock(const Knock &rhs)
 	: Condition(rhs), minusSpeed(rhs.minusSpeed), stunTime(rhs.stunTime) {}
 
@@ -61,7 +70,11 @@ void Knock::enchance()
 }
 
 
-PowerUp::PowerUp():rangeRate(600), pierceNum(3){}
+PowerUp::PowerUp()
+	:rangeRate(600), pierceNum(3)
+{
+	elementDamage = 25;
+}
 PowerUp::PowerUp(const PowerUp &rhs)
 	: Condition(rhs), rangeRate(rhs.rangeRate), pierceNum(rhs.pierceNum) {}
 
@@ -82,7 +95,11 @@ void PowerUp::enchance()
 }
 
 
-Division::Division():divideNum(3){}
+Division::Division()
+	:divideNum(3)
+{
+	elementDamage = 0;
+}
 Division::Division(const Division &rhs)
 	: Condition(rhs), divideNum(rhs.divideNum) {}
 
@@ -122,13 +139,17 @@ void Mine::enchance()
 }
 
 
-Explode::Explode() :explodeDamage(100), burnDamage(0) {}
+Explode::Explode() 
+	:explodeRadius(75), burnDamage(0) 
+{
+	elementDamage = 5;
+}
 Explode::Explode(const Explode &rhs)
-	: Condition(rhs), explodeDamage(rhs.explodeDamage), burnDamage(rhs.burnDamage) {}
+	: Condition(rhs), explodeRadius(rhs.explodeRadius), burnDamage(rhs.burnDamage) {}
 
 float Explode::castEffect(float num) const
 {
-	return explodeDamage;
+	return explodeRadius;
 }
 
 float Explode::castSideEffect(float num) const
@@ -139,5 +160,5 @@ float Explode::castSideEffect(float num) const
 void Explode::enchance()
 {
 	Condition::enchance();
-	explodeDamage += 25;
+	explodeRadius += 25;
 }
