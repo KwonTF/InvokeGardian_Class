@@ -625,9 +625,9 @@ Missile* HelloWorld::makeMissile()
 
 	// 내부 값 설정
 	missile->setAttack(20 + tempVector.size() * 20);
-	missile->setSpeed(400.0);
-	missile->setRange(200);
-	missile->setPenetCount(1);
+	//missile->setSpeed(400.0);
+	//missile->setRange(200);
+	//missile->setPenetCount(1);
 	return missile;
 }
 

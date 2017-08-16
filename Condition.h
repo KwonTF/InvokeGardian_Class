@@ -5,86 +5,113 @@ enum class EffectCode
 {
 	Slow, Unknown, Knock, PowerUp, Division, Mine, Explode
 };
-static unsigned int additioalLevel = 7; //추가효과가 붙기 시작하는 레벨
+
+static int additioalLevel = 7; //추가효과가 붙기 시작하는 레벨
+
 class Condition
 {
 public:
-	virtual EffectCode getCode();//무슨 효과인지를 반환한다
-	virtual float castEffect(float input) const;//수치 변경형의 효과를 실행한 결과 반환
-	virtual float castSideEffect(float input)const;
-	unsigned int conditonLevel;//효과의 레벨을 설정
-	virtual void enchance(); //스킬 레벨업
 	Condition();
-	~Condition() {};
+	// 정보 복사
+	Condition(const Condition&);
+	virtual ~Condition() {};
+
+	//무슨 효과인지를 반환한다
+	virtual inline EffectCode getCode() { return EffectCode::Unknown; }
+	//수치 변경형의 효과를 실행한 결과 반환
+	virtual float castEffect(float input) const;
+	virtual float castSideEffect(float input)const;
+	// 스킬 레벨업
+	virtual void enchance();
+
+	int elementDamage;
+	int conditionLevel;//효과의 레벨을 설정
 };
+
 class Slow : public Condition {
 public:
 	Slow();
-	float castEffect(float speed)const;
-	float castSideEffect(float defence)const;
-	EffectCode getCode();
-	void enchance();
+	Slow(const Slow&);
+	~Slow() {};
+	inline EffectCode getCode() override { return EffectCode::Slow; }
+	float castEffect(float speed)const override;
+	float castSideEffect(float defence)const override;
+	void enchance() override;
 private:
 	float Time, speedReduceRate, deffenceReduceRate;
-	EffectCode code;
 };
 
 class Knock : public Condition {
 public:
 	Knock();
-	float castEffect(float knock)const;
-	float castSideEffect(float defence)const;
-	EffectCode getCode();
-	void enchance();
+	Knock(const Knock&);
+	~Knock() {};
+	EffectCode getCode() override { return EffectCode::Knock; }
+	// 주요 효과 : 밀치기
+	float castEffect(float knock)const override;
+	// 부가 효과 : 스턴
+	float castSideEffect(float defence)const override;
+	void enchance() override;
 private:
 	float minusSpeed;
-	EffectCode code;
+	float stunTime;
 };
 
 class PowerUp : public Condition {
 public:
 	PowerUp();
-	float castEffect(float range)const;
-	float castSideEffect(float defence)const;
-	EffectCode getCode();
-	void enchance();
+	PowerUp(const PowerUp&);
+	~PowerUp() {};
+	EffectCode getCode() override { return EffectCode::PowerUp; }
+	// 주요 효과 : 사정거리 증가
+	float castEffect(float range)const override;
+	// 부가 효과 : 관통
+	float castSideEffect(float defence)const override;
+	void enchance() override;
 private:
 	float rangeRate;
-	unsigned int pierceNum;
-	EffectCode code;
+	int pierceNum;
 };
 
 class Division : public Condition {
 public:
 	Division();
-	float castEffect(float num)const;
-	float castSideEffect(float num)const;
-	EffectCode getCode();
-	void enchance();
+	Division(const Division&);
+	~Division() {};
+	EffectCode getCode() override { return EffectCode::Division; }
+	// 주요 효과 : 총알 분리
+	float castEffect(float num)const override; 
+	// 부가 효과 : 유도 기능
+	float castSideEffect(float num)const override;
+	void enchance() override;
 private:
-	unsigned int divideNum;
-	EffectCode code;
+	int divideNum;
+	
 };
 
 class Mine : public Condition {
 public:
 	Mine();
-	float castEffect(float num)const;
-	float castSideEffect(float num)const;
-	EffectCode getCode();
-	void enchance();
+	EffectCode getCode() override { return EffectCode::Mine; }
+	// 주요 효과 : 
+	float castEffect(float num)const override;
+	float castSideEffect(float num)const override;
+	void enchance() override;
 private:
 	unsigned int holdTime;
-	EffectCode code;
 };
 class Explode : public Condition {
 public:
 	Explode();
-	float castEffect(float num)const;
-	float castSideEffect(float num)const;
-	EffectCode getCode();
-	void enchance();
+	Explode(const Explode&);
+	~Explode() {};
+	EffectCode getCode() override { return EffectCode::Explode; }
+	// 주요 효과 : 폭발 생성
+	float castEffect(float num)const override;
+	// 부가 효과 : 폭발 도트뎀 추가
+	float castSideEffect(float num)const override;
+	void enchance() override;
 private:
-	unsigned int damage;
-	EffectCode code;
+	int explodeDamage;
+	int burnDamage;
 };

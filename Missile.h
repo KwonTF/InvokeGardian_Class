@@ -38,15 +38,15 @@ public:
 	void make() override;
 
 	// set ability
-	void setAttack(int atk);
-	void setSpeed(int s);
-	void setRange(int movelimit);
-	void setPenetCount(int count);
-	void setDivideCount(int count);
-	void setRemoveTime(float time);
+	inline void setAttack(int atk) { attack = atk; }
+	inline void setSpeed(int s) { speed = s; }
+	inline void setRange(int movelimit) { range = movelimit; }
+	inline void setPenetCount(int count) { penetrationCount = count; }
+	inline void setDivideCount(int count) { divideCount = count; }
+	inline void setRemoveTime(float time) { removeTime = time; }
 
-	float getSpeed();
-	float getRange();
+	inline float getSpeed() { return speed; }
+	inline float getRange() { return range; }
 
 	//미사일 요소 적용 함수
 	void castEffect();

@@ -1,16 +1,10 @@
 #include "Missile.h"
 
 Missile::Missile()
-{
-	penetrationCount = 1;
-	range = 200;
-	divideCount = 0;
-
-	isExplode = false;
-	explodeDamage = 30;
-
-	removeTime = 0.1f;
-}
+	: speed(400.0), range(200),
+	penetrationCount(1), divideCount(0),
+	isExplode(false), explodeDamage(30),
+	removeTime(0.1){}
 
 Missile* Missile::create(const std::string &filename)
 {
@@ -48,48 +42,6 @@ void Missile::collisioned(int damage, std::vector<Condition*> &c)
 		destroy();
 }
 
-void Missile::setSpeed(int s)
-{
-	speed = s;
-}
-
-void Missile::setAttack(int atk)
-{
-	attack = atk;
-}
-
-// set range of Missile
-void Missile::setRange(int movelimit)
-{
-	range = movelimit;
-}
-
-// set Penetration count of Missile
-void Missile::setPenetCount(int count)
-{
-	penetrationCount = count;
-}
-
-void Missile::setDivideCount(int count)
-{
-	divideCount = count;
-}
-
-void Missile::setRemoveTime(float time)
-{
-	removeTime = time;
-}
-
-float Missile::getSpeed()
-{
-	return speed;
-}
-
-float Missile::getRange()
-{
-	return range;
-}
-
 /*
 remove Missile without death animation
 warning : need PhysicsBody
@@ -111,7 +63,7 @@ void Missile::castEffect()
 		{
 		case EffectCode::PowerUp:
 			range += (*iter)->castEffect(range);
-			if ((*iter)->conditonLevel > 6) {
+			if ((*iter)->conditionLevel > 6) {
 				penetrationCount += (*iter)->castSideEffect(penetrationCount);
 			}
 			break;

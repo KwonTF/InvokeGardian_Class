@@ -135,6 +135,7 @@ private:
 	Label* monsterExistViewer;
 
 	Vec2 mouse;
+	std::vector<Condition*> conditionInfoArray;
 	std::vector<Condition*> tempVector;
 	Vector<Enemy*> enemyVector;
 

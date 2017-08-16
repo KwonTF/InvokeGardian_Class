@@ -1,9 +1,8 @@
 #include "Condition.h"
 
-EffectCode Condition::getCode()
-{
-	return EffectCode::Unknown;
-}
+Condition::Condition() : conditionLevel(0), elementDamage(0) {}
+Condition::Condition(const Condition &rhs)
+	: elementDamage(rhs.elementDamage), conditionLevel(rhs.conditionLevel) {}
 
 float Condition::castEffect(float input) const
 {
@@ -17,36 +16,33 @@ float Condition::castSideEffect(float input) const
 
 void Condition::enchance()
 {
-	conditonLevel++;
+	conditionLevel++;
 }
 
-Condition::Condition() : conditonLevel(0) {}
-Slow::Slow() : Time(5.0), code(EffectCode::Slow), deffenceReduceRate(0.7), speedReduceRate(0.5){}
+
+Slow::Slow() : Time(5.0), deffenceReduceRate(0.7), speedReduceRate(0.5){}
+Slow::Slow(const Slow &rhs)
+	: Condition(rhs), speedReduceRate(rhs.speedReduceRate), deffenceReduceRate(rhs.deffenceReduceRate){}
 
 float Slow::castEffect(float speed) const
 {return speed*speedReduceRate;}
 
 float Slow::castSideEffect(float defence) const
 {
-	if (conditonLevel < additioalLevel)
-		return defence;
-	else
-		return defence*deffenceReduceRate;
-}
-
-EffectCode Slow::getCode()
-{
-	return EffectCode::Slow;
+	return (conditionLevel < additioalLevel) ? defence : defence * deffenceReduceRate;
 }
 
 void Slow::enchance()
 {
-	conditonLevel++;
+	Condition::enchance();
 	deffenceReduceRate = deffenceReduceRate*0.7;
 	speedReduceRate = speedReduceRate*0.5;
 }
 
-Knock::Knock():minusSpeed(-1000), code(EffectCode::Knock){}
+
+Knock::Knock():minusSpeed(-1000), stunTime(0) {}
+Knock::Knock(const Knock &rhs)
+	: Condition(rhs), minusSpeed(rhs.minusSpeed), stunTime(rhs.stunTime) {}
 
 float Knock::castEffect(float speed) const
 {
@@ -55,20 +51,19 @@ float Knock::castEffect(float speed) const
 
 float Knock::castSideEffect(float defence) const
 {
-	return 0;
-}
-
-EffectCode Knock::getCode()
-{
-	return code;
+	return stunTime;
 }
 
 void Knock::enchance()
 {
+	Condition::enchance();
 	minusSpeed -= 100;
 }
 
+
 PowerUp::PowerUp():rangeRate(600), pierceNum(3){}
+PowerUp::PowerUp(const PowerUp &rhs)
+	: Condition(rhs), rangeRate(rhs.rangeRate), pierceNum(rhs.pierceNum) {}
 
 float PowerUp::castEffect(float speed) const
 {
@@ -80,17 +75,16 @@ float PowerUp::castSideEffect(float defence) const
 	return pierceNum;
 }
 
-EffectCode PowerUp::getCode()
-{
-	return EffectCode::PowerUp;
-}
-
 void PowerUp::enchance()
 {
+	Condition::enchance();
 	rangeRate += 200;
 }
 
+
 Division::Division():divideNum(3){}
+Division::Division(const Division &rhs)
+	: Condition(rhs), divideNum(rhs.divideNum) {}
 
 float Division::castEffect(float num) const
 {
@@ -102,16 +96,12 @@ float Division::castSideEffect(float num) const
 	return 0;
 }
 
-
 void Division::enchance()
 {
+	Condition::enchance();
 	divideNum++;
 }
 
-EffectCode Division::getCode()
-{
-	return EffectCode::Division;
-}
 
 Mine::Mine():holdTime(3){}
 
@@ -125,21 +115,20 @@ float Mine::castSideEffect(float num) const
 	return 0.0f;
 }
 
-EffectCode Mine::getCode()
-{
-	return EffectCode::Mine;
-}
-
 void Mine::enchance()
 {
+	Condition::enchance();
 	holdTime += 2;
 }
 
-Explode::Explode():damage(100){}
+
+Explode::Explode() :explodeDamage(100), burnDamage(0) {}
+Explode::Explode(const Explode &rhs)
+	: Condition(rhs), explodeDamage(rhs.explodeDamage), burnDamage(rhs.burnDamage) {}
 
 float Explode::castEffect(float num) const
 {
-	return damage;
+	return explodeDamage;
 }
 
 float Explode::castSideEffect(float num) const
@@ -147,12 +136,8 @@ float Explode::castSideEffect(float num) const
 	return 0.0f;
 }
 
-EffectCode Explode::getCode()
-{
-	return EffectCode::Explode;
-}
-
 void Explode::enchance()
 {
-	damage += 25;
+	Condition::enchance();
+	explodeDamage += 25;
 }
