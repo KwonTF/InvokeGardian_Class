@@ -15,9 +15,6 @@ namespace GameData {
 	// 조합시 마나 소모량
 	extern const int mpReduce[8];
 
-	// 요소별 데미지
-	
-
 	// 적군 기본 능력치(고정)
 	extern const int enemyAttackRange;
 	extern const float enemyAttackSpeed;
@@ -31,5 +28,8 @@ namespace GameData {
 	extern const float enemyMutateStatus[5][6][5];
 	extern const std::string enemyMutateImage[5][6];
 
-	extern const std::string enemyDeathAnimation[];
+	// 폭발 관련 이미지
+	extern const std::string enemyDeathAnimation[12];
+	extern const std::string eMissileBoomAnimation[6];
+	extern const std::string pMissileBoomAnimation[4];
 }

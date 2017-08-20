@@ -297,7 +297,7 @@ void HelloWorld::popUpClick()
 
 void HelloWorld::makeTower()
 {
-	tower = Tower::create("Unit/Hostile.png");
+	tower = Tower::create("Unit/tower_base.png");
 	tower->make();
 	tower->setPhysicsBitmask(Collisioner::bitmaskPlayerAll, ~(Collisioner::bitmaskBulletOne + Collisioner::bitmaskPlayerAll), Collisioner::bitmaskEnemyAll);
 	tower->setDeathCallback(CC_CALLBACK_0(HelloWorld::goGameOver, this));
@@ -329,21 +329,7 @@ void HelloWorld::gameTimer(float dt)
 {
 	// 라운드/셋업 변환 부분
 	if (gameTime <= 0)
-	{
-		if (isRound == false)
-		{
-			roundNum++;
-			isRound = true;
-			gameTime = ROUNDTIME;
-			//roundChange();
-		}
-		else
-		{
-			isRound = false;
-			gameTime = SETUPTIME;
-			roundViewer->setString("Set Up");
-		}
-	}
+		roundChange();
 
 	// 시간 감소 부분
 	gameTime--;
@@ -387,24 +373,26 @@ void HelloWorld::monsterCreateTimer(float dt)
 				mutateType = (rand() % 5) + 1;
 			}
 
-			// 변이 정보로부터 데이터 가져오기
+			// 변이 정보로부터 데이터 가져오기(nF)
 
 
 			// 몬스터 생성
-			auto monster = Enemy::create("Unit/Hostile_Tank.png");
+			auto monster = Enemy::create("Unit/Normal.png");
 			monster->make();
 			monster->setPhysicsBitmask(Collisioner::bitmaskEnemyAll, ~(Collisioner::bitmaskBulletTwo + Collisioner::bitmaskEnemyAll), Collisioner::bitmaskPlayerAll);
 			monster->setPosition(Vec2(_winSize.width * (rand() % 2), (rand() % static_cast<int>(_winSize.height))));
-			
+			// 파일 설정
+			monster->setDeathAnimFile(GameData::enemyDeathAnimation, 12);
+			monster->setMissileDeathAnimFile(GameData::eMissileBoomAnimation, 6);
+			// 기본 능력치 설정
 			monster->setBaseAbillity(GameData::roundEnemyHP[roundNum], GameData::roundEnemyAttack[roundNum],
 				GameData::enemyAttackRange, GameData::enemyMoveSpeed, GameData::enemyAttackSpeed);
 			monster->setEnemyAim(tower->getPosition());
+			// 콜백 적용
 			monster->setCreateCallback(CC_CALLBACK_0(HelloWorld::monsterCreate, this));
 			monster->setDeathCallback(CC_CALLBACK_0(HelloWorld::monsterDeath, this));
-			//monster->setExplodeCallback(CC_CALLBACK_0(HelloWorld::explodeEffect, this, monster->getPosition()));
-			//monster->projectImage("Unit/Hostile_Tank.png"); faster 타입에만 적용
 			monster->setHpGage("Others/hpGage.png");
-			// 변이 적용시키기
+			// 변이 적용시키기(nF)
 			enemyVector.pushBack(monster);
 			addChild(monster);
 		}
@@ -503,20 +491,60 @@ void HelloWorld::onKeyPressed(EventKeyboard::KeyCode keyCode, Event * event)
 }
 
 /*
+적군을 다 잡으면 효과를 적용하는 함수
+*/
+void HelloWorld::roundEnd()
+{
+	// Round -> Set Up일때만 실행
+	if (isRound == true)
+	{
+		// 남은 시간 1초 남기고 없애기
+		int extraTime = gameTime - 1;
+		gameTime = gameTime - extraTime;
+
+		// 남은 시간만큼 마나 / 타워 체력 회복
+		tower->healTower(tower->getHPRegen() * extraTime);
+		MPRegenCount += MPRegenAmount * secondPerFrame * extraTime;
+	}
+
+	// 업그레이드 가능 상태로 만들기
+	canUpgrade = true;
+	popbutton->setOpacity(255);
+	roundViewer->setColor(Color3B::GREEN);
+	timeViewer->setColor(Color3B::GREEN);
+	enemyVector.clear();
+}
+
+/*
 Round가 바뀔 때 변수들을 다시 초기화하는 함수
 create by ZeroFe
 */
 void HelloWorld::roundChange()
 {
-	// 라운드 관련 변수 변경
-	roundNum++;
+	// Round -> Set Up
+	if (isRound == true)
+	{
+		isRound = false;
+		gameTime = SETUPTIME;
 
-	setRoundVariable();
+		roundViewer->setString("SETUP");
+	}
+	// Set Up -> Round
+	else
+	{
+		isRound = true;
+		gameTime = ROUNDTIME;
+		roundNum++;
+		setRoundVariable();
 
-	// 업그레이드 불가능 상태로 만들기
-	canUpgrade = false;
-	roundViewer->setColor(Color3B::RED);
-	timeViewer->setColor(Color3B::RED);
+		roundViewer->setString("ROUND");
+
+		// 업그레이드 불가능 상태로 만들기
+		canUpgrade = false;
+		popbutton->setOpacity(0);
+		roundViewer->setColor(Color3B::RED);
+		timeViewer->setColor(Color3B::RED);
+	}
 }
 
 void HelloWorld::setRoundVariable()
@@ -526,10 +554,11 @@ void HelloWorld::setRoundVariable()
 	monsterPresentAmount = 0;
 	monsterExistAmount = 0;
 
-	// 이 부분은 수정
+	// 변이 관련 변수
 	mutateCreatePer = GameData::enemyMutateRate[roundNum];
 	mutateLevelUpPer = GameData::enemyLevelUpRate[roundNum];
 
+	// 생성 주기 변수
 	roundCount = 2 * secondPerFrame;
 	createCount = 0;
 }
@@ -544,26 +573,10 @@ void HelloWorld::monsterDeath()
 {
 	monsterExistAmount--;
 	monsterExistViewer->setString(std::to_string(monsterExistAmount));
-	// 라운드 변경
-  	if (monsterPresentAmount == monsterRoundAmount && monsterExistAmount <= 0)
-	{
-		// 적용함수 만들 것
-		// 남은 시간 1초 남기고 없애기
-		int extraTime = gameTime - 1;
-		gameTime = gameTime - extraTime;
-		
-		// 남은 시간만큼 마나 / 타워 체력 회복
-		tower->healTower(tower->getHPRegen() * extraTime);
-		// 마나 채우기 완전한 알고리즘 아님 수정 필요
-		MPRegenCount += MPRegenAmount * secondPerFrame * extraTime;
 
-		// 업그레이드 가능 상태로 만들기
-		canUpgrade = true;
-		popbutton->setOpacity(255);
-  		roundViewer->setColor(Color3B::GREEN);
-		timeViewer->setColor(Color3B::GREEN);
-		enemyVector.clear();
-	}
+	// 라운드 변경
+	if (monsterPresentAmount == monsterRoundAmount && monsterExistAmount <= 0)
+		roundEnd();
 }
 
 void HelloWorld::explodeEffect(Vec2 point)
@@ -625,9 +638,6 @@ Missile* HelloWorld::makeMissile()
 
 	// 내부 값 설정
 	missile->setAttack(20 + tempVector.size() * 20);
-	//missile->setSpeed(400.0);
-	//missile->setRange(200);
-	//missile->setPenetCount(1);
 	return missile;
 }
 
@@ -645,6 +655,7 @@ void HelloWorld::fireMissile()
 		}
 		missile->getPhysicsBody()->setVelocity(tempVec * missile->getSpeed());
 		missile->setPhysicsBitmask(Collisioner::bitmaskBulletOne, ~(Collisioner::bitmaskBulletAll + Collisioner::bitmaskPlayerAll), Collisioner::bitmaskZero);
+		missile->setDeathAnimFile(GameData::pMissileBoomAnimation, 4);
 		missile->setCondition(tempVector);
 		missile->castEffect();
 		layerMissile->addChild(missile);

@@ -35,6 +35,8 @@ public:
 
 	virtual void collisioned(int damage, std::vector<Condition*> &c);
 
+	void setDeathAnimFile(const std::string * const filename, const int fileNum);
+
 	void make() override;
 
 	// set ability

@@ -22,6 +22,21 @@ Missile* Missile::create(const std::string &filename)
 	return nullptr;
 }
 
+/*
+set unit image infomation
+filename : file root of unit's image
+fileNum : number of unit's image
+*/
+void Missile::setDeathAnimFile(const std::string * const filename, const int fileNum)
+{
+	image = new std::string[fileNum];
+	for (int i = 0; i < fileNum; i++)
+	{
+		image[i] = filename[i];
+	}
+	imageNum = fileNum;
+}
+
 void Missile::make()
 {
 	auto material = PhysicsMaterial(0.1f, 1.0f, 0.5f);
@@ -119,7 +134,7 @@ void Missile::deathAnimation()
 
 	for (int i = 1; i < imageNum; i++)
 	{
-		auto frame = SpriteFrame::create(image[i], Rect(0, 0, 32, 32)); //we assume that the sprites' dimentions are 40*40 rectangles.
+		auto frame = SpriteFrame::create(image[i], Rect(0, 0, 50, 50));
 		animFrames.pushBack(frame);
 	}
 
@@ -136,8 +151,7 @@ void Missile::destroy()
 
 	auto callback1 = CallFunc::create(CC_CALLBACK_0(Missile::deathAnimation, this));
 	auto callback2 = CallFunc::create(CC_CALLBACK_0(Missile::removeFromParent, this));
-	//auto sequence = Sequence::create(callback1, DelayTime::create((float)(imageNum-1)/10), callback2, nullptr);
-	auto sequence = Sequence::create(callback1, DelayTime::create(1.0f), callback2, nullptr);
+	auto sequence = Sequence::create(callback1, DelayTime::create((float)(imageNum-1)/10), callback2, nullptr);
 
 	runAction(sequence);
 }

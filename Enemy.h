@@ -13,6 +13,10 @@ create by ZeroFe
 class Enemy : public Unit
 {
 private:
+	// 유닛에 필요한 이미지
+	std::string *mImage;
+	int mImageNum;
+
 	// 변이 관련
 	Mutate mutate;
 
@@ -42,7 +46,7 @@ public:
 
 	static Enemy* create(const std::string &filename);
 
-	//void make() override;
+	void setMissileDeathAnimFile(const std::string * const filename, const int fileNum);
 
 	void setBaseAbillity(int hp, int attack, int range, int speed, int as);
 	inline void setRange(const int range){ attackRange = range; }

@@ -111,7 +111,7 @@ void Unit::deathAnimation()
 
 	for (int i = 1; i < imageNum; i++)
 	{
-		auto frame = SpriteFrame::create(image[i], Rect(0, 0, 32, 32)); //we assume that the sprites' dimentions are 40*40 rectangles.
+		auto frame = SpriteFrame::create(image[i], Rect(0, 0, 50, 50)); //we assume that the sprites' dimentions are 40*40 rectangles.
 		animFrames.pushBack(frame);
 	}
 
@@ -128,8 +128,7 @@ void Unit::destroy()
 
 	auto callback1 = CallFunc::create(CC_CALLBACK_0(Unit::deathAnimation, this));
 	auto callback2 = CallFunc::create(CC_CALLBACK_0(Unit::removeFromParent, this));
-	//auto sequence = Sequence::create(callback1, DelayTime::create((float)(imageNum-1)/10), callback2, nullptr);
-	auto sequence = Sequence::create(callback1, DelayTime::create(1.0f), callback2, nullptr);
+	auto sequence = Sequence::create(callback1, DelayTime::create((float)(imageNum-1)/10), callback2, nullptr);
 
 	runAction(sequence);
 }

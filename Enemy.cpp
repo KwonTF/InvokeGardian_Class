@@ -30,22 +30,15 @@ Enemy* Enemy::create(const std::string &filename)
 	return nullptr;
 }
 
-/*
-// 해당 객체의 PhysicsBody 생성
-// Bitmask, 위치 등은 따로 설정해줘야함
-void Enemy::make()
+void Enemy::setMissileDeathAnimFile(const std::string * const filename, const int fileNum)
 {
-	auto material = PhysicsMaterial(0.1f, 1.0f, 0.5f);
-
-	auto body = PhysicsBody::createBox(this->getContentSize(), material);
-
-	this->setPhysicsBody(body);
-	this->getPhysicsBody()->setDynamic(false);
-	//monster->setPhysicsBitmask(Collisioner::bitmaskEnemyAll, ~(Collisioner::bitmaskBulletTwo + Collisioner::bitmaskEnemyAll), Collisioner::bitmaskPlayerAll);
-	this->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
-	//monster->setPosition(Vec2(_winSize.width * (rand() % 2), (rand() % static_cast<int>(_winSize.height))));
+	mImage = new std::string[fileNum];
+	for (int i = 0; i < fileNum; i++)
+	{
+		mImage[i] = filename[i];
+	}
+	mImageNum = fileNum;
 }
-*/
 
 void Enemy::setBaseAbillity(int hp, int atk, int range, int speed, int as)
 {
@@ -110,25 +103,17 @@ void Enemy::setEnemyAim(const cocos2d::Vec2 &aimPos)
 
 void Enemy::shootMissile()
 {
-	Missile* missile = Missile::create("Others/Bullet.PNG");
+	Missile* missile = Missile::create("Missile/Enemy/missile.png");
 
 	// 내부 값 설정
 	missile->setAttack(attack);
 	missile->setSpeed(300.0);
-	missile->setPenetCount(1);
-	missile->setRange(600);
-	missile->setColor(Color3B::RED);
 
 	// 몸체 설정
-	auto material = PhysicsMaterial(0.1f, 1.0f, 0.5f);
-
-	auto body = PhysicsBody::createCircle(missile->getContentSize().width / 2, material);
-
-	missile->setPhysicsBody(body);
+	missile->make();
 	missile->setPosition(getPosition());
 	missile->getPhysicsBody()->setVelocity(diff * missile->getSpeed());
 	missile->setPhysicsBitmask(Collisioner::bitmaskBulletTwo, ~(Collisioner::bitmaskBulletAll + Collisioner::bitmaskEnemyAll), Collisioner::bitmaskZero);
-	
 
 	// 게임에 추가
 	if (getParent() != nullptr)
@@ -201,7 +186,7 @@ void Enemy::update(float input)
 {
 	diff = destinat - getPosition();
 	diff = diff.getNormalized();
-	setRotation(-diff.getAngle() * 180 / M_PI);
+	setRotation(90 - diff.getAngle() * 180 / M_PI);
 
 	float dist;
 

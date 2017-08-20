@@ -16,7 +16,7 @@ const int GameData::roundEnemyPoint[21] = {
 const int GameData::mpReduce[8]{
 	2, 10, 15, 23, 35, 55, 80, 101
 };
-const int GameData::enemyAttackRange = 50;
+const int GameData::enemyAttackRange = 100;
 
 const float GameData::enemyAttackSpeed = 1.0;
 
@@ -39,4 +39,43 @@ const float GameData::enemyMutateStatus[5][6][5] = {
 	{{ 1.00, 1.00, 1.00, 1.00, 1.00 }, { 1.00, 1.00, 1.00, 1.00, 1.00 }, { 1.00, 1.00, 1.00, 1.00, 1.00 }, { 1.00, 1.00, 1.00, 1.00, 1.00 }, { 1.00, 1.00, 1.00, 1.00, 1.00 }, { 1.00, 1.00, 1.00, 1.00, 1.00 }},
 	{{ 1.00, 1.00, 1.00, 1.00, 1.00 }, { 1.00, 1.00, 1.00, 1.00, 1.00 }, { 1.00, 1.00, 1.00, 1.00, 1.00 }, { 1.00, 1.00, 1.00, 1.00, 1.00 }, { 1.00, 1.00, 1.00, 1.00, 1.00 }, { 1.00, 1.00, 1.00, 1.00, 1.00 }},
 	{{ 1.00, 1.00, 1.00, 1.00, 1.00 }, { 1.00, 1.00, 1.00, 1.00, 1.00 }, { 1.00, 1.00, 1.00, 1.00, 1.00 }, { 1.00, 1.00, 1.00, 1.00, 1.00 }, { 1.00, 1.00, 1.00, 1.00, 1.00 }, { 1.00, 1.00, 1.00, 1.00, 1.00 }}
+};
+
+const std::string GameData::enemyMutateImage[5][6] = {
+	{ "Unit/Normal.png", "Unit/Range.png", "Unit/Mass.png", "Unit/Divide.png", "Unit/Golem.png", "Unit/Faster.png" },
+	{ "Unit/Normal.png", "Unit/Range.png", "Unit/Mass.png", "Unit/Divide.png", "Unit/Golem.png", "Unit/Faster.png" },
+	{ "Unit/Normal.png", "Unit/Range.png", "Unit/Mass.png", "Unit/Divide.png", "Unit/Golem.png", "Unit/Faster.png" },
+	{ "Unit/Normal.png", "Unit/Range.png", "Unit/Mass.png", "Unit/Divide.png", "Unit/Golem.png", "Unit/Faster.png" },
+	{ "Unit/Normal.png", "Unit/Range.png", "Unit/Mass.png", "Unit/Divide.png", "Unit/Golem.png", "Unit/Faster.png" }
+};
+
+const std::string GameData::enemyDeathAnimation[12] = {
+	"Unit/Explosion/0.png",
+	"Unit/Explosion/1.png",
+	"Unit/Explosion/2.png",
+	"Unit/Explosion/3.png",
+	"Unit/Explosion/4.png",
+	"Unit/Explosion/5.png",
+	"Unit/Explosion/6.png",
+	"Unit/Explosion/7.png",
+	"Unit/Explosion/8.png",
+	"Unit/Explosion/9.png",
+	"Unit/Explosion/10.png",
+	"Unit/Explosion/11.png"
+};
+
+const std::string GameData::eMissileBoomAnimation[6] = {
+	"Missile/Enemy/Boom1.png",
+	"Missile/Enemy/Boom2.png",
+	"Missile/Enemy/Boom3.png",
+	"Missile/Enemy/Boom4.png",
+	"Missile/Enemy/Boom5.png",
+	"Missile/Enemy/Boom6.png"
+};
+
+const std::string GameData::pMissileBoomAnimation[4] = {
+	"Missile/Player/Boom1.png",
+	"Missile/Player/Boom2.png",
+	"Missile/Player/Boom3.png",
+	"Missile/Player/Boom4.png"
 };
