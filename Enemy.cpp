@@ -114,6 +114,7 @@ void Enemy::shootMissile()
 	missile->setPosition(getPosition());
 	missile->getPhysicsBody()->setVelocity(diff * missile->getSpeed());
 	missile->setPhysicsBitmask(Collisioner::bitmaskBulletTwo, ~(Collisioner::bitmaskBulletAll + Collisioner::bitmaskEnemyAll), Collisioner::bitmaskZero);
+	missile->setDeathAnimFile(mImage, mImageNum);
 
 	// 게임에 추가
 	if (getParent() != nullptr)

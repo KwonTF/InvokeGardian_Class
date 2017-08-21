@@ -13,7 +13,7 @@ Player * Player::createAndInit()
 	Player* player = new Player();
 	player->initWithFile("Unit/Player_Tank.png");
 	player->autorelease();
-	player->setAnchorPoint(Vec2(0.5, 0.5));
+	player->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
 	return player;
 }
 
@@ -31,4 +31,10 @@ void Player::moveBySpeed(float input)
 {
 	this->setPositionX(this->getPositionX() + (movePointX * 100 * input));
 	this->setPositionY(this->getPositionY() + (movePointY * 100 * input));
+
+	if (DestPoint.x - 3 <= getPositionX() && getPositionX() <= DestPoint.x + 3 
+		&& DestPoint.y - 3 <= getPositionY() && getPositionY() <= DestPoint.y + 3)
+	{
+		unschedule(schedule_selector(Player::moveBySpeed));
+	}
 }
