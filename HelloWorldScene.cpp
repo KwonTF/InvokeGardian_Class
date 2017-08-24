@@ -64,7 +64,7 @@ bool HelloWorld::init()
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(keyBoard, this);
 
 	//배경 지정
-	Background = Sprite::create("Background/Background.png");
+	Background = Sprite::create("Background/playScene.png");
 	Background->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
 	Background->setPosition(_winSize.width / 2, _winSize.height / 2);
 	this->addChild(Background);
@@ -136,6 +136,12 @@ void HelloWorld::initGameVariable()
 	MPRegenCount = 0;
 	MPRegenAmount = 3;
 
+	conditionInfoArray.push_back(new Knock());
+	conditionInfoArray.push_back(new PowerUp());
+	conditionInfoArray.push_back(new Explode());
+	conditionInfoArray.push_back(new Division());
+	conditionInfoArray.push_back(new Slow());
+	conditionInfoArray.push_back(new Mine());
 	SlotLevel = 2;
 
 	roundNum = 1;
@@ -461,29 +467,29 @@ void HelloWorld::onKeyPressed(EventKeyboard::KeyCode keyCode, Event * event)
 	switch (keyCode)
 	{
 	case EventKeyboard::KeyCode::KEY_Q:
-		tempVector.push_back(new Knock());
+		tempVector.push_back(new Knock(*(static_cast<Knock *>(conditionInfoArray.at(0)))));
 		Skillboxes.at(temp)->setTexture("Elements/Knock.png");
 		break;
 	case EventKeyboard::KeyCode::KEY_W:
-		tempVector.push_back(new PowerUp());
+		tempVector.push_back(new PowerUp(*(static_cast<PowerUp *>(conditionInfoArray.at(1)))));
 		Skillboxes.at(temp)->setTexture("Elements/PowerUp.png");
 		break;
 	case EventKeyboard::KeyCode::KEY_E:
+		tempVector.push_back(new Explode(*(static_cast<Explode *>(conditionInfoArray.at(2)))));
 		Skillboxes.at(temp)->setTexture("Elements/Explode.png");
-		tempVector.push_back(new Explode());
 		break;
 	case EventKeyboard::KeyCode::KEY_A:
-		tempVector.push_back(new Division());
+		tempVector.push_back(new Division(*(static_cast<Division *>(conditionInfoArray.at(3)))));
 		Skillboxes.at(temp)->setTexture("Elements/Division.png");
-		divisonNum+=tempVector.back()->castEffect(divisonNum);
+		divisonNum += tempVector.back()->castEffect(divisonNum);
 		break;
 	case EventKeyboard::KeyCode::KEY_S:
+		tempVector.push_back(new Slow(*(static_cast<Slow *>(conditionInfoArray.at(4)))));
 		Skillboxes.at(temp)->setTexture("Elements/Slow.png");
-		tempVector.push_back(new Slow());
 		break;
 	case EventKeyboard::KeyCode::KEY_D:
+		tempVector.push_back(new Mine(*(static_cast<Mine *>(conditionInfoArray.at(5)))));
 		Skillboxes.at(temp)->setTexture("Elements/Mine.png");
-		tempVector.push_back(new Mine());
 		break;
 	default:
 		break;
@@ -497,22 +503,15 @@ void HelloWorld::roundEnd()
 {
 	// Round -> Set Up일때만 실행
 	if (isRound == true)
-	{
-		// 남은 시간 1초 남기고 없애기
-		int extraTime = gameTime - 1;
-		gameTime = gameTime - extraTime;
+		timeSkip();
 
-		// 남은 시간만큼 마나 / 타워 체력 회복
-		tower->healTower(tower->getHPRegen() * extraTime);
-		MPRegenCount += MPRegenAmount * secondPerFrame * extraTime;
-	}
+	// 라운드 결과 돈 획득
 
 	// 업그레이드 가능 상태로 만들기
 	canUpgrade = true;
 	popbutton->setOpacity(255);
 	roundViewer->setColor(Color3B::GREEN);
 	timeViewer->setColor(Color3B::GREEN);
-	enemyVector.clear();
 }
 
 /*
@@ -545,6 +544,18 @@ void HelloWorld::roundChange()
 		roundViewer->setColor(Color3B::RED);
 		timeViewer->setColor(Color3B::RED);
 	}
+}
+
+// 남은 시간을 생략하고 회복하는 함수
+void HelloWorld::timeSkip()
+{
+	// 남은 시간 1초 남기고 없애기
+	int extraTime = gameTime - 1;
+	gameTime = gameTime - extraTime;
+
+	// 남은 시간만큼 마나 / 타워 체력 회복
+	tower->healTower(tower->getHPRegen() * extraTime);
+	MPRegenCount += MPRegenAmount * secondPerFrame * extraTime;
 }
 
 void HelloWorld::setRoundVariable()
@@ -656,6 +667,7 @@ void HelloWorld::fireMissile()
 		missile->getPhysicsBody()->setVelocity(tempVec * missile->getSpeed());
 		missile->setPhysicsBitmask(Collisioner::bitmaskBulletOne, ~(Collisioner::bitmaskBulletAll + Collisioner::bitmaskPlayerAll), Collisioner::bitmaskZero);
 		missile->setDeathAnimFile(GameData::pMissileBoomAnimation, 4);
+		missile->setDeathAnimFile2(GameData::missileBoomAnimation, 8, 8, 100, 100, 1/30);
 		missile->setCondition(tempVector);
 		missile->castEffect();
 		layerMissile->addChild(missile);

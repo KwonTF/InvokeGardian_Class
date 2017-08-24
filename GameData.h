@@ -32,4 +32,5 @@ namespace GameData {
 	extern const std::string enemyDeathAnimation[12];
 	extern const std::string eMissileBoomAnimation[6];
 	extern const std::string pMissileBoomAnimation[4];
+	extern const std::string missileBoomAnimation;
 }

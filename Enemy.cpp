@@ -115,6 +115,7 @@ void Enemy::shootMissile()
 	missile->getPhysicsBody()->setVelocity(diff * missile->getSpeed());
 	missile->setPhysicsBitmask(Collisioner::bitmaskBulletTwo, ~(Collisioner::bitmaskBulletAll + Collisioner::bitmaskEnemyAll), Collisioner::bitmaskZero);
 	missile->setDeathAnimFile(mImage, mImageNum);
+	missile->setDeathAnimFile2("Unit/missileExplosion.png", 8, 8, 100, 100, 1 / 30);
 
 	// 게임에 추가
 	if (getParent() != nullptr)

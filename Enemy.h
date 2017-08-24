@@ -17,6 +17,8 @@ private:
 	std::string *mImage;
 	int mImageNum;
 
+	std::string missileDeathAnimTexture;
+
 	// 변이 관련
 	Mutate mutate;
 

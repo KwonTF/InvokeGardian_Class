@@ -16,6 +16,14 @@ protected:
 	std::string *image;
 	int imageNum;
 
+	// 파괴 애니메이션 관련 변수
+	std::string deathAnimTexture;
+	int deathAnimWidth;
+	int deathAnimHeight;
+	int deathAnimRow;
+	int deathAnimColm;
+	float deathAnimDelay;
+
 	// 이동속도
 	float speed;
 
@@ -36,6 +44,8 @@ public:
 	virtual void collisioned(int damage, std::vector<Condition*> &c);
 
 	void setDeathAnimFile(const std::string * const filename, const int fileNum);
+	void setDeathAnimFile2(const std::string filename, const int row, const int colm,
+		const int width, const int height, const float delay);
 
 	void make() override;
 

@@ -37,6 +37,17 @@ void Missile::setDeathAnimFile(const std::string * const filename, const int fil
 	imageNum = fileNum;
 }
 
+void Missile::setDeathAnimFile2
+(const std::string filename, const int row, const int colm, const int width, const int height, const float delay)
+{
+	deathAnimTexture = filename;
+	deathAnimRow = row;
+	deathAnimColm = colm;
+	deathAnimWidth = width;
+	deathAnimHeight = height;
+	deathAnimDelay = delay;
+}
+
 void Missile::make()
 {
 	auto material = PhysicsMaterial(0.1f, 1.0f, 0.5f);
@@ -130,8 +141,19 @@ void Missile::makeExplosion()
 // make Missile's death animation
 void Missile::deathAnimation()
 {
-	Vector<SpriteFrame*> animFrames(imageNum - 1);
+	// 합본 파일 재생 방식
+	auto deathTexture = Director::getInstance()->getTextureCache()->addImage(deathAnimTexture);
+	
+	Animation *anim = Animation::create();
+	anim->setDelayPerUnit(deathAnimDelay);
+	for (int i = 0; i < deathAnimRow; i++) 
+		for (int j = 0; j < deathAnimColm; j++) 
+			anim->addSpriteFrameWithTexture(deathTexture, Rect(j * deathAnimWidth, i *  deathAnimHeight, deathAnimWidth, deathAnimHeight));
 
+	/*
+	// 단편 파일 재생 방식
+	Vector<SpriteFrame*> animFrames(imageNum - 1);
+	
 	for (int i = 1; i < imageNum; i++)
 	{
 		auto frame = SpriteFrame::create(image[i], Rect(0, 0, 50, 50));
@@ -139,7 +161,9 @@ void Missile::deathAnimation()
 	}
 
 	auto animation = Animation::createWithSpriteFrames(animFrames, 0.1f);
-	auto animate = Animate::create(animation);
+	*/
+
+	auto animate = Animate::create(anim);
 	runAction(animate);
 }
 
@@ -151,7 +175,7 @@ void Missile::destroy()
 
 	auto callback1 = CallFunc::create(CC_CALLBACK_0(Missile::deathAnimation, this));
 	auto callback2 = CallFunc::create(CC_CALLBACK_0(Missile::removeFromParent, this));
-	auto sequence = Sequence::create(callback1, DelayTime::create((float)(imageNum-1)/10), callback2, nullptr);
-
+	auto sequence = Sequence::create(callback1, DelayTime::create(10.0f), callback2, nullptr);
+	//deathAnimDelay * (deathAnimRow * deathAnimColm - 1)
 	runAction(sequence);
 }

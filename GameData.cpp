@@ -79,3 +79,5 @@ const std::string GameData::pMissileBoomAnimation[4] = {
 	"Missile/Player/Boom3.png",
 	"Missile/Player/Boom4.png"
 };
+
+const std::string GameData::missileBoomAnimation = "Unit/missileExplosion.png";

@@ -80,6 +80,7 @@ public:
 	// 라운드 변경시 호출하는 함수
 	void roundEnd();
 	void roundChange();
+	void timeSkip();
 	void setRoundVariable();
 
 	// 콜백 함수
@@ -116,6 +117,8 @@ private:
 	Sprite* pop1;
 	Sprite* pop2;
 	Sprite* pop3;
+
+	ui::Button* setupSkip;
 
 	Sprite* mpSprite;
 	CCProgressTimer* mpBar;
