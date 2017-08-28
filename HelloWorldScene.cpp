@@ -181,6 +181,7 @@ void HelloWorld::makeUpgradeWindow()
 	upgradeOpener->loadTextures("UI/PopButton.png", "UI/PopButton.png", "UI/PopButton.png");
 	upgradeOpener->addTouchEventListener(CC_CALLBACK_2(HelloWorld::upgradeOpenerTouch, this));
 	upgradeOpener->setAnchorPoint(Vec2::ANCHOR_MIDDLE_LEFT);
+	upgradeOpener->setOpacity(0);
 	upgradeWindow->addChild(upgradeOpener);
 
 	// for UI check
@@ -197,12 +198,12 @@ void HelloWorld::makeUpgradeWindow()
 	pop3->setAnchorPoint(Vec2::ANCHOR_MIDDLE_RIGHT);
 	upgradeWindow->addChild(pop3);
 
-	popbutton = Sprite::create("UI/PopButton.png");
+	/*popbutton = Sprite::create("UI/PopButton.png");
 	popbutton->setAnchorPoint(Vec2::ANCHOR_MIDDLE_LEFT);
 	popbutton->setRotation(0);
 	popbutton->setOpacity(255);
 	upgradeWindow->addChild(popbutton);
-
+	*/
 	addChild(upgradeWindow);
 }
 
@@ -279,7 +280,7 @@ void HelloWorld::UISetting()
 
 	setupSkip = ui::Button::create();
 	setupSkip->setTouchEnabled(true);
-	setupSkip->loadTextures("UI/skipN.png", "UI/skipS.png", "UI/skipD.png");
+	setupSkip->loadTextures("UI/SkipButtonN.png", "UI/SkipButtonS.png", "UI/SkipButtonD.png");
 	setupSkip->addTouchEventListener(CC_CALLBACK_2(HelloWorld::skipButtonTouch, this));
 	setupSkip->setAnchorPoint(Vec2::ANCHOR_MIDDLE_RIGHT);
 	setupSkip->setPosition(Vec2(_winSize.width, _winSize.height * 4 / 5));
@@ -311,16 +312,16 @@ void HelloWorld::popUpClick()
 	if (isUpgradeOpen) 
 	{
 		isUpgradeOpen = false;
-		upgradeWindow->setPosition(300, _winSize.height / 2);
-		popbutton->setPositionX(50);
-		popbutton->setRotation(180);
+		upgradeWindow->setPosition(262, _winSize.height / 2);
+		upgradeOpener->setPositionX(50);
+		upgradeOpener->setRotation(180);
 	}
 	else 
 	{
 		isUpgradeOpen = true;
 		upgradeWindow->setPosition(0, _winSize.height / 2);
-		popbutton->setPositionX(0);
-		popbutton->setRotation(0);
+		upgradeOpener->setPositionX(0);
+		upgradeOpener->setRotation(0);
 	}
 }
 
@@ -555,7 +556,7 @@ void HelloWorld::roundEnd()
 
 	// 업그레이드 가능 상태로 만들기
 	canUpgrade = true;
-	popbutton->setOpacity(255);
+	upgradeOpener->setOpacity(255);
 	roundViewer->setColor(Color3B::GREEN);
 	timeViewer->setColor(Color3B::GREEN);
 }
@@ -586,7 +587,7 @@ void HelloWorld::roundChange()
 
 		// 업그레이드 불가능 상태로 만들기
 		canUpgrade = false;
-		popbutton->setOpacity(0);
+		upgradeOpener->setOpacity(0);
 		roundViewer->setColor(Color3B::RED);
 		timeViewer->setColor(Color3B::RED);
 	}
