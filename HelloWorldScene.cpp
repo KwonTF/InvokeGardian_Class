@@ -82,6 +82,7 @@ bool HelloWorld::init()
 	createGameScene();
 	makeTower();
 	setMonsterAmountViewer();
+	makeUpgradeWindow();
 	setDebugMode();
 
 	// 스케쥴 설정
@@ -150,7 +151,9 @@ void HelloWorld::initGameVariable()
 	isRound = true;
 	canUpgrade = false;
 
+	monsterExistAmount = 0;
 	setRoundVariable();
+
 }
 
 void HelloWorld::setMonsterAmountViewer()
@@ -164,6 +167,43 @@ void HelloWorld::setMonsterAmountViewer()
 	monsterExistViewer->setPosition(_winSize.width - 30, _winSize.height - 60);
 	monsterExistViewer->setAnchorPoint(Vec2::ANCHOR_TOP_RIGHT);
 	this->addChild(monsterExistViewer);
+}
+
+void HelloWorld::makeUpgradeWindow()
+{
+	upgradeWindow = Node::create();
+	upgradeWindow->setAnchorPoint(Vec2::ANCHOR_MIDDLE_RIGHT);
+	upgradeWindow->setPosition(0, _winSize.height / 2);
+
+	// 
+	upgradeOpener = ui::Button::create();
+	upgradeOpener->setTouchEnabled(true);
+	upgradeOpener->loadTextures("UI/PopButton.png", "UI/PopButton.png", "UI/PopButton.png");
+	upgradeOpener->addTouchEventListener(CC_CALLBACK_2(HelloWorld::upgradeOpenerTouch, this));
+	upgradeOpener->setAnchorPoint(Vec2::ANCHOR_MIDDLE_LEFT);
+	upgradeWindow->addChild(upgradeOpener);
+
+	// for UI check
+	popback = Sprite::create("UI/PopBack.png");
+	popback->setAnchorPoint(Vec2::ANCHOR_MIDDLE_RIGHT);
+	upgradeWindow->addChild(popback);
+	pop1 = Sprite::create("UI/Popup_1.png");
+	pop1->setAnchorPoint(Vec2::ANCHOR_MIDDLE_RIGHT);
+	upgradeWindow->addChild(pop1);
+	pop2 = Sprite::create("UI/Popup_2.png");
+	pop2->setAnchorPoint(Vec2::ANCHOR_MIDDLE_RIGHT);
+	upgradeWindow->addChild(pop2);
+	pop3 = Sprite::create("UI/Popup_3.png");
+	pop3->setAnchorPoint(Vec2::ANCHOR_MIDDLE_RIGHT);
+	upgradeWindow->addChild(pop3);
+
+	popbutton = Sprite::create("UI/PopButton.png");
+	popbutton->setAnchorPoint(Vec2::ANCHOR_MIDDLE_LEFT);
+	popbutton->setRotation(0);
+	popbutton->setOpacity(255);
+	upgradeWindow->addChild(popbutton);
+
+	addChild(upgradeWindow);
 }
 
 void HelloWorld::UISetting()
@@ -191,29 +231,6 @@ void HelloWorld::UISetting()
 	Sprite* slotBack = Sprite::create("UI/SlotBack.png");
 	slotBack->setAnchorPoint(Vec2::ANCHOR_MIDDLE_BOTTOM);
 	slotBack->setPosition(_winSize.width / 2, 40);
-	// for UI check
-	popback = Sprite::create("UI/PopBack.png");
-	popback->setAnchorPoint(Vec2::ANCHOR_MIDDLE_LEFT);
-	popback->setPosition(-300, _winSize.height / 2);
-	this->addChild(popback);
-	pop1 = Sprite::create("UI/Popup_1.png");
-	pop1->setAnchorPoint(Vec2::ANCHOR_MIDDLE_LEFT);
-	pop1->setPosition(-300, _winSize.height / 2);
-	this->addChild(pop1);
-	pop2 = Sprite::create("UI/Popup_2.png");
-	pop2->setAnchorPoint(Vec2::ANCHOR_MIDDLE_LEFT);
-	pop2->setPosition(-300, _winSize.height / 2);
-	this->addChild(pop2);
-	pop3 = Sprite::create("UI/Popup_3.png");
-	pop3->setAnchorPoint(Vec2::ANCHOR_MIDDLE_LEFT);
-	pop3->setPosition(-300, _winSize.height / 2);
-	this->addChild(pop3);
-	popbutton = Sprite::create("UI/PopButton.png");
-	popbutton->setAnchorPoint(Vec2::ANCHOR_MIDDLE_LEFT);
-	popbutton->setPosition(0, _winSize.height / 2);
-	popbutton->setRotation(0);
-	popbutton->setOpacity(0);
-	this->addChild(popbutton);
 
 	mpBar->setPosition(_winSize.width / 2, 0);
 	mpState = Label::createWithTTF("100/100", fontPath, 30);
@@ -259,6 +276,14 @@ void HelloWorld::UISetting()
 		Skillboxes.pushBack(temp);
 		this->addChild(temp);
 	}
+
+	setupSkip = ui::Button::create();
+	setupSkip->setTouchEnabled(true);
+	setupSkip->loadTextures("UI/skipN.png", "UI/skipS.png", "UI/skipD.png");
+	setupSkip->addTouchEventListener(CC_CALLBACK_2(HelloWorld::skipButtonTouch, this));
+	setupSkip->setAnchorPoint(Vec2::ANCHOR_MIDDLE_RIGHT);
+	setupSkip->setPosition(Vec2(_winSize.width, _winSize.height * 4 / 5));
+	addChild(setupSkip);
 }
 
 void HelloWorld::setDebugMode()
@@ -283,21 +308,19 @@ void HelloWorld::setDebugID(int input)
 
 void HelloWorld::popUpClick()
 {
-	if (popbutton->getPositionX() > 0) {
-		popback->setPosition(-300, _winSize.height / 2);
-		pop1->setPosition(-300, _winSize.height / 2);
-		pop2->setPosition(-300, _winSize.height / 2);
-		pop3->setPosition(-300, _winSize.height / 2);
-		popbutton->setPosition(0, _winSize.height / 2);
-		popbutton->setRotation(0);
-	}
-	else {
-		popback->setPosition(0, _winSize.height / 2);
-		pop1->setPosition(0, _winSize.height / 2);
-		pop2->setPosition(0, _winSize.height / 2);
-		pop3->setPosition(0, _winSize.height / 2);
-		popbutton->setPosition(350, _winSize.height / 2);
+	if (isUpgradeOpen) 
+	{
+		isUpgradeOpen = false;
+		upgradeWindow->setPosition(300, _winSize.height / 2);
+		popbutton->setPositionX(50);
 		popbutton->setRotation(180);
+	}
+	else 
+	{
+		isUpgradeOpen = true;
+		upgradeWindow->setPosition(0, _winSize.height / 2);
+		popbutton->setPositionX(0);
+		popbutton->setRotation(0);
 	}
 }
 
@@ -379,8 +402,12 @@ void HelloWorld::monsterCreateTimer(float dt)
 				mutateType = (rand() % 5) + 1;
 			}
 
-			// 변이 정보로부터 데이터 가져오기(nF)
-
+			// 변이 정보로부터 데이터 가져오기
+			Mutate *m = new Mutate();
+			m->setMutateInfo(mutateType, mutateLevel, GameData::enemyMutateStatus[mutateType][mutateLevel][0], 
+				GameData::enemyMutateStatus[mutateType][mutateLevel][1], GameData::enemyMutateStatus[mutateType][mutateLevel][2], 
+				GameData::enemyMutateStatus[mutateType][mutateLevel][3], GameData::enemyMutateStatus[mutateType][mutateLevel][4]);
+			m->setImageInfo(GameData::enemyMutateImage[mutateType][mutateLevel]);
 
 			// 몬스터 생성
 			auto monster = Enemy::create("Unit/Normal.png");
@@ -399,7 +426,8 @@ void HelloWorld::monsterCreateTimer(float dt)
 			monster->setDeathCallback(CC_CALLBACK_0(HelloWorld::monsterDeath, this));
 			monster->setHpGage("Others/hpGage.png");
 			// 변이 적용시키기(nF)
-			enemyVector.pushBack(monster);
+
+			//enemyVector.pushBack(monster);
 			addChild(monster);
 		}
 
@@ -420,13 +448,14 @@ void HelloWorld::onMouseDown(cocos2d::Event * event)
 	ttf1->setString(output);
 	mousePosition.y = _winSize.height - mousePosition.y;
 	player->gotoPoint(mousePosition, MathCalculator::calculateAngle(player->getPosition(), mousePosition) * MathCalculator::radian());
-
+	/*
 	Rect rect = popbutton->getBoundingBox();
 	if (rect.containsPoint(mousePosition) && popbutton->getOpacity() == 255) {
 		popUpClick();
 	}
 	else
 		player->gotoPoint(mousePosition, MathCalculator::calculateAngle(player->getPosition(), mousePosition) * MathCalculator::radian());
+	*/
 }
 
 void HelloWorld::onMouseMove(cocos2d::Event * event)
@@ -496,6 +525,23 @@ void HelloWorld::onKeyPressed(EventKeyboard::KeyCode keyCode, Event * event)
 	}
 }
 
+void HelloWorld::skipButtonTouch(Ref *pSender, cocos2d::ui::Widget::TouchEventType touchType)
+{
+	if (touchType == ui::Widget::TouchEventType::ENDED)
+		timeSkip();
+}
+
+void HelloWorld::upgradeOpenerTouch(Ref *pSender, cocos2d::ui::Widget::TouchEventType touchType)
+{
+	if (touchType == ui::Widget::TouchEventType::ENDED)
+		popUpClick();
+}
+
+void HelloWorld::upgradeEnhanceTouch(Ref *pSender, cocos2d::ui::Widget::TouchEventType touchType, int btnTag)
+{
+
+}
+
 /*
 적군을 다 잡으면 효과를 적용하는 함수
 */
@@ -563,7 +609,7 @@ void HelloWorld::setRoundVariable()
 	// 몬스터 생성 수
 	monsterRoundAmount = monsterBaseAmount + 4 * roundNum;
 	monsterPresentAmount = 0;
-	monsterExistAmount = 0;
+	//monsterExistAmount = 0;
 
 	// 변이 관련 변수
 	mutateCreatePer = GameData::enemyMutateRate[roundNum];

@@ -18,7 +18,6 @@ private:
 	// variable for gameTimer
 	int gameTime;	// Round / Set Up Time
 	bool isRound;	// check Round state
-	bool canUpgrade;	// check Monster remain
 
 	// variable for random mutate
 	int mutateCreatePer;		// 변이 생성률
@@ -32,11 +31,21 @@ private:
 	int roundCount;				// 라운드 별 적군 생성 주기
 	int createCount;			// 적군 생성 카운트
 
-	//기본 능력치
+	// 기본 능력치
 	int MPCurrent;				// 현재 마나
 	int MPMax;					// 마나 최대치
 	int MPRegenCount;			// 마나 리젠 카운트
 	int MPRegenAmount;			// 마나 리젠량
+	int SlotLevel;				// 최대 조합 수
+
+	// 업그레이드 관련
+	int money;					// 업그레이드 돈
+	bool canUpgrade;			// 업그레이드 가능 여부 조사
+	bool isUpgradeOpen;				// 업그레이드창 개폐 여부
+
+	//Activate Debug
+	bool debug;
+	int debugID;
 
 public:
 	// start function
@@ -52,12 +61,10 @@ public:
 	// 충돌시 처리
 	bool onContactBegin(cocos2d::PhysicsContact& Contact);
 
-	// 터치 이벤트
-	void onTouchesEnded(const std::vector<Touch*> &touches, Event* event);
-
 	//게임 씬의 구현
 	void createGameScene();
 	void setMonsterAmountViewer();
+	void makeUpgradeWindow();
 	void initGameVariable();
 	void makeTower();
 
@@ -66,6 +73,9 @@ public:
 	void gameTimer(float dt);			// 타이머 관련 함수
 	void mpRestore(float input);		// MP회복함수
 	void monsterCreateTimer(float dt);	// 몬스터 생성 주기 함수
+										
+	// 터치 이벤트
+	void onTouchesEnded(const std::vector<Touch*> &touches, Event* event);
 
 	//마우스 이벤트들
 	void onMouseDown(cocos2d::Event* event);
@@ -73,9 +83,14 @@ public:
 	void onMouseUp(cocos2d::Event* event) {};
 	void onMouseScroll(cocos2d::Event* event) {};
 
-	//키보드 이벤트들
+	// 키보드 이벤트들
 	void onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event) {};
 	void onKeyPressed(EventKeyboard::KeyCode keyCode, Event* event);
+
+	// 버튼 터치 이벤트들
+	void skipButtonTouch(Ref *pSender, cocos2d::ui::Widget::TouchEventType touchType);
+	void upgradeOpenerTouch(Ref *pSender, cocos2d::ui::Widget::TouchEventType touchType);
+	void upgradeEnhanceTouch(Ref *pSender, cocos2d::ui::Widget::TouchEventType touchType, int btnTag);
 
 	// 라운드 변경시 호출하는 함수
 	void roundEnd();
@@ -89,6 +104,7 @@ public:
 	void explodeEffect(Vec2 point);
 	void goGameOver();
 
+	// Raycast 관련 함수
 	bool anyRay(PhysicsWorld &world, const PhysicsRayCastInfo &info, void *data);
 	void myTick(float dt);
 
@@ -112,6 +128,12 @@ private:
 	Sprite* Background;
 	Layer* layerMissile;
 	Sprite* statusBar;
+
+	Node* upgradeWindow;
+	ui::Button* upgradeOpener;
+	Layer* upgradeElement;
+	Layer* upgradeTower;
+	Layer* upgradeGuardian;
 	Sprite* popbutton;
 	Sprite* popback;
 	Sprite* pop1;
@@ -119,6 +141,7 @@ private:
 	Sprite* pop3;
 
 	ui::Button* setupSkip;
+	ui::Button* roundEnder;
 
 	Sprite* mpSprite;
 	CCProgressTimer* mpBar;
@@ -152,11 +175,6 @@ private:
 	Vector<Sprite*> Skillboxes;
 	Vector<Label*> SkillLevels;
 
-	//스킬 슬롯 레벨
-	unsigned int SlotLevel;
 
-	//Activate Debug
-	bool debug;
-	int debugID;
 };
 #endif // __HELLOWORLD_SCENE_H__
