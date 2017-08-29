@@ -25,7 +25,7 @@ public:
 	void setAttack(int atk);
 	void setRemoveTime(float time);
 
-	void removeExplosion(float f);
+	void removeExplosion();
 
 	void deathAnimation();
 	void destroy();

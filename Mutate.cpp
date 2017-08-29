@@ -4,7 +4,7 @@ Mutate::Mutate() : type(0), level(1), hpPer(1.0), atkPer(1.0), rangePer(1.0), as
 Mutate::~Mutate(){}
 
 void Mutate::setMutateInfo(int mType, int mLevel, float mHpPer,
-	float mAtkPer, float mRangePer, float mAsPer, float mSpdPer)
+	float mRangePer, float mAtkPer, float mSpdPer, float mAsPer)
 {
 	type = mType;
 	level = mLevel;

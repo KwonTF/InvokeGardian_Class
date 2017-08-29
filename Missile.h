@@ -12,6 +12,8 @@ creater : ZeroFe
 class Missile : public Collisioner
 {
 protected:
+	Layer* parentLayer;
+
 	// 유닛에 필요한 이미지
 	std::string *image;
 	int imageNum;
@@ -32,6 +34,7 @@ protected:
 	int divideCount;		// 분열 수
 
 	bool isExplode;			// 폭발 여부
+	int explodeRadius;		// 폭발 반지름
 	int explodeDamage;		// 폭발 데미지 설정
 
 	float removeTime;		// 총알 남아있는 시간
@@ -56,6 +59,7 @@ public:
 	inline void setPenetCount(int count) { penetrationCount = count; }
 	inline void setDivideCount(int count) { divideCount = count; }
 	inline void setRemoveTime(float time) { removeTime = time; }
+	inline void setParentLayer(Layer* const pLayer) { parentLayer = pLayer; }
 
 	inline float getSpeed() { return speed; }
 	inline float getRange() { return range; }

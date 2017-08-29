@@ -41,7 +41,8 @@ private:
 	// 업그레이드 관련
 	int money;					// 업그레이드 돈
 	bool canUpgrade;			// 업그레이드 가능 여부 조사
-	bool isUpgradeOpen;				// 업그레이드창 개폐 여부
+	bool isUpgradeOpen;			// 업그레이드창 개폐 여부
+	int upgradeLayerNum;
 
 	//Activate Debug
 	bool debug;
@@ -89,8 +90,11 @@ public:
 
 	// 버튼 터치 이벤트들
 	void skipButtonTouch(Ref *pSender, cocos2d::ui::Widget::TouchEventType touchType);
+	void endButtonTouch(Ref *pSender, cocos2d::ui::Widget::TouchEventType touchType);
 	void upgradeOpenerTouch(Ref *pSender, cocos2d::ui::Widget::TouchEventType touchType);
-	void upgradeEnhanceTouch(Ref *pSender, cocos2d::ui::Widget::TouchEventType touchType, int btnTag);
+	void upgradeChangeTouch(Ref *pSender, cocos2d::ui::Widget::TouchEventType touchType);
+	void upgradeEnhanceTouch(Ref *pSender, cocos2d::ui::Widget::TouchEventType touchType);
+	void debugVisibleTouch(Ref *pSender);
 
 	// 라운드 변경시 호출하는 함수
 	void roundEnd();
@@ -118,6 +122,7 @@ public:
 	void popUpClick();
 
 	// 디버그 관련 함수
+	void debugFuncVisible();
 	void setDebugMode();
 	void setDebugID(int input);
 private:
@@ -140,8 +145,24 @@ private:
 	Sprite* pop2;
 	Sprite* pop3;
 
+	ui::Button* upEKnock;
+	ui::Button* upEPower;
+	ui::Button* upEExplo;
+	ui::Button* upEDiv;
+	ui::Button* upESlow;
+	ui::Button* upEMine;
+
+	ui::Button* upGMP;
+	ui::Button* upGHP;
+	ui::Button* upGSlot;
+
+	ui::Button* upgradeElementSelector;
+	ui::Button* upgradeTowerSelector;
+	ui::Button* upgradeGuardianSelector;
+
 	ui::Button* setupSkip;
 	ui::Button* roundEnder;
+	ui::Button* debugVisibler;
 
 	Sprite* mpSprite;
 	CCProgressTimer* mpBar;

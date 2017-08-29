@@ -21,7 +21,7 @@ void Condition::enchance()
 
 
 Slow::Slow() 
-	: Time(5.0), deffenceReduceRate(0.7), speedReduceRate(0.5)
+	: Time(5.0f), deffenceReduceRate(0.7f), speedReduceRate(0.5f)
 {
 	elementDamage = 10;
 }
@@ -40,8 +40,14 @@ float Slow::castSideEffect(float defence) const
 void Slow::enchance()
 {
 	Condition::enchance();
-	deffenceReduceRate = deffenceReduceRate*0.7;
-	speedReduceRate = speedReduceRate*0.5;
+
+	elementDamage += 5;
+
+	if (conditionLevel % 2 == 0)
+		speedReduceRate *= 0.7f;
+
+	if (conditionLevel % 3 == 0)
+		deffenceReduceRate *= 0.7f;
 }
 
 
@@ -66,12 +72,19 @@ float Knock::castSideEffect(float defence) const
 void Knock::enchance()
 {
 	Condition::enchance();
-	minusSpeed -= 100;
+
+	elementDamage += 8;
+
+	if (conditionLevel % 2 == 0)
+		stunTime++;
+
+	if (conditionLevel % 3 == 0)
+		minusSpeed -= 500;
 }
 
 
 PowerUp::PowerUp()
-	:rangeRate(600), pierceNum(3)
+	:rangeRate(400), pierceNum(0)
 {
 	elementDamage = 25;
 }
@@ -91,7 +104,14 @@ float PowerUp::castSideEffect(float defence) const
 void PowerUp::enchance()
 {
 	Condition::enchance();
-	rangeRate += 200;
+
+	elementDamage += 10;
+
+	if (conditionLevel % 2 == 0)
+		pierceNum++;
+
+	if (conditionLevel % 3 == 0)
+		rangeRate += 200;
 }
 
 
@@ -116,7 +136,16 @@ float Division::castSideEffect(float num) const
 void Division::enchance()
 {
 	Condition::enchance();
-	divideNum++;
+
+	elementDamage += 1;
+
+	/*
+	if (conditionLevel % 2 == 0)
+		;
+	*/
+
+	if (conditionLevel % 3 == 0)
+		divideNum++;
 }
 
 
@@ -135,12 +164,20 @@ float Mine::castSideEffect(float num) const
 void Mine::enchance()
 {
 	Condition::enchance();
-	holdTime += 2;
+
+	elementDamage += 1;
+	/*
+	if (conditionLevel % 2 == 0)
+		;
+	*/
+
+	if (conditionLevel % 3 == 0)
+		holdTime++;
 }
 
 
 Explode::Explode() 
-	:explodeRadius(75), burnDamage(0) 
+	:explodeRadius(50), burnDamage(0) 
 {
 	elementDamage = 5;
 }
@@ -160,5 +197,12 @@ float Explode::castSideEffect(float num) const
 void Explode::enchance()
 {
 	Condition::enchance();
-	explodeRadius += 25;
+
+	elementDamage += 5;
+
+	if (conditionLevel % 2 == 0)
+		burnDamage += 20;
+
+	if (conditionLevel % 3 == 0)
+		explodeRadius += 25;
 }

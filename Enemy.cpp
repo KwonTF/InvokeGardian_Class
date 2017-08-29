@@ -53,6 +53,7 @@ void Enemy::setBaseAbillity(int hp, int atk, int range, int speed, int as)
 // 0 : normal, 1 : range, 2 : mass, 3 : divide, 4 : golem, 5 : faster
 void Enemy::typeEnhance(Mutate mutateInfo)
 {
+	mutate = mutateInfo;
 	// 능력치 변화
 	hpMax = static_cast<int>(hpMax * mutate.hpPer);
 	hpCurrent = static_cast<int>(hpCurrent * mutate.hpPer);
@@ -61,6 +62,7 @@ void Enemy::typeEnhance(Mutate mutateInfo)
 	moveSpeed = moveSpeed * mutate.spdPer;
 	attackCoolTime = static_cast<int>(attackCoolTime * mutate.asPer);
 
+	setSpeed(moveSpeed);
 	// 기능 추가
 	// 1. range type : 사거리 추가 - 능력치 변화에서 해결
 	// 2. mass type : 여러 마리 생성 - 유닛 포지션 받아서 재귀함수로 주변 위치에 생성하게 함
@@ -69,7 +71,29 @@ void Enemy::typeEnhance(Mutate mutateInfo)
 		Vec2 pos = getPosition();
 		for (int i = 0; i < mutate.level + 1; i++)
 		{
+			cocos2d::log("mutate");
 
+			// 몸체 설정
+			auto monster = Enemy::create(mutate.imageName);
+			monster->make();
+			monster->setPhysicsBitmask(Collisioner::bitmaskEnemyAll, ~(Collisioner::bitmaskBulletTwo + Collisioner::bitmaskEnemyAll), Collisioner::bitmaskPlayerAll);
+			monster->setPosition(Vec2(getPosition() + (random() % 20 * Vec2::ONE)));
+			// 파일 설정
+			monster->setDeathAnimFile(image, imageNum);
+			monster->setMissileDeathAnimFile(mImage, mImageNum);
+			// 기본 능력치 설정
+			monster->setBaseAbillity(hpMax, attack,	attackRange, moveSpeed, attackCoolTime);
+			monster->setEnemyAim(destinat);
+			// 콜백 적용
+			monster->setCreateCallback(createCallback);
+			monster->setDeathCallback(deathCallback);
+			monster->setHpGage("Others/hpGage.png");
+
+			// 게임에 추가
+			if (getParent() != nullptr)
+			{
+				getParent()->addChild(monster);
+			}
 		}
 	}
 	// 3. divide type : 죽으면 몬스터를 새로 생성하는 함수 추가
@@ -81,6 +105,8 @@ void Enemy::typeEnhance(Mutate mutateInfo)
 	// 5. faster type : 잔상효과만 적용해주기
 	else if (mutate.type == 5)
 	{
+		cocos2d::log("mutate");
+
 		projectImage(mutate.imageName);
 	}
 }

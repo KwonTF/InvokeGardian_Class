@@ -150,6 +150,7 @@ void HelloWorld::initGameVariable()
 	gameTime = ROUNDTIME;
 	isRound = true;
 	canUpgrade = false;
+	upgradeLayerNum = 3;
 
 	monsterExistAmount = 0;
 	setRoundVariable();
@@ -187,21 +188,135 @@ void HelloWorld::makeUpgradeWindow()
 	popback = Sprite::create("UI/PopBack.png");
 	popback->setAnchorPoint(Vec2::ANCHOR_MIDDLE_RIGHT);
 	upgradeWindow->addChild(popback);
+
+	upgradeElement = Layer::create();
+	upgradeWindow->addChild(upgradeElement);
+	upgradeTower = Layer::create();
+	upgradeWindow->addChild(upgradeTower);
+	upgradeGuardian = Layer::create();
+	upgradeWindow->addChild(upgradeGuardian);
+
 	pop1 = Sprite::create("UI/Popup_1.png");
 	pop1->setAnchorPoint(Vec2::ANCHOR_MIDDLE_RIGHT);
-	upgradeWindow->addChild(pop1);
+	upgradeElement->addChild(pop1);
 	pop2 = Sprite::create("UI/Popup_2.png");
 	pop2->setAnchorPoint(Vec2::ANCHOR_MIDDLE_RIGHT);
-	upgradeWindow->addChild(pop2);
+	upgradeTower->addChild(pop2);
 	pop3 = Sprite::create("UI/Popup_3.png");
 	pop3->setAnchorPoint(Vec2::ANCHOR_MIDDLE_RIGHT);
-	upgradeWindow->addChild(pop3);
+	upgradeGuardian->addChild(pop3);
 
-	popbutton = Sprite::create("UI/PopButton.png");
-	popbutton->setAnchorPoint(Vec2::ANCHOR_MIDDLE_LEFT);
-	popbutton->setRotation(0);
-	popbutton->setOpacity(255);
-	upgradeWindow->addChild(popbutton);
+	// upgrade Button
+	upEKnock = ui::Button::create();
+	upEKnock->setTouchEnabled(true);
+	upEKnock->loadTextures("Elements/Knock.png", "Elements/KnockClick.png", "Elements/KnockClick.png");
+	upEKnock->addTouchEventListener(CC_CALLBACK_2(HelloWorld::upgradeEnhanceTouch, this));
+	upEKnock->setAnchorPoint(Vec2::ANCHOR_TOP_LEFT); 
+	upEKnock->setPosition(Vec2(-290, _winSize.height / 2 - 90));
+	upEKnock->setTag(1);
+	upgradeElement->addChild(upEKnock);
+
+	upEPower = ui::Button::create();
+	upEPower->setTouchEnabled(true);
+	upEPower->loadTextures("Elements/PowerUp.png", "Elements/PowerUpClick.png", "Elements/PowerUpClick.png");
+	upEPower->addTouchEventListener(CC_CALLBACK_2(HelloWorld::upgradeEnhanceTouch, this));
+	upEPower->setAnchorPoint(Vec2::ANCHOR_TOP_LEFT);
+	upEPower->setPosition(Vec2(-290, _winSize.height / 2 - 180));
+	upEPower->setTag(2);
+	upgradeElement->addChild(upEPower);
+
+	upEExplo = ui::Button::create();
+	upEExplo->setTouchEnabled(true);
+	upEExplo->loadTextures("Elements/Knock.png", "Elements/KnockClick.png", "Elements/KnockClick.png");
+	upEExplo->addTouchEventListener(CC_CALLBACK_2(HelloWorld::upgradeEnhanceTouch, this));
+	upEExplo->setAnchorPoint(Vec2::ANCHOR_TOP_LEFT);
+	upEExplo->setPosition(Vec2(-290, _winSize.height / 2 - 270));
+	upEExplo->setTag(3);
+	upgradeElement->addChild(upEExplo);
+
+	upEDiv = ui::Button::create();
+	upEDiv->setTouchEnabled(true);
+	upEDiv->loadTextures("Elements/Division.png", "Elements/DivisionClick.png", "Elements/DivisionClick.png");
+	upEDiv->addTouchEventListener(CC_CALLBACK_2(HelloWorld::upgradeEnhanceTouch, this));
+	upEDiv->setAnchorPoint(Vec2::ANCHOR_TOP_LEFT);
+	upEDiv->setPosition(Vec2(-290, _winSize.height / 2 - 360));
+	upEDiv->setTag(4);
+	upgradeElement->addChild(upEDiv);
+
+	upESlow = ui::Button::create();
+	upESlow->setTouchEnabled(true);
+	upESlow->loadTextures("Elements/Slow.png", "Elements/SlowClick.png", "Elements/SlowClick.png");
+	upESlow->addTouchEventListener(CC_CALLBACK_2(HelloWorld::upgradeEnhanceTouch, this));
+	upESlow->setAnchorPoint(Vec2::ANCHOR_TOP_LEFT);
+	upESlow->setPosition(Vec2(-290, _winSize.height / 2 - 450));
+	upESlow->setTag(5);
+	upgradeElement->addChild(upESlow);
+
+	upEMine = ui::Button::create();
+	upEMine->setTouchEnabled(true);
+	upEMine->loadTextures("Elements/Mine.png", "Elements/MineClick.png", "Elements/MineClick.png");
+	upEMine->addTouchEventListener(CC_CALLBACK_2(HelloWorld::upgradeEnhanceTouch, this));
+	upEMine->setAnchorPoint(Vec2::ANCHOR_TOP_LEFT);
+	upEMine->setPosition(Vec2(-290, _winSize.height / 2 - 540));
+	upEMine->setTag(6);
+	upgradeElement->addChild(upEMine);
+
+	upGMP = ui::Button::create();
+	upGMP->setTouchEnabled(true);
+	upGMP->loadTextures("UI/upMP.png", "UI/upMPClick.png", "UI/upMPClick.png");
+	upGMP->addTouchEventListener(CC_CALLBACK_2(HelloWorld::upgradeEnhanceTouch, this));
+	upGMP->setAnchorPoint(Vec2::ANCHOR_TOP_LEFT);
+	upGMP->setPosition(Vec2(-290, _winSize.height / 2 - 90));
+	upGMP->setTag(1);
+	upgradeGuardian->addChild(upGMP);
+
+	upGHP = ui::Button::create();
+	upGHP->setTouchEnabled(true);
+	upGHP->loadTextures("UI/upHP.png", "UI/upHPClick.png", "UI/upHPClick.png");
+	upGHP->addTouchEventListener(CC_CALLBACK_2(HelloWorld::upgradeEnhanceTouch, this));
+	upGHP->setAnchorPoint(Vec2::ANCHOR_TOP_LEFT);
+	upGHP->setPosition(Vec2(-290, _winSize.height / 2 - 210));
+	upGHP->setTag(2);
+	upgradeGuardian->addChild(upGHP);
+
+	upGSlot = ui::Button::create();
+	upGSlot->setTouchEnabled(true);
+	upGSlot->loadTextures("UI/upElement.png", "UI/upElementClick.png", "UI/upElementClick.png");
+	upGSlot->addTouchEventListener(CC_CALLBACK_2(HelloWorld::upgradeEnhanceTouch, this));
+	upGSlot->setAnchorPoint(Vec2::ANCHOR_TOP_LEFT);
+	upGSlot->setPosition(Vec2(-290, _winSize.height / 2 - 330));
+	upGSlot->setTag(3);
+	upgradeGuardian->addChild(upGSlot);
+
+	
+
+	// Layer Selecor
+	upgradeElementSelector = ui::Button::create();
+	upgradeElementSelector->setTouchEnabled(true);
+	upgradeElementSelector->loadTextures("UI/elementNormal.png", "UI/elementSelect.png", "UI/elementDisable.png");
+	upgradeElementSelector->addTouchEventListener(CC_CALLBACK_2(HelloWorld::upgradeChangeTouch, this));
+	upgradeElementSelector->setAnchorPoint(Vec2::ANCHOR_TOP_RIGHT);
+	upgradeElementSelector->setPositionY(_winSize.height / 2);
+	upgradeElementSelector->setTag(1);
+	upgradeWindow->addChild(upgradeElementSelector);
+
+	upgradeTowerSelector = ui::Button::create();
+	upgradeTowerSelector->setTouchEnabled(true);
+	upgradeTowerSelector->loadTextures("UI/towerNormal.png", "UI/towerSelect.png", "UI/towerDisable.png");
+	upgradeTowerSelector->addTouchEventListener(CC_CALLBACK_2(HelloWorld::upgradeChangeTouch, this));
+	upgradeTowerSelector->setAnchorPoint(Vec2::ANCHOR_TOP_RIGHT);
+	upgradeTowerSelector->setPositionY(_winSize.height / 2 - popLayerBtnSizeY);
+	upgradeTowerSelector->setTag(2);
+	upgradeWindow->addChild(upgradeTowerSelector);
+
+	upgradeGuardianSelector = ui::Button::create();
+	upgradeGuardianSelector->setTouchEnabled(true);
+	upgradeGuardianSelector->loadTextures("UI/guardianNormal.png", "UI/guardianSelect.png", "UI/guardianDisable.png");
+	upgradeGuardianSelector->addTouchEventListener(CC_CALLBACK_2(HelloWorld::upgradeChangeTouch, this));
+	upgradeGuardianSelector->setAnchorPoint(Vec2::ANCHOR_TOP_RIGHT);
+	upgradeGuardianSelector->setPositionY(_winSize.height / 2 - popLayerBtnSizeY * 2);
+	upgradeGuardianSelector->setTag(3);
+	upgradeWindow->addChild(upgradeGuardianSelector);
 
 	addChild(upgradeWindow);
 }
@@ -284,6 +399,15 @@ void HelloWorld::UISetting()
 	setupSkip->setAnchorPoint(Vec2::ANCHOR_MIDDLE_RIGHT);
 	setupSkip->setPosition(Vec2(_winSize.width, _winSize.height * 4 / 5));
 	addChild(setupSkip);
+
+	roundEnder = ui::Button::create();
+	roundEnder->setTouchEnabled(true);
+	roundEnder->loadTextures("UI/roundEnderN.png", "UI/roundEnderS.png", "UI/roundEnderD.png");
+	roundEnder->addTouchEventListener(CC_CALLBACK_2(HelloWorld::skipButtonTouch, this));
+	roundEnder->setAnchorPoint(Vec2::ANCHOR_MIDDLE_RIGHT);
+	roundEnder->setPosition(Vec2(_winSize.width, _winSize.height * 3 / 5));
+	addChild(roundEnder);
+	
 }
 
 void HelloWorld::setDebugMode()
@@ -312,15 +436,11 @@ void HelloWorld::popUpClick()
 	{
 		isUpgradeOpen = false;
 		upgradeWindow->setPosition(300, _winSize.height / 2);
-		popbutton->setPositionX(50);
-		popbutton->setRotation(180);
 	}
 	else 
 	{
 		isUpgradeOpen = true;
 		upgradeWindow->setPosition(0, _winSize.height / 2);
-		popbutton->setPositionX(0);
-		popbutton->setRotation(0);
 	}
 }
 
@@ -330,6 +450,7 @@ void HelloWorld::makeTower()
 	tower->make();
 	tower->setPhysicsBitmask(Collisioner::bitmaskPlayerAll, ~(Collisioner::bitmaskBulletOne + Collisioner::bitmaskPlayerAll), Collisioner::bitmaskEnemyAll);
 	tower->setDeathCallback(CC_CALLBACK_0(HelloWorld::goGameOver, this));
+	tower->setDeathAnimFile(GameData::enemyDeathAnimation, 12);
 	tower->setPosition(Vec2(_winSize.width / 2, _winSize.height/2));
 
 	layerMissile->addChild(tower);
@@ -404,13 +525,13 @@ void HelloWorld::monsterCreateTimer(float dt)
 
 			// 변이 정보로부터 데이터 가져오기
 			Mutate *m = new Mutate();
-			m->setMutateInfo(mutateType, mutateLevel, GameData::enemyMutateStatus[mutateType][mutateLevel][0], 
-				GameData::enemyMutateStatus[mutateType][mutateLevel][1], GameData::enemyMutateStatus[mutateType][mutateLevel][2], 
-				GameData::enemyMutateStatus[mutateType][mutateLevel][3], GameData::enemyMutateStatus[mutateType][mutateLevel][4]);
-			m->setImageInfo(GameData::enemyMutateImage[mutateType][mutateLevel]);
+			m->setMutateInfo(mutateType, mutateLevel, GameData::enemyMutateStatus[mutateLevel][mutateType][0],
+				GameData::enemyMutateStatus[mutateLevel][mutateType][1], GameData::enemyMutateStatus[mutateLevel][mutateType][2],
+				GameData::enemyMutateStatus[mutateLevel][mutateType][3], GameData::enemyMutateStatus[mutateLevel][mutateType][4]);
+			m->setImageInfo(GameData::enemyMutateImage[mutateLevel][mutateType]);
 
 			// 몬스터 생성
-			auto monster = Enemy::create("Unit/Normal.png");
+			auto monster = Enemy::create(m->imageName);
 			monster->make();
 			monster->setPhysicsBitmask(Collisioner::bitmaskEnemyAll, ~(Collisioner::bitmaskBulletTwo + Collisioner::bitmaskEnemyAll), Collisioner::bitmaskPlayerAll);
 			monster->setPosition(Vec2(_winSize.width * (rand() % 2), (rand() % static_cast<int>(_winSize.height))));
@@ -426,6 +547,7 @@ void HelloWorld::monsterCreateTimer(float dt)
 			monster->setDeathCallback(CC_CALLBACK_0(HelloWorld::monsterDeath, this));
 			monster->setHpGage("Others/hpGage.png");
 			// 변이 적용시키기(nF)
+			monster->typeEnhance(*m);
 
 			//enemyVector.pushBack(monster);
 			addChild(monster);
@@ -448,14 +570,6 @@ void HelloWorld::onMouseDown(cocos2d::Event * event)
 	ttf1->setString(output);
 	mousePosition.y = _winSize.height - mousePosition.y;
 	player->gotoPoint(mousePosition, MathCalculator::calculateAngle(player->getPosition(), mousePosition) * MathCalculator::radian());
-	/*
-	Rect rect = popbutton->getBoundingBox();
-	if (rect.containsPoint(mousePosition) && popbutton->getOpacity() == 255) {
-		popUpClick();
-	}
-	else
-		player->gotoPoint(mousePosition, MathCalculator::calculateAngle(player->getPosition(), mousePosition) * MathCalculator::radian());
-	*/
 }
 
 void HelloWorld::onMouseMove(cocos2d::Event * event)
@@ -531,15 +645,120 @@ void HelloWorld::skipButtonTouch(Ref *pSender, cocos2d::ui::Widget::TouchEventTy
 		timeSkip();
 }
 
+void HelloWorld::endButtonTouch(Ref *pSender, cocos2d::ui::Widget::TouchEventType touchType)
+{
+
+}
+
 void HelloWorld::upgradeOpenerTouch(Ref *pSender, cocos2d::ui::Widget::TouchEventType touchType)
 {
 	if (touchType == ui::Widget::TouchEventType::ENDED)
 		popUpClick();
 }
 
-void HelloWorld::upgradeEnhanceTouch(Ref *pSender, cocos2d::ui::Widget::TouchEventType touchType, int btnTag)
+void HelloWorld::upgradeChangeTouch(Ref *pSender, cocos2d::ui::Widget::TouchEventType touchType)
 {
+	if (touchType == ui::Widget::TouchEventType::ENDED)
+	{
+		int btnTag = (static_cast<ui::Button*>(pSender))->getTag();
 
+		if (btnTag == 1)
+		{
+			cocos2d::log("btn 1");
+			upgradeElement->setZOrder(3);
+			upgradeTower->setZOrder(0);
+			upgradeGuardian->setZOrder(0);
+			upgradeLayerNum = 1;
+		}
+		if (btnTag == 2)
+		{
+			cocos2d::log("btn 2");
+			upgradeElement->setZOrder(0);
+			upgradeTower->setZOrder(3);
+			upgradeGuardian->setZOrder(0);
+			upgradeLayerNum = 2;
+		}
+		if (btnTag == 3)
+		{
+			cocos2d::log("btn 3");
+			upgradeElement->setZOrder(0);
+			upgradeTower->setZOrder(0);
+			upgradeGuardian->setZOrder(3);
+			upgradeLayerNum = 3;
+		}
+	}
+}
+
+void HelloWorld::upgradeEnhanceTouch(Ref *pSender, cocos2d::ui::Widget::TouchEventType touchType)
+{
+	if (touchType == ui::Widget::TouchEventType::ENDED)
+	{
+		int btnTag = (static_cast<ui::Button*>(pSender))->getTag();
+
+		auto tempLevel = Sprite::create("UI/yesUp.png");
+		tempLevel->setAnchorPoint(Vec2::ANCHOR_TOP_LEFT);
+
+		if (upgradeLayerNum == 1)
+		{
+			// 주의 : 업글 상태 6 넘어가면 기묘해짐
+			switch (btnTag) {
+			case 1:
+				cocos2d::log("Knock");
+				conditionInfoArray.at(0)->enchance();
+				tempLevel->setPosition(Vec2(-260 + 30 * conditionInfoArray.at(0)->conditionLevel, _winSize.height / 2 - 91));
+				break;
+			case 2:
+				cocos2d::log("Knock");
+				conditionInfoArray.at(1)->enchance();
+				tempLevel->setPosition(Vec2(-260 + 30 * conditionInfoArray.at(1)->conditionLevel, _winSize.height / 2 - 181));
+				break;
+			case 3:
+				cocos2d::log("Knock");
+				conditionInfoArray.at(2)->enchance();
+				tempLevel->setPosition(Vec2(-260 + 30 * conditionInfoArray.at(2)->conditionLevel, _winSize.height / 2 - 271));
+				break;
+			case 4:
+				cocos2d::log("Knock");
+				conditionInfoArray.at(3)->enchance();
+				tempLevel->setPosition(Vec2(-260 + 30 * conditionInfoArray.at(3)->conditionLevel, _winSize.height / 2 - 361));
+				break;
+			case 5:
+				cocos2d::log("Knock");
+				conditionInfoArray.at(4)->enchance();
+				tempLevel->setPosition(Vec2(-260 + 30 * conditionInfoArray.at(4)->conditionLevel, _winSize.height / 2 - 451));
+				break;
+			case 6:
+				cocos2d::log("Knock");
+				conditionInfoArray.at(5)->enchance();
+				tempLevel->setPosition(Vec2(-260 + 30 * conditionInfoArray.at(5)->conditionLevel, _winSize.height / 2 - 541));
+				break;
+			}
+			upgradeElement->addChild(tempLevel);
+		}
+		if (upgradeLayerNum == 2)
+		{
+		}
+		if (upgradeLayerNum == 3)
+		{
+			// 주의 : 업글 상태 4 넘어가면 기묘해짐
+			switch (btnTag) {
+			case 1:
+				tempLevel->setPosition(Vec2(-250 + 30 * (MPMax / 50 - 1), _winSize.height / 2 - 91));
+				MPMax += 50;
+				MPRegenAmount += 2;
+				break;
+			case 2:
+				tempLevel->setPosition(Vec2(-250 + 30 * (tower->getHPMax() / 500), _winSize.height / 2 - 211));
+				tower->setHP(tower->getHPMax() + 500);
+				break;
+			case 3:
+				tempLevel->setPosition(Vec2(-250 + 30 * (SlotLevel - 1), _winSize.height / 2 - 331));
+				SlotLevel++;
+				break;
+			}
+			upgradeGuardian->addChild(tempLevel);
+		}
+	}
 }
 
 /*
@@ -555,7 +774,6 @@ void HelloWorld::roundEnd()
 
 	// 업그레이드 가능 상태로 만들기
 	canUpgrade = true;
-	popbutton->setOpacity(255);
 	roundViewer->setColor(Color3B::GREEN);
 	timeViewer->setColor(Color3B::GREEN);
 }
@@ -582,13 +800,14 @@ void HelloWorld::roundChange()
 		roundNum++;
 		setRoundVariable();
 
-		roundViewer->setString("ROUND");
+		roundViewer->setString("ROUND ");
 
 		// 업그레이드 불가능 상태로 만들기
 		canUpgrade = false;
-		popbutton->setOpacity(0);
 		roundViewer->setColor(Color3B::RED);
 		timeViewer->setColor(Color3B::RED);
+
+		cocos2d::log("round %d", roundNum);
 	}
 }
 
@@ -694,7 +913,7 @@ Missile* HelloWorld::makeMissile()
 	missile->setPosition(player->getPosition());
 
 	// 내부 값 설정
-	missile->setAttack(20 + tempVector.size() * 20);
+	missile->setAttack(20);
 	return missile;
 }
 
@@ -707,8 +926,8 @@ void HelloWorld::fireMissile()
 		Vec2 tempVec = MathCalculator::calculateUnitVec2(player->getPosition(), mouse);
 		if (divisonNum > 1) 
 		{
-			tempVec.x += random() % 100 - 50;
-			tempVec.y += random() % 100 - 50;
+			tempVec = tempVec.rotate(MathCalculator::calculateRotateVec2(-(divisonNum-1) * 7.5 / MathCalculator::radian()));
+			tempVec = tempVec.rotate(MathCalculator::calculateRotateVec2(i * 15 / MathCalculator::radian()));
 		}
 		missile->getPhysicsBody()->setVelocity(tempVec * missile->getSpeed());
 		missile->setPhysicsBitmask(Collisioner::bitmaskBulletOne, ~(Collisioner::bitmaskBulletAll + Collisioner::bitmaskPlayerAll), Collisioner::bitmaskZero);

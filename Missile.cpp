@@ -4,7 +4,7 @@ Missile::Missile()
 	: speed(400.0), range(200),
 	penetrationCount(1), divideCount(0),
 	isExplode(false), explodeDamage(30),
-	removeTime(0.1){}
+	removeTime(0.1f){}
 
 
 
@@ -100,6 +100,7 @@ void Missile::castEffect()
 		case EffectCode::Explode:
 			isExplode = true;
 			explodeDamage = 30;
+			explodeRadius = (*iter)->castEffect(3);
 			break;
 		case EffectCode::Mine:
 			getPhysicsBody()->setVelocity(Vec2(0,0));
@@ -116,21 +117,19 @@ void Missile::makeExplosion()
 {
 	Explosion* explosion = Explosion::create("UI/SkillBox.PNG");
 
-	auto material = PhysicsMaterial(0.1f, 1.0f, 0.5f);
-
-	auto body = PhysicsBody::createCircle(explosion->getContentSize().width / 2, material);
-
-	// 몸체 설정
-	explosion->setPhysicsBody(body);
-	explosion->getPhysicsBody()->setCollisionBitmask(Collisioner::bitmaskZero);
-	explosion->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
-	explosion->setPosition(this->getPosition());
-
-	if (this != nullptr)
-		cocos2d::log("pos : %.1f %.1f", explosion->getPositionX(), explosion->getPositionY());
-
 	// 내부 값 설정
 	explosion->setAttack(explodeDamage);
+
+	// 몸체 설정
+	auto material = PhysicsMaterial(0.1f, 1.0f, 0.5f);
+
+	auto body = PhysicsBody::createCircle(explodeRadius, material);
+
+	explosion->setPhysicsBody(body);
+	explosion->setPhysicsBitmask(Collisioner::bitmaskBulletOne, ~(Collisioner::bitmaskBulletAll + Collisioner::bitmaskPlayerAll), Collisioner::bitmaskZero);
+	explosion->setAnchorPoint(Vec2::ANCHOR_MIDDLE);
+	explosion->destroy();
+	explosion->setPosition(this->getPosition());
 
 	if (getParent() != nullptr)
 	{
@@ -141,29 +140,18 @@ void Missile::makeExplosion()
 // make Missile's death animation
 void Missile::deathAnimation()
 {
-	// 합본 파일 재생 방식
-	auto deathTexture = Director::getInstance()->getTextureCache()->addImage(deathAnimTexture);
-	
-	Animation *anim = Animation::create();
-	anim->setDelayPerUnit(deathAnimDelay);
-	for (int i = 0; i < deathAnimRow; i++) 
-		for (int j = 0; j < deathAnimColm; j++) 
-			anim->addSpriteFrameWithTexture(deathTexture, Rect(j * deathAnimWidth, i *  deathAnimHeight, deathAnimWidth, deathAnimHeight));
-
-	/*
 	// 단편 파일 재생 방식
 	Vector<SpriteFrame*> animFrames(imageNum - 1);
 	
 	for (int i = 1; i < imageNum; i++)
 	{
-		auto frame = SpriteFrame::create(image[i], Rect(0, 0, 50, 50));
+		auto frame = SpriteFrame::create(image[i], Rect(0, 0, 32, 32));
 		animFrames.pushBack(frame);
 	}
 
 	auto animation = Animation::createWithSpriteFrames(animFrames, 0.1f);
-	*/
 
-	auto animate = Animate::create(anim);
+	auto animate = Animate::create(animation);
 	runAction(animate);
 }
 
@@ -175,7 +163,7 @@ void Missile::destroy()
 
 	auto callback1 = CallFunc::create(CC_CALLBACK_0(Missile::deathAnimation, this));
 	auto callback2 = CallFunc::create(CC_CALLBACK_0(Missile::removeFromParent, this));
-	auto sequence = Sequence::create(callback1, DelayTime::create(10.0f), callback2, nullptr);
+	auto sequence = Sequence::create(callback1, DelayTime::create(0.1f * (imageNum - 1)), callback2, nullptr);
 	//deathAnimDelay * (deathAnimRow * deathAnimColm - 1)
 	runAction(sequence);
 }

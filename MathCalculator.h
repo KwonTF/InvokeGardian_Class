@@ -13,5 +13,10 @@ namespace MathCalculator {
 		return calculateUnitVec2(current, point).getAngle();
 	}
 
+	inline cocos2d::Vec2 calculateRotateVec2(float radian)
+	{
+		return cocos2d::Vec2(cos(radian), -sin(radian));
+	}
+
 	inline double radian() { return 180 / M_PI; }
 };
