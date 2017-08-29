@@ -293,7 +293,7 @@ void HelloWorld::makeUpgradeWindow()
 	// Layer Selecor
 	upgradeElementSelector = ui::Button::create();
 	upgradeElementSelector->setTouchEnabled(true);
-	upgradeElementSelector->loadTextures("UI/elementNormal.png", "UI/elementSelect.png", "UI/elementDisable.png");
+	upgradeElementSelector->loadTextures("UI/Tab_1N.png", "UI/Tab_1S.png", "UI/Tab_1D.png");
 	upgradeElementSelector->addTouchEventListener(CC_CALLBACK_2(HelloWorld::upgradeChangeTouch, this));
 	upgradeElementSelector->setAnchorPoint(Vec2::ANCHOR_TOP_RIGHT);
 	upgradeElementSelector->setPositionY(_winSize.height / 2);
@@ -302,7 +302,7 @@ void HelloWorld::makeUpgradeWindow()
 
 	upgradeTowerSelector = ui::Button::create();
 	upgradeTowerSelector->setTouchEnabled(true);
-	upgradeTowerSelector->loadTextures("UI/towerNormal.png", "UI/towerSelect.png", "UI/towerDisable.png");
+	upgradeTowerSelector->loadTextures("UI/Tab_2N.png", "UI/Tab_2S.png", "UI/Tab_2D.png");
 	upgradeTowerSelector->addTouchEventListener(CC_CALLBACK_2(HelloWorld::upgradeChangeTouch, this));
 	upgradeTowerSelector->setAnchorPoint(Vec2::ANCHOR_TOP_RIGHT);
 	upgradeTowerSelector->setPositionY(_winSize.height / 2 - popLayerBtnSizeY);
@@ -311,7 +311,7 @@ void HelloWorld::makeUpgradeWindow()
 
 	upgradeGuardianSelector = ui::Button::create();
 	upgradeGuardianSelector->setTouchEnabled(true);
-	upgradeGuardianSelector->loadTextures("UI/guardianNormal.png", "UI/guardianSelect.png", "UI/guardianDisable.png");
+	upgradeGuardianSelector->loadTextures("UI/Tab_3N.png", "UI/Tab_3S.png", "UI/Tab_3D.png");
 	upgradeGuardianSelector->addTouchEventListener(CC_CALLBACK_2(HelloWorld::upgradeChangeTouch, this));
 	upgradeGuardianSelector->setAnchorPoint(Vec2::ANCHOR_TOP_RIGHT);
 	upgradeGuardianSelector->setPositionY(_winSize.height / 2 - popLayerBtnSizeY * 2);
@@ -394,7 +394,7 @@ void HelloWorld::UISetting()
 
 	setupSkip = ui::Button::create();
 	setupSkip->setTouchEnabled(true);
-	setupSkip->loadTextures("UI/skipN.png", "UI/skipS.png", "UI/skipD.png");
+	setupSkip->loadTextures("UI/SkipButtonN.png", "UI/SkipButtonS.png", "UI/SkipButtonD.png");
 	setupSkip->addTouchEventListener(CC_CALLBACK_2(HelloWorld::skipButtonTouch, this));
 	setupSkip->setAnchorPoint(Vec2::ANCHOR_MIDDLE_RIGHT);
 	setupSkip->setPosition(Vec2(_winSize.width, _winSize.height * 4 / 5));
@@ -402,7 +402,7 @@ void HelloWorld::UISetting()
 
 	roundEnder = ui::Button::create();
 	roundEnder->setTouchEnabled(true);
-	roundEnder->loadTextures("UI/roundEnderN.png", "UI/roundEnderS.png", "UI/roundEnderD.png");
+	roundEnder->loadTextures("UI/RoundUpN.png", "UI/RoundUpS.png", "UI/RoundUpD.png");
 	roundEnder->addTouchEventListener(CC_CALLBACK_2(HelloWorld::skipButtonTouch, this));
 	roundEnder->setAnchorPoint(Vec2::ANCHOR_MIDDLE_RIGHT);
 	roundEnder->setPosition(Vec2(_winSize.width, _winSize.height * 3 / 5));
@@ -695,7 +695,7 @@ void HelloWorld::upgradeEnhanceTouch(Ref *pSender, cocos2d::ui::Widget::TouchEve
 	{
 		int btnTag = (static_cast<ui::Button*>(pSender))->getTag();
 
-		auto tempLevel = Sprite::create("UI/yesUp.png");
+		auto tempLevel = Sprite::create("UI/SkillPts.png");
 		tempLevel->setAnchorPoint(Vec2::ANCHOR_TOP_LEFT);
 
 		if (upgradeLayerNum == 1)
