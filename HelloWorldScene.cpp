@@ -154,7 +154,6 @@ void HelloWorld::initGameVariable()
 
 	monsterExistAmount = 0;
 	setRoundVariable();
-
 }
 
 void HelloWorld::setMonsterAmountViewer()
@@ -403,7 +402,7 @@ void HelloWorld::UISetting()
 	roundEnder = ui::Button::create();
 	roundEnder->setTouchEnabled(true);
 	roundEnder->loadTextures("UI/RoundUpN.png", "UI/RoundUpS.png", "UI/RoundUpD.png");
-	roundEnder->addTouchEventListener(CC_CALLBACK_2(HelloWorld::skipButtonTouch, this));
+	roundEnder->addTouchEventListener(CC_CALLBACK_2(HelloWorld::endButtonTouch, this));
 	roundEnder->setAnchorPoint(Vec2::ANCHOR_MIDDLE_RIGHT);
 	roundEnder->setPosition(Vec2(_winSize.width, _winSize.height * 3 / 5));
 	addChild(roundEnder);
@@ -412,11 +411,22 @@ void HelloWorld::UISetting()
 
 void HelloWorld::setDebugMode()
 {
+	isDebugVisible = false;
+	debugFuncVisible();
+
 	if(!debug){
 		ttf1->setOpacity(0);
 	}
 	else {
 		ttf1->setOpacity(255);
+
+		debugVisibler = ui::Button::create();
+		debugVisibler->setTouchEnabled(true);
+		debugVisibler->loadTextures("UI/skipS.png", "UI/skipS.png", "UI/skipS.png");
+		debugVisibler->addTouchEventListener(CC_CALLBACK_2(HelloWorld::debugVisibleTouch, this));
+		debugVisibler->setAnchorPoint(Vec2::ANCHOR_MIDDLE_RIGHT);
+		debugVisibler->setPosition(Vec2(_winSize.width, _winSize.height * 1 / 5));
+		addChild(debugVisibler);
 	}
 }
 
@@ -428,6 +438,14 @@ void HelloWorld::setDebugID(int input)
 	else
 		debug = false;
 	setDebugMode();
+}
+
+void HelloWorld::debugFuncVisible()
+{
+	monsterPresentViewer->setVisible(isDebugVisible);
+	monsterExistViewer->setVisible(isDebugVisible);
+	roundEnder->setVisible(isDebugVisible);
+	roundEnder->setEnabled(isDebugVisible);
 }
 
 void HelloWorld::popUpClick()
@@ -547,10 +565,11 @@ void HelloWorld::monsterCreateTimer(float dt)
 			monster->setDeathCallback(CC_CALLBACK_0(HelloWorld::monsterDeath, this));
 			monster->setHpGage("Others/hpGage.png");
 			// 변이 적용시키기(nF)
+			monster->setParentLayer(layerMissile);
 			monster->typeEnhance(*m);
 
 			//enemyVector.pushBack(monster);
-			addChild(monster);
+			layerMissile->addChild(monster);
 		}
 
 		createCount -= roundCount;
@@ -647,7 +666,14 @@ void HelloWorld::skipButtonTouch(Ref *pSender, cocos2d::ui::Widget::TouchEventTy
 
 void HelloWorld::endButtonTouch(Ref *pSender, cocos2d::ui::Widget::TouchEventType touchType)
 {
-
+	if (touchType == ui::Widget::TouchEventType::ENDED)
+	{
+		if (isRound)
+		{
+			roundChange();
+			roundChange();
+		}
+	}
 }
 
 void HelloWorld::upgradeOpenerTouch(Ref *pSender, cocos2d::ui::Widget::TouchEventType touchType)
@@ -758,6 +784,19 @@ void HelloWorld::upgradeEnhanceTouch(Ref *pSender, cocos2d::ui::Widget::TouchEve
 			}
 			upgradeGuardian->addChild(tempLevel);
 		}
+	}
+}
+
+void HelloWorld::debugVisibleTouch(Ref *pSender, cocos2d::ui::Widget::TouchEventType touchType)
+{
+	if (touchType == ui::Widget::TouchEventType::ENDED)
+	{
+		if (isDebugVisible)
+			isDebugVisible = false;
+		else
+			isDebugVisible = true;
+
+		debugFuncVisible();
 	}
 }
 

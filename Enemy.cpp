@@ -1,6 +1,7 @@
 #include "Enemy.h"
 
 Enemy::Enemy()
+	:knockBackSpeed(0.0f)
 {
 	attackCoolTime = 180;
 	currentCoolTime = 0;
@@ -68,16 +69,16 @@ void Enemy::typeEnhance(Mutate mutateInfo)
 	// 2. mass type : 여러 마리 생성 - 유닛 포지션 받아서 재귀함수로 주변 위치에 생성하게 함
 	if (mutate.type == 2)
 	{
-		Vec2 pos = getPosition();
-		for (int i = 0; i < mutate.level + 1; i++)
-		{
-			cocos2d::log("mutate");
+		cocos2d::log("mutate");
 
+		Vec2 pos = getPosition();
+		for (int i = 0; i < mutate.level + 2; i++)
+		{
 			// 몸체 설정
 			auto monster = Enemy::create(mutate.imageName);
 			monster->make();
 			monster->setPhysicsBitmask(Collisioner::bitmaskEnemyAll, ~(Collisioner::bitmaskBulletTwo + Collisioner::bitmaskEnemyAll), Collisioner::bitmaskPlayerAll);
-			monster->setPosition(Vec2(getPosition() + (random() % 20 * Vec2::ONE)));
+			monster->setPosition(Vec2(getPosition() + (random() % 40 * Vec2(1,0) + random() % 40 * Vec2(0,1)) - Vec2(20,20)));
 			// 파일 설정
 			monster->setDeathAnimFile(image, imageNum);
 			monster->setMissileDeathAnimFile(mImage, mImageNum);
@@ -90,9 +91,9 @@ void Enemy::typeEnhance(Mutate mutateInfo)
 			monster->setHpGage("Others/hpGage.png");
 
 			// 게임에 추가
-			if (getParent() != nullptr)
+			if (parentLayer != nullptr)
 			{
-				getParent()->addChild(monster);
+				parentLayer->addChild(monster);
 			}
 		}
 	}
@@ -105,8 +106,6 @@ void Enemy::typeEnhance(Mutate mutateInfo)
 	// 5. faster type : 잔상효과만 적용해주기
 	else if (mutate.type == 5)
 	{
-		cocos2d::log("mutate");
-
 		projectImage(mutate.imageName);
 	}
 }
@@ -178,9 +177,9 @@ void Enemy::CalculateEffect(float input)
 			}
 			break;
 		case EffectCode::Knock:
-			if ((*iter)->castEffect(0) > knockBackSpeed) {
-				knockBackSpeed = (*iter)->castEffect(0);
-			}
+			//if ((*iter)->castEffect(0) > knockBackSpeed) {}
+			knockBackSpeed = (*iter)->castEffect(0);
+			cocos2d::log("Knock %f", knockBackSpeed);
 			schedule(schedule_selector(Enemy::KnockBack),0,10,0);
 			break;
 		case EffectCode::Explode:

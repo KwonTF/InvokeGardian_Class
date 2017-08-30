@@ -13,6 +13,9 @@ create by ZeroFe
 class Enemy : public Unit
 {
 private:
+	// 부모레이어 설정
+	Layer* parentLayer;
+
 	// 유닛에 필요한 이미지
 	std::string *mImage;
 	int mImageNum;
@@ -51,6 +54,8 @@ public:
 	void setMissileDeathAnimFile(const std::string * const filename, const int fileNum);
 
 	void setBaseAbillity(int hp, int attack, int range, int speed, int as);
+
+	inline void setParentLayer(Layer* const pLayer) { parentLayer = pLayer; }
 	inline void setRange(const int range){ attackRange = range; }
 
 	inline int getRange() { return attackRange; }

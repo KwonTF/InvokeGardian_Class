@@ -47,6 +47,7 @@ private:
 	//Activate Debug
 	bool debug;
 	int debugID;
+	bool isDebugVisible;
 
 public:
 	// start function
@@ -94,7 +95,7 @@ public:
 	void upgradeOpenerTouch(Ref *pSender, cocos2d::ui::Widget::TouchEventType touchType);
 	void upgradeChangeTouch(Ref *pSender, cocos2d::ui::Widget::TouchEventType touchType);
 	void upgradeEnhanceTouch(Ref *pSender, cocos2d::ui::Widget::TouchEventType touchType);
-	void debugVisibleTouch(Ref *pSender);
+	void debugVisibleTouch(Ref *pSender, cocos2d::ui::Widget::TouchEventType touchType);
 
 	// 라운드 변경시 호출하는 함수
 	void roundEnd();

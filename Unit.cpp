@@ -59,6 +59,11 @@ void Unit::make()
 void Unit::collisioned(int damage, std::vector<Condition*> &c)
 {
 	conditionArray = c;
+
+	// 폭발시 중복삭제 예방
+	if (hpCurrent < 0)
+		return;
+
 	takenDamage(damage);
 
 	if (hpCurrent > hpMax)
